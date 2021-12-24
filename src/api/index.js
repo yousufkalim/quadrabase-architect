@@ -3,6 +3,13 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = async (method = "get", uri, body) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    axios.defaults.headers = {
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
   // API Call
   const url = process.env.REACT_APP_SERVER_URL + uri;
   return new Promise((resolve, reject) => {
@@ -12,8 +19,12 @@ const api = async (method = "get", uri, body) => {
         if (err?.response?.status === 403) {
           window.location = "/login";
         } else {
-          console.log("API Error --------> ", err?.response?.status);
-          toast.error(err?.response?.data ? err.response.data : err?.message);
+          console.log("API Error --------> ", err?.response);
+          if (err.response.data.message !== "Unauthorized Access!") {
+            toast.error(
+              err?.response?.data ? err.response.data.message : err?.message
+            );
+          }
           reject(err);
         }
       });
