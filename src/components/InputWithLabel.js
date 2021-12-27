@@ -34,6 +34,7 @@ const InputWithLabel = ({
   multiline = false,
   min,
   max,
+  style,
 }) => {
   const classes = useStyles();
 
@@ -63,6 +64,7 @@ const InputWithLabel = ({
         }}
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
+        style={style}
       />
     );
   } else if (type === "file") {
@@ -89,6 +91,7 @@ const InputWithLabel = ({
         }}
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
+        style={style}
       />
     );
   } else {
@@ -116,6 +119,7 @@ const InputWithLabel = ({
         }}
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
+        style={style}
       />
     );
   }
