@@ -10,12 +10,12 @@ const SubscriptionCard = ({
   return (
     <Card
       style={{
-        border: selected === subscription?._id && "1px solid #3b373c",
+        border: selected?._id === subscription?._id && "1px solid #3b373c",
         width: 320,
         margin: 20,
         marginLeft: 0,
       }}
-      onClick={() => setSelected(subscription?._id)}
+      onClick={() => setSelected(subscription)}
     >
       <CardContent>
         <Typography variant="h4">

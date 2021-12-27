@@ -21,7 +21,6 @@ const BuySubscription = ({ handleBuySubModal }) => {
   const getAllSubscriptions = async () => {
     try {
       const result = await api("get", `/Subscriptions/getAll/architect`);
-      console.log(result);
       setSubscriptions(result?.data?.subscription);
     } catch (error) {
       console.log(error?.response?.data?.message, "error ");
@@ -31,10 +30,26 @@ const BuySubscription = ({ handleBuySubModal }) => {
   // on Buy Subscription click
   const handleClick = async () => {
     const data = {
-      subscription: selected,
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: selected.name,
+            },
+            unit_amount: parseInt(selected.price) * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      metaData: {
+        type: "buy subscription",
+        subscription: selected._id,
+        architectId: store.user._id,
+      },
     };
-    const result = await api("post", `/licenses/buy/${store.user._id}`, data);
-    toast.success(result.data.message);
+    const result = await api("post", `/licenses/checkout/`, data);
+    window.location = result.data.url;
     handleBuySubModal();
   };
 

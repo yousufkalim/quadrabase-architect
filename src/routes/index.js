@@ -1,8 +1,9 @@
 // Init
 import React from "react";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { Store } from "../StoreContext";
 import Home from "../containers/Home";
+import Success from "../containers/Success";
 
 // Routes
 import Auth from "../containers/Auth/Main.js";
@@ -13,7 +14,12 @@ const index = () => {
   return (
     <Switch>
       {/* checking if user is logged in or not and redirecting accordingly */}
-      {store.loggedIn ? <Home /> : <Auth />}
+      <Route
+        path="/"
+        exact
+        component={() => (store.loggedIn ? <Home /> : <Auth />)}
+      />
+      <Route path="/success" component={Success} />
     </Switch>
   );
 };
