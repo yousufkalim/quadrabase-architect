@@ -20,7 +20,7 @@ const BuySubscription = ({ handleBuySubModal }) => {
   // function to get all subs
   const getAllSubscriptions = async () => {
     try {
-      const result = await api("get", `/Subscriptions/`);
+      const result = await api("get", `/Subscriptions/getAll/architect`);
       console.log(result);
       setSubscriptions(result?.data?.subscription);
     } catch (error) {

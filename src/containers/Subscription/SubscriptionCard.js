@@ -1,7 +1,12 @@
 import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 
-const SubscriptionCard = ({ selected, setSelected, subscription }) => {
+const SubscriptionCard = ({
+  selected,
+  setSelected,
+  subscription,
+  component,
+}) => {
   return (
     <Card
       style={{
@@ -17,10 +22,14 @@ const SubscriptionCard = ({ selected, setSelected, subscription }) => {
           <i>{subscription?.name}</i>
         </Typography>
         <Typography variant="h6">Price: ${subscription?.price}</Typography>
-        <Typography variant="h6">
-          Number of Month: {subscription?.duration}
-        </Typography>
-        <Typography variant="h6">Credits: {subscription?.credit}</Typography>
+        {component !== "buy Credits" && (
+          <Typography variant="h6">
+            Number of Month: {subscription?.duration}
+          </Typography>
+        )}
+        {component !== "renew" && (
+          <Typography variant="h6">Credits: {subscription?.credit}</Typography>
+        )}
       </CardContent>
     </Card>
   );
