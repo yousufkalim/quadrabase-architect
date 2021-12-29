@@ -4,7 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import { Store } from "../StoreContext";
 import Home from "../containers/Home";
 import Success from "../containers/Success";
-import Stakeholder from "../containers/Stakeholder";
+import Stakeholder from "../containers/Stakeholder-Chap0Part2/Index";
 
 // Routes
 import Auth from "../containers/Auth/Main.js";

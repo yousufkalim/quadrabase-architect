@@ -69,13 +69,11 @@ export default function Header() {
         sx={{ mt: 2.5 }}
       >
         <MenuItem
-          onClick={handleClose}
-          style={{ width: 150 }}
+          style={{ width: 250 }}
           onClick={() => history.push("/stakeholder")}
         >
-          Stakeholders
+          Stakeholders/Chap0Part2
         </MenuItem>
-        <MenuItem onClick={handleClose}>Chap0Part2</MenuItem>
         <MenuItem onClick={handleClose}>My Profile</MenuItem>
         <Divider />
         <MenuItem onClick={onLogout}>Logout</MenuItem>

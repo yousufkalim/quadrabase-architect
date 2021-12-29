@@ -77,3 +77,21 @@ export const StakeholderheadCells = [
     label: "Actions",
   },
 ];
+
+export const Chap0Part2headCells = [
+  {
+    id: "title",
+
+    label: "Title",
+  },
+  {
+    id: "text",
+
+    label: "Text",
+  },
+  {
+    id: "actions",
+
+    label: "Actions",
+  },
+];

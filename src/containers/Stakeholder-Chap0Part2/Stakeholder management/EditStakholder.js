@@ -1,14 +1,14 @@
 // init
 import React, { useState, useEffect } from "react";
-import api from "../../api";
+import api from "../../../api";
 import { Button, Grid } from "@mui/material";
-import { Store } from "../../StoreContext";
+import { Store } from "../../../StoreContext";
 import { toast } from "react-toastify";
-import InputWithLabel from "../../components/InputWithLabel";
-import { useStyles } from "../../css/addStakeholder";
+import InputWithLabel from "../../../components/InputWithLabel";
+import { useStyles } from "../../../css/addStakeholder";
 
 // component
-const BuySubscription = ({ stakeholder, handleEditStakeholderModal }) => {
+const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
   const store = Store();
   const classes = useStyles();
   // states
@@ -180,4 +180,4 @@ const BuySubscription = ({ stakeholder, handleEditStakeholderModal }) => {
   );
 };
 
-export default BuySubscription;
+export default EditStakholder;
