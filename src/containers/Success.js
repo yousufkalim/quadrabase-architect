@@ -1,8 +1,14 @@
 import React from "react";
+import Header from "../components/Header";
 
 const Success = () => {
   return (
-    <h1 style={{ textAlign: "center", width: "100vw" }}>Payment Successful!</h1>
+    <>
+      <Header />
+      <h1 style={{ textAlign: "center", width: "100vw", color: "black" }}>
+        Payment Successful!
+      </h1>
+    </>
   );
 };
 
