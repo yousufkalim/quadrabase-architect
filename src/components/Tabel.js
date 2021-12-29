@@ -225,7 +225,7 @@ export default function EnhancedTable(props) {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+          <Table aria-labelledby="tableTitle">
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -307,18 +307,37 @@ export default function EnhancedTable(props) {
                       )}
 
                       <TableCell align="left">
-                        <IconButton
-                          color="info"
-                          aria-label="edit"
-                          onClick={() =>
-                            props.handleAssign(
-                              row?._id,
-                              row?.assigned_to?.email
-                            )
-                          }
-                        >
-                          <AssignmentIndIcon />
-                        </IconButton>
+                        {props.handleAssign ? (
+                          <IconButton
+                            color="info"
+                            aria-label="edit"
+                            onClick={() =>
+                              props.handleAssign(
+                                row?._id,
+                                row?.assigned_to?.email
+                              )
+                            }
+                          >
+                            <AssignmentIndIcon />
+                          </IconButton>
+                        ) : (
+                          <>
+                            <IconButton
+                              color="info"
+                              aria-label="edit"
+                              onClick={() => props.handleEdit(row)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              color="error"
+                              aria-label="delete"
+                              onClick={() => props.handleDelete(row._id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

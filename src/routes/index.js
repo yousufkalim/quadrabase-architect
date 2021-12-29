@@ -4,6 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import { Store } from "../StoreContext";
 import Home from "../containers/Home";
 import Success from "../containers/Success";
+import Stakeholder from "../containers/Stakeholder-Chap0Part2/Index";
 
 // Routes
 import Auth from "../containers/Auth/Main.js";
@@ -20,6 +21,7 @@ const index = () => {
         component={() => (store.loggedIn ? <Home /> : <Auth />)}
       />
       <Route path="/success" component={Success} />
+      <Route path="/stakeholder" component={Stakeholder} />
     </Switch>
   );
 };
