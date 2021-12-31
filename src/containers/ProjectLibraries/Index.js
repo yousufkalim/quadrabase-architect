@@ -14,6 +14,7 @@ import EditLibraryModal from "./Libraries/EditLibraryModal";
 import DeleteModal from "../../components/DeleteModal";
 import { toast } from "react-toastify";
 import AddCategoryModal from "./Categories/AddCategoryModal";
+import EditCategoryModal from "./Categories/EditCategoryModal";
 
 // component
 const Index = () => {
@@ -30,9 +31,13 @@ const Index = () => {
   const [deleteLibraryModal, setDeleteLibraryModal] = useState(false);
   const [deleteLibrary, setDeleteLibrary] = useState();
 
-  // libraries states
+  // Categories states
   const [openAddCatgeoryModal, setOpenAddCatgeoryModal] = useState(false);
   const [libAddCategory, setLibAddCategory] = useState();
+  const [openEditCatgeoryModal, setOpenEditCatgeoryModal] = useState(false);
+  const [editCategoryData, setEditCategoryData] = useState();
+  const [deleteCategoryModal, setDeleteCategoryModal] = useState(false);
+  const [deleteCategory, setDeleteCategory] = useState();
 
   //   useEffect to get all libraries of current user
   useEffect(() => {
@@ -42,6 +47,9 @@ const Index = () => {
     openLibrariesModal,
     openEditLibrariesModal,
     deleteLibraryModal,
+    openAddCatgeoryModal,
+    openEditCatgeoryModal,
+    deleteCategoryModal,
   ]);
 
   //   func to get all libraries
@@ -60,6 +68,16 @@ const Index = () => {
     );
     toast.success(result.data.message);
     handleDeleteLibraryModal();
+  };
+
+  //   func to delete Category
+  const handleCategoryLibrary = async () => {
+    const result = await api(
+      "delete",
+      `/BookLibraries/delete/Category/${deleteCategory}`
+    );
+    toast.success(result.data.message);
+    handleDeleteCategoryModal();
   };
 
   //   handle families open/close modal
@@ -90,6 +108,20 @@ const Index = () => {
       setLibAddCategory(id);
     }
     setOpenAddCatgeoryModal(!openAddCatgeoryModal);
+  };
+
+  const handleOpenEditCatgeoryModal = (category) => {
+    if (category) {
+      setEditCategoryData(category);
+    }
+    setOpenEditCatgeoryModal(!openEditCatgeoryModal);
+  };
+
+  const handleDeleteCategoryModal = (id) => {
+    if (id) {
+      setDeleteCategory(id);
+    }
+    setDeleteCategoryModal(!deleteCategoryModal);
   };
 
   // jsx
@@ -150,6 +182,27 @@ const Index = () => {
           />
         }
       />
+      <Modal
+        title="Edit Category"
+        open={openEditCatgeoryModal}
+        onClose={handleOpenEditCatgeoryModal}
+        component={
+          <EditCategoryModal
+            handleOpenEditCatgeoryModal={handleOpenEditCatgeoryModal}
+            category={editCategoryData}
+          />
+        }
+      />
+      <Modal
+        open={deleteCategoryModal}
+        onClose={handleDeleteCategoryModal}
+        component={
+          <DeleteModal
+            handleCancel={handleDeleteCategoryModal}
+            handleDelete={handleCategoryLibrary}
+          />
+        }
+      />
       <div className={classes.container}>
         <NestedList
           label="Project Libraries"
@@ -158,6 +211,8 @@ const Index = () => {
           handleOpenEditLibrariesModal={handleOpenEditLibrariesModal}
           handleDeleteLibraryModal={handleDeleteLibraryModal}
           handleOpenAddCatgeoryModal={handleOpenAddCatgeoryModal}
+          handleOpenEditCatgeoryModal={handleOpenEditCatgeoryModal}
+          handleDeleteCategoryModal={handleDeleteCategoryModal}
           level1={librariesData}
         />
       </div>

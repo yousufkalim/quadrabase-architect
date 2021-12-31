@@ -41,6 +41,20 @@ export default function NestedList(props) {
     setAnchorElLevel1(null);
   };
 
+  // for level 2 dropdown menu
+  const [anchorElLevel2, setAnchorElLevel2] = useState(null);
+  const [itemLevel2, setItemLevel2] = useState();
+  const openLevel2 = Boolean(anchorElLevel2);
+  const handleAnchorElLevel2Click = (event, item) => {
+    if (item) {
+      setItemLevel2(item);
+    }
+    setAnchorElLevel2(event.currentTarget);
+  };
+  const handleAnchorElLevel2Close = () => {
+    setAnchorElLevel2(null);
+  };
+
   // for opening level 1
   const [openListLevel1, setOpenListLevel1] = React.useState();
 
@@ -49,6 +63,17 @@ export default function NestedList(props) {
       setOpenListLevel1(id);
     } else {
       setOpenListLevel1();
+    }
+  };
+
+  // for opening level 1
+  const [openListLevel2, setOpenListLevel2] = React.useState();
+
+  const handleOpenListLevel2Click = (id) => {
+    if (id) {
+      setOpenListLevel2(id);
+    } else {
+      setOpenListLevel2();
     }
   };
 
@@ -125,15 +150,17 @@ export default function NestedList(props) {
               <ListItem>
                 {/* left Icon */}
                 <div style={{ marginRight: 25 }}>
-                  <IconButton>
-                    {openListLevel1 === item._id ? (
-                      <ExpandLess onClick={() => handleOpenListLevel1Click()} />
-                    ) : (
-                      <ExpandMore
-                        onClick={() => handleOpenListLevel1Click(item._id)}
-                      />
-                    )}
-                  </IconButton>
+                  {openListLevel1 === item._id ? (
+                    <IconButton onClick={() => handleOpenListLevel1Click()}>
+                      <ExpandLess />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => handleOpenListLevel1Click(item._id)}
+                    >
+                      <ExpandMore />
+                    </IconButton>
+                  )}
                 </div>
                 {/* label */}
                 <ListItemText primary={item.name} />
@@ -199,14 +226,104 @@ export default function NestedList(props) {
               </ListItem>
               {/* level 2 */}
               <Collapse in={openListLevel1 === item._id}>
-                <List component="div">
-                  <ListItem sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Starred" />
-                  </ListItem>
-                </List>
+                {item?.categories?.map((category) => {
+                  return (
+                    <>
+                      <ListItem sx={{ pl: 4 }}>
+                        {/* left Icon */}
+                        <div style={{ marginRight: 25 }}>
+                          <IconButton>
+                            {openListLevel2 === category._id ? (
+                              <ExpandLess
+                                onClick={() => handleOpenListLevel2Click()}
+                              />
+                            ) : (
+                              <ExpandMore
+                                onClick={() =>
+                                  handleOpenListLevel2Click(category._id)
+                                }
+                              />
+                            )}
+                          </IconButton>
+                        </div>
+                        {/* label */}
+                        <ListItemText primary={category.name} />
+                        {/* right icon */}
+                        <ListItemIcon sx={{ mr: -4 }}>
+                          <IconButton
+                            id="demo-positioned-button"
+                            aria-controls={
+                              openLevel2 ? "demo-positioned-menu" : undefined
+                            }
+                            aria-haspopup="true"
+                            aria-expanded={openLevel2 ? "true" : undefined}
+                            onClick={(e) =>
+                              handleAnchorElLevel2Click(e, category)
+                            }
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                        </ListItemIcon>
+                        {/* drop down level 1 */}
+                        <Menu
+                          id="demo-positioned-menu"
+                          aria-labelledby="demo-positioned-button"
+                          anchorEl={anchorElLevel2}
+                          open={openLevel2}
+                          onClose={handleAnchorElLevel2Close}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          sx={{ mt: 4.5 }}
+                        >
+                          <MenuItem
+                            style={{ width: 200 }}
+                            onClick={() =>
+                              props.handleOpenEditCatgeoryModal(itemLevel2)
+                            }
+                          >
+                            <EditIcon style={{ marginRight: 10 }} />
+                            Edit
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() =>
+                              props.handleDeleteCategoryModal(itemLevel2._id)
+                            }
+                          >
+                            <DeleteIcon style={{ marginRight: 10 }} />
+                            Delete
+                          </MenuItem>
+                          <MenuItem>Up</MenuItem>
+                          <MenuItem>Down</MenuItem>
+                          <Divider />
+                          <MenuItem
+                            onClick={() =>
+                              props.handleOpenAddCatgeoryModal(itemLevel2._id)
+                            }
+                          >
+                            Add Work
+                          </MenuItem>
+                        </Menu>
+                      </ListItem>
+                      {/* level 3 */}
+                      <Collapse in={openListLevel2 === category._id}>
+                        <List component="div">
+                          <ListItem sx={{ pl: 8 }}>
+                            <ListItemIcon>
+                              <StarBorder />
+                            </ListItemIcon>
+                            <ListItemText primary="Starred" />
+                          </ListItem>
+                        </List>
+                      </Collapse>
+                    </>
+                  );
+                })}
               </Collapse>
             </>
           );
