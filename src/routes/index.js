@@ -5,6 +5,7 @@ import { Store } from "../StoreContext";
 import Home from "../containers/Home";
 import Success from "../containers/Success";
 import Stakeholder from "../containers/Stakeholder-Chap0Part2/Index";
+import ProjectLibraries from "../containers/ProjectLibraries/Index";
 
 // Routes
 import Auth from "../containers/Auth/Main.js";
@@ -22,6 +23,7 @@ const index = () => {
       />
       <Route path="/success" component={Success} />
       <Route path="/stakeholder" component={Stakeholder} />
+      <Route path="/libraries" component={ProjectLibraries} />
     </Switch>
   );
 };

@@ -6,11 +6,6 @@ const useStyles = makeStyles(() => ({
   field: {
     width: "100%",
     marginBottom: "20px",
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: "#878289",
-      },
-    },
   },
   input: {
     height: "50px",
