@@ -16,6 +16,6 @@ export const useStyles = makeStyles({
     marginTop: "auto",
     marginBottom: "auto",
     textAlign: "left",
-    width: 850,
+    width: "60vw",
   },
 });

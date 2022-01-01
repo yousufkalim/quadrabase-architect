@@ -15,6 +15,8 @@ import DeleteModal from "../../components/DeleteModal";
 import { toast } from "react-toastify";
 import AddCategoryModal from "./Categories/AddCategoryModal";
 import EditCategoryModal from "./Categories/EditCategoryModal";
+import AddWorkModal from "./Work/AddWorkModal";
+import EditWorkModal from "./Work/EditWorkModal";
 
 // component
 const Index = () => {
@@ -38,6 +40,16 @@ const Index = () => {
   const [editCategoryData, setEditCategoryData] = useState();
   const [deleteCategoryModal, setDeleteCategoryModal] = useState(false);
   const [deleteCategory, setDeleteCategory] = useState();
+  const [categoryData, setCategoryData] = useState();
+
+  // Work states
+  const [openAddWorkModal, setOpenAddWorkModal] = useState(false);
+  const [workData, setWorkData] = useState();
+  const [catAddWork, setCatAddWork] = useState();
+  const [openEditWorkModal, setOpenEditWorkModal] = useState(false);
+  const [editWorkData, setEditWorkData] = useState();
+  const [openDeleteWorkModal, setOpenDeleteWorkModal] = useState(false);
+  const [deleteWork, setDeleteWork] = useState();
 
   //   useEffect to get all libraries of current user
   useEffect(() => {
@@ -50,6 +62,9 @@ const Index = () => {
     openAddCatgeoryModal,
     openEditCatgeoryModal,
     deleteCategoryModal,
+    openAddWorkModal,
+    openEditWorkModal,
+    openDeleteWorkModal,
   ]);
 
   //   func to get all libraries
@@ -71,13 +86,23 @@ const Index = () => {
   };
 
   //   func to delete Category
-  const handleCategoryLibrary = async () => {
+  const handleDeleteCategory = async () => {
     const result = await api(
       "delete",
       `/BookLibraries/delete/Category/${deleteCategory}`
     );
     toast.success(result.data.message);
     handleDeleteCategoryModal();
+  };
+
+  //   func to delete Work
+  const handleDeleteWork = async () => {
+    const result = await api(
+      "delete",
+      `/BookLibraries/delete/Work/${deleteWork}`
+    );
+    toast.success(result.data.message);
+    handleOpenDeleteWorkModal();
   };
 
   //   handle families open/close modal
@@ -106,6 +131,10 @@ const Index = () => {
   const handleOpenAddCatgeoryModal = (id) => {
     if (id) {
       setLibAddCategory(id);
+      let temp = librariesData.find((item) => {
+        return item._id === id;
+      }).categories;
+      setCategoryData(temp);
     }
     setOpenAddCatgeoryModal(!openAddCatgeoryModal);
   };
@@ -122,6 +151,37 @@ const Index = () => {
       setDeleteCategory(id);
     }
     setDeleteCategoryModal(!deleteCategoryModal);
+  };
+
+  //   handle Categories open/close modal
+  const handleOpenAddWorkModal = (id) => {
+    if (id) {
+      setCatAddWork(id);
+      let temp = [];
+      librariesData.map((item) => {
+        item.works.map((work) => {
+          if (work.category === id) {
+            temp.push(work);
+          }
+        });
+      });
+      setWorkData(temp);
+    }
+    setOpenAddWorkModal(!openAddWorkModal);
+  };
+
+  const handleOpenEditWorkModal = (work) => {
+    if (work) {
+      setEditWorkData(work);
+    }
+    setOpenEditWorkModal(!openEditWorkModal);
+  };
+
+  const handleOpenDeleteWorkModal = (id) => {
+    if (id) {
+      setDeleteWork(id);
+    }
+    setOpenDeleteWorkModal(!openDeleteWorkModal);
   };
 
   // jsx
@@ -178,6 +238,7 @@ const Index = () => {
         component={
           <AddCategoryModal
             library={libAddCategory}
+            categoryData={categoryData}
             handleOpenAddCatgeoryModal={handleOpenAddCatgeoryModal}
           />
         }
@@ -199,7 +260,42 @@ const Index = () => {
         component={
           <DeleteModal
             handleCancel={handleDeleteCategoryModal}
-            handleDelete={handleCategoryLibrary}
+            handleDelete={handleDeleteCategory}
+          />
+        }
+      />
+      {/* Work modals */}
+      <Modal
+        title="Add Work"
+        open={openAddWorkModal}
+        onClose={handleOpenAddWorkModal}
+        component={
+          <AddWorkModal
+            category={catAddWork}
+            workData={workData}
+            handleOpenAddWorkModal={handleOpenAddWorkModal}
+          />
+        }
+      />
+      <Modal
+        title="Edit Work"
+        open={openEditWorkModal}
+        onClose={handleOpenEditWorkModal}
+        component={
+          <EditWorkModal
+            handleOpenEditWorkModal={handleOpenEditWorkModal}
+            work={editWorkData}
+          />
+        }
+      />
+      <Modal
+        title="Delete Work"
+        open={openDeleteWorkModal}
+        onClose={handleOpenDeleteWorkModal}
+        component={
+          <DeleteModal
+            handleCancel={handleOpenDeleteWorkModal}
+            handleDelete={handleDeleteWork}
           />
         }
       />
@@ -213,6 +309,9 @@ const Index = () => {
           handleOpenAddCatgeoryModal={handleOpenAddCatgeoryModal}
           handleOpenEditCatgeoryModal={handleOpenEditCatgeoryModal}
           handleDeleteCategoryModal={handleDeleteCategoryModal}
+          handleOpenAddWorkModal={handleOpenAddWorkModal}
+          handleOpenEditWorkModal={handleOpenEditWorkModal}
+          handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
           level1={librariesData}
         />
       </div>

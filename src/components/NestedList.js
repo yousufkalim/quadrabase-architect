@@ -55,6 +55,20 @@ export default function NestedList(props) {
     setAnchorElLevel2(null);
   };
 
+  // for level 3 dropdown menu
+  const [anchorElLevel3, setAnchorElLevel3] = useState(null);
+  const [itemLevel3, setItemLevel3] = useState();
+  const openLevel3 = Boolean(anchorElLevel3);
+  const handleAnchorElLevel3Click = (event, item) => {
+    if (item) {
+      setItemLevel3(item);
+    }
+    setAnchorElLevel3(event.currentTarget);
+  };
+  const handleAnchorElLevel3Close = () => {
+    setAnchorElLevel3(null);
+  };
+
   // for opening level 1
   const [openListLevel1, setOpenListLevel1] = React.useState();
 
@@ -66,7 +80,7 @@ export default function NestedList(props) {
     }
   };
 
-  // for opening level 1
+  // for opening level 2
   const [openListLevel2, setOpenListLevel2] = React.useState();
 
   const handleOpenListLevel2Click = (id) => {
@@ -74,6 +88,17 @@ export default function NestedList(props) {
       setOpenListLevel2(id);
     } else {
       setOpenListLevel2();
+    }
+  };
+
+  // for opening level 3
+  const [openListLevel3, setOpenListLevel3] = React.useState();
+
+  const handleOpenListLevel3Click = (id) => {
+    if (id) {
+      setOpenListLevel3(id);
+    } else {
+      setOpenListLevel3();
     }
   };
 
@@ -232,19 +257,21 @@ export default function NestedList(props) {
                       <ListItem sx={{ pl: 4 }}>
                         {/* left Icon */}
                         <div style={{ marginRight: 25 }}>
-                          <IconButton>
-                            {openListLevel2 === category._id ? (
-                              <ExpandLess
-                                onClick={() => handleOpenListLevel2Click()}
-                              />
-                            ) : (
-                              <ExpandMore
-                                onClick={() =>
-                                  handleOpenListLevel2Click(category._id)
-                                }
-                              />
-                            )}
-                          </IconButton>
+                          {openListLevel2 === category._id ? (
+                            <IconButton
+                              onClick={() => handleOpenListLevel2Click()}
+                            >
+                              <ExpandLess />
+                            </IconButton>
+                          ) : (
+                            <IconButton
+                              onClick={() =>
+                                handleOpenListLevel2Click(category._id)
+                              }
+                            >
+                              <ExpandMore />
+                            </IconButton>
+                          )}
                         </div>
                         {/* label */}
                         <ListItemText primary={category.name} />
@@ -264,7 +291,7 @@ export default function NestedList(props) {
                             <MoreVertIcon />
                           </IconButton>
                         </ListItemIcon>
-                        {/* drop down level 1 */}
+                        {/* drop down level 2 */}
                         <Menu
                           id="demo-positioned-menu"
                           aria-labelledby="demo-positioned-button"
@@ -303,7 +330,7 @@ export default function NestedList(props) {
                           <Divider />
                           <MenuItem
                             onClick={() =>
-                              props.handleOpenAddCatgeoryModal(itemLevel2._id)
+                              props.handleOpenAddWorkModal(itemLevel2._id)
                             }
                           >
                             Add Work
@@ -312,14 +339,120 @@ export default function NestedList(props) {
                       </ListItem>
                       {/* level 3 */}
                       <Collapse in={openListLevel2 === category._id}>
-                        <List component="div">
-                          <ListItem sx={{ pl: 8 }}>
-                            <ListItemIcon>
-                              <StarBorder />
-                            </ListItemIcon>
-                            <ListItemText primary="Starred" />
-                          </ListItem>
-                        </List>
+                        {item?.works?.map((work) => {
+                          if (work.category === openListLevel2) {
+                            return (
+                              <>
+                                <ListItem sx={{ pl: 8 }}>
+                                  {/* left Icon */}
+                                  <div style={{ marginRight: 25 }}>
+                                    {openListLevel3 === work._id ? (
+                                      <IconButton
+                                        onClick={() =>
+                                          handleOpenListLevel3Click()
+                                        }
+                                      >
+                                        <ExpandLess />
+                                      </IconButton>
+                                    ) : (
+                                      <IconButton
+                                        onClick={() =>
+                                          handleOpenListLevel3Click(work._id)
+                                        }
+                                      >
+                                        <ExpandMore />
+                                      </IconButton>
+                                    )}
+                                  </div>
+                                  {/* label */}
+                                  <ListItemText primary={work.name} />
+                                  {/* right icon */}
+                                  <ListItemIcon sx={{ mr: -4 }}>
+                                    <IconButton
+                                      id="demo-positioned-button"
+                                      aria-controls={
+                                        openLevel3
+                                          ? "demo-positioned-menu"
+                                          : undefined
+                                      }
+                                      aria-haspopup="true"
+                                      aria-expanded={
+                                        openLevel3 ? "true" : undefined
+                                      }
+                                      onClick={(e) =>
+                                        handleAnchorElLevel3Click(e, work)
+                                      }
+                                    >
+                                      <MoreVertIcon />
+                                    </IconButton>
+                                  </ListItemIcon>
+                                  {/* drop down level 2 */}
+                                  <Menu
+                                    id="demo-positioned-menu"
+                                    aria-labelledby="demo-positioned-button"
+                                    anchorEl={anchorElLevel3}
+                                    open={openLevel3}
+                                    onClose={handleAnchorElLevel3Close}
+                                    anchorOrigin={{
+                                      vertical: "top",
+                                      horizontal: "left",
+                                    }}
+                                    transformOrigin={{
+                                      vertical: "top",
+                                      horizontal: "left",
+                                    }}
+                                    sx={{ mt: 4.5 }}
+                                  >
+                                    <MenuItem
+                                      style={{ width: 200 }}
+                                      onClick={() =>
+                                        props.handleOpenEditWorkModal(
+                                          itemLevel3
+                                        )
+                                      }
+                                    >
+                                      <EditIcon style={{ marginRight: 10 }} />
+                                      Edit
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={() =>
+                                        props.handleOpenDeleteWorkModal(
+                                          itemLevel3._id
+                                        )
+                                      }
+                                    >
+                                      <DeleteIcon style={{ marginRight: 10 }} />
+                                      Delete
+                                    </MenuItem>
+                                    <MenuItem>Up</MenuItem>
+                                    <MenuItem>Down</MenuItem>
+                                    <Divider />
+                                    <MenuItem
+                                      onClick={() =>
+                                        props.handleOpenAddWorkModal(
+                                          itemLevel2._id
+                                        )
+                                      }
+                                    >
+                                      Add Work Detail
+                                    </MenuItem>
+                                  </Menu>
+                                </ListItem>
+                                {/* level 4 */}
+                                <Collapse in={openListLevel3 === work._id}>
+                                  <List component="div">
+                                    <ListItem sx={{ pl: 12 }}>
+                                      <ListItemIcon>
+                                        <StarBorder />
+                                      </ListItemIcon>
+                                      <ListItemText primary="Starred" />
+                                    </ListItem>
+                                  </List>
+                                </Collapse>
+                              </>
+                            );
+                          }
+                        })}
                       </Collapse>
                     </>
                   );
