@@ -87,7 +87,13 @@ const Index = () => {
     const result =
       store?.user?._id &&
       (await api("get", `/BookLibraries/getByArchitectId/${store.user._id}`));
-    setLibrariesData(result?.data?.bookLibrary);
+    let data = result?.data?.bookLibrary;
+    data?.map((dt) => {
+      dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
+      dt.works = dt.works.sort((a, b) => a.ranking - b.ranking);
+      dt.work_details = dt.work_details.sort((a, b) => a.ranking - b.ranking);
+    });
+    setLibrariesData(data);
   };
 
   //   func to delete libraries
@@ -238,6 +244,181 @@ const Index = () => {
       setDeleteWorkDetail(id);
     }
     setOpenDeleteWorkDetailModal(!openDeleteWorkDetailModal);
+  };
+
+  //LibraryUp
+  const handleLibraryUp = async (id) => {
+    // setIndex(id);
+    let filteredIndex = librariesData.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let tempArr = [...librariesData];
+      let prevIndex = filteredIndex - 1;
+
+      let prev = tempArr[prevIndex];
+
+      api("put", `/BookLibraries/update/${id}`, { ranking: prevIndex }).then(
+        () => {
+          api("put", `/BookLibraries/update/${prev._id}`, {
+            ranking: filteredIndex,
+          });
+        }
+      );
+      tempArr[filteredIndex] = librariesData[filteredIndex - 1];
+      tempArr[filteredIndex - 1] = librariesData[filteredIndex];
+      setLibrariesData(tempArr);
+    }
+  };
+  //Library Down
+  const handleLibraryDown = async (id) => {
+    // setIndex(id);
+    let filteredIndex = librariesData.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== librariesData.length - 1) {
+      let tempArr = [...librariesData];
+      let nextIndex = filteredIndex + 1;
+      let prev = tempArr[nextIndex];
+
+      api("put", `/BookLibraries/update/${id}`, { ranking: nextIndex }).then(
+        () => {
+          api("put", `/BookLibraries/update/${prev._id}`, {
+            ranking: filteredIndex,
+          });
+        }
+      );
+      tempArr[filteredIndex] = librariesData[nextIndex];
+      tempArr[nextIndex] = librariesData[filteredIndex];
+      setLibrariesData(tempArr);
+    }
+  };
+
+  //categoryUp
+  const handleCategoryUp = async (id, levelData) => {
+    // setIndex(id);
+    let categories = levelData.categories;
+    let filteredIndex = categories.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== 0) {
+      let tempArr = [...categories];
+      let prevIndex = filteredIndex - 1;
+
+      let prev = tempArr[prevIndex];
+      console.log("prevIndex: ", categories);
+      api("put", `/BookLibraries/update/editCategory/${id}`, {
+        ranking: prevIndex,
+      }).then((res) => {
+        api("put", `/BookLibraries/update/editCategory/${prev._id}`, {
+          ranking: filteredIndex,
+        }).then(() => getLibraries());
+      });
+    }
+  };
+  //categoryDown
+  const handleCategoryDown = async (id, levelData) => {
+    // setIndex(id);
+    let categories = levelData.categories;
+    let filteredIndex = categories.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== categories.length - 1) {
+      let tempArr = [...categories];
+      let prevIndex = filteredIndex + 1;
+
+      let prev = tempArr[prevIndex];
+
+      api("put", `/BookLibraries/update/editCategory/${id}`, {
+        ranking: prevIndex,
+      }).then(() => {
+        api("put", `/BookLibraries/update/editCategory/${prev._id}`, {
+          ranking: filteredIndex,
+        }).then(() => getLibraries());
+      });
+    }
+  };
+
+  //workUp
+  const handleWorkUp = async (id, levelData) => {
+    // setIndex(id);
+
+    let works = levelData.works;
+    let filteredIndex = works.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== 0) {
+      let tempArr = [...works];
+      let prevIndex = filteredIndex - 1;
+
+      let prev = tempArr[prevIndex];
+
+      api("put", `/BookLibraries/edit/Work/${id}`, {
+        ranking: prevIndex,
+      }).then(() => {
+        api("put", `/BookLibraries/edit/Work/${prev._id}`, {
+          ranking: filteredIndex,
+        }).then(() => getLibraries());
+      });
+    }
+  };
+  //workDown
+  const handleWorkDown = async (id, levelData) => {
+    // setIndex(id);
+    let works = levelData.works;
+    let filteredIndex = works.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== works.length - 1) {
+      let tempArr = [...works];
+      let prevIndex = filteredIndex + 1;
+
+      let prev = tempArr[prevIndex];
+
+      api("put", `/BookLibraries/edit/Work/${id}`, {
+        ranking: prevIndex,
+      }).then(() => {
+        api("put", `/BookLibraries/edit/Work/${prev._id}`, {
+          ranking: filteredIndex,
+        }).then(() => getLibraries());
+      });
+    }
+  };
+
+  //workdetailUp
+  const handleWorkDetailUp = async (id, levelData) => {
+    // setIndex(id);
+    let work_details = levelData.work_details;
+    let filteredIndex = work_details.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== 0) {
+      let tempArr = [...work_details];
+      let prevIndex = filteredIndex - 1;
+
+      let prev = tempArr[prevIndex];
+
+      api("put", `/BookLibraries/edit/WorkDetail/${id}`, {
+        ranking: prevIndex,
+      }).then(() => {
+        api("put", `/BookLibraries/edit/WorkDetail/${prev._id}`, {
+          ranking: filteredIndex,
+        }).then(() => getLibraries());
+      });
+    }
+  };
+  //workdetailDown
+  const handleWorkDetailDown = async (id, levelData) => {
+    // setIndex(id);
+    let work_details = levelData.work_details;
+    let filteredIndex = work_details.findIndex((dt) => dt._id == id);
+
+    if (filteredIndex !== work_details.length - 1) {
+      let tempArr = [...work_details];
+      let prevIndex = filteredIndex + 1;
+
+      let prev = tempArr[prevIndex];
+
+      api("put", `/BookLibraries/edit/WorkDetail/${id}`, {
+        ranking: prevIndex,
+      }).then(() => {
+        api("put", `/BookLibraries/edit/WorkDetail/${prev._id}`, {
+          ranking: filteredIndex,
+        }).then(() => getLibraries());
+      });
+    }
   };
 
   // jsx
@@ -403,6 +584,14 @@ const Index = () => {
           handleOpenAddWorkDetailModal={handleOpenAddWorkDetailModal}
           handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
           handleOpenDeleteWorkDetailModal={handleOpenDeleteWorkDetailModal}
+          handleLibraryUp={handleLibraryUp}
+          handleLibraryDown={handleLibraryDown}
+          handleCategoryUp={handleCategoryUp}
+          handleCategoryDown={handleCategoryDown}
+          handleWorkUp={handleWorkUp}
+          handleWorkDown={handleWorkDown}
+          handleWorkDetailUp={handleWorkDetailUp}
+          handleWorkDetailDown={handleWorkDetailDown}
           level1={librariesData}
         />
       </div>

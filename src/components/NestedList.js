@@ -6,7 +6,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton } from "@mui/material";
 import Menu from "@mui/material/Menu";
@@ -16,6 +15,50 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Divider } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import { styled, alpha } from "@mui/material/styles";
+
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "left",
+    }}
+    transformOrigin={{
+      vertical: "tp",
+      horizontal: "left",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
 
 export default function NestedList(props) {
   // for level 0 dropdown menu
@@ -153,7 +196,7 @@ export default function NestedList(props) {
             <MoreVertIcon onClick={() => console.log("on icon click")} />
           </IconButton>
           {/* drop down level 0 */}
-          <Menu
+          <StyledMenu
             id="demo-positioned-menu"
             aria-labelledby="demo-positioned-button"
             anchorEl={anchorElLevel0}
@@ -186,7 +229,7 @@ export default function NestedList(props) {
             >
               Manage Families
             </MenuItem>
-          </Menu>
+          </StyledMenu>
         </div>
       }
     >
@@ -227,7 +270,7 @@ export default function NestedList(props) {
                   </IconButton>
                 </ListItemIcon>
                 {/* drop down level 1 */}
-                <Menu
+                <StyledMenu
                   id="demo-positioned-menu"
                   aria-labelledby="demo-positioned-button"
                   anchorEl={anchorElLevel1}
@@ -262,8 +305,22 @@ export default function NestedList(props) {
                     <DeleteIcon style={{ marginRight: 10 }} />
                     Delete
                   </MenuItem>
-                  <MenuItem>Up</MenuItem>
-                  <MenuItem>Down</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      props.handleLibraryUp(itemLevel1._id);
+                      handleAnchorElLevel1Close();
+                    }}
+                  >
+                    Up
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      props.handleLibraryDown(itemLevel1._id);
+                      handleAnchorElLevel1Close();
+                    }}
+                  >
+                    Down
+                  </MenuItem>
                   <Divider />
                   <MenuItem
                     onClick={() => {
@@ -273,7 +330,7 @@ export default function NestedList(props) {
                   >
                     Add Category
                   </MenuItem>
-                </Menu>
+                </StyledMenu>
               </ListItem>
               {/* level 2 */}
               <Collapse in={openListLevel1 === item._id}>
@@ -318,7 +375,7 @@ export default function NestedList(props) {
                           </IconButton>
                         </ListItemIcon>
                         {/* drop down level 2 */}
-                        <Menu
+                        <StyledMenu
                           id="demo-positioned-menu"
                           aria-labelledby="demo-positioned-button"
                           anchorEl={anchorElLevel2}
@@ -353,8 +410,22 @@ export default function NestedList(props) {
                             <DeleteIcon style={{ marginRight: 10 }} />
                             Delete
                           </MenuItem>
-                          <MenuItem>Up</MenuItem>
-                          <MenuItem>Down</MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              props.handleCategoryUp(itemLevel2._id, item);
+                              handleAnchorElLevel2Close();
+                            }}
+                          >
+                            Up
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              props.handleCategoryDown(itemLevel2._id, item);
+                              handleAnchorElLevel2Close();
+                            }}
+                          >
+                            Down
+                          </MenuItem>
                           <Divider />
                           <MenuItem
                             onClick={() => {
@@ -364,7 +435,7 @@ export default function NestedList(props) {
                           >
                             Add Work
                           </MenuItem>
-                        </Menu>
+                        </StyledMenu>
                       </ListItem>
                       {/* level 3 */}
                       <Collapse in={openListLevel2 === category._id}>
@@ -416,7 +487,7 @@ export default function NestedList(props) {
                                     </IconButton>
                                   </ListItemIcon>
                                   {/* drop down level 2 */}
-                                  <Menu
+                                  <StyledMenu
                                     id="demo-positioned-menu"
                                     aria-labelledby="demo-positioned-button"
                                     anchorEl={anchorElLevel3}
@@ -455,8 +526,28 @@ export default function NestedList(props) {
                                       <DeleteIcon style={{ marginRight: 10 }} />
                                       Delete
                                     </MenuItem>
-                                    <MenuItem>Up</MenuItem>
-                                    <MenuItem>Down</MenuItem>
+                                    <MenuItem
+                                      onClick={() => {
+                                        props.handleWorkUp(
+                                          itemLevel3._id,
+                                          item
+                                        );
+                                        handleAnchorElLevel3Close();
+                                      }}
+                                    >
+                                      Up
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={() => {
+                                        props.handleWorkDown(
+                                          itemLevel3._id,
+                                          item
+                                        );
+                                        handleAnchorElLevel3Close();
+                                      }}
+                                    >
+                                      Down
+                                    </MenuItem>
                                     <Divider />
                                     <MenuItem
                                       onClick={() => {
@@ -468,7 +559,7 @@ export default function NestedList(props) {
                                     >
                                       Add Work Detail
                                     </MenuItem>
-                                  </Menu>
+                                  </StyledMenu>
                                 </ListItem>
                                 {/* level 4 */}
                                 <Collapse in={openListLevel3 === work._id}>
@@ -513,7 +604,7 @@ export default function NestedList(props) {
                                               </IconButton>
                                             </ListItemIcon>
                                             {/* drop down level 2 */}
-                                            <Menu
+                                            <StyledMenu
                                               id="demo-positioned-menu"
                                               aria-labelledby="demo-positioned-button"
                                               anchorEl={anchorElLevel4}
@@ -558,9 +649,29 @@ export default function NestedList(props) {
                                                 />
                                                 Delete
                                               </MenuItem>
-                                              <MenuItem>Up</MenuItem>
-                                              <MenuItem>Down</MenuItem>
-                                            </Menu>
+                                              <MenuItem
+                                                onClick={() => {
+                                                  props.handleWorkDetailUp(
+                                                    itemLevel4._id,
+                                                    item
+                                                  );
+                                                  handleAnchorElLevel4Close();
+                                                }}
+                                              >
+                                                Up
+                                              </MenuItem>
+                                              <MenuItem
+                                                onClick={() => {
+                                                  props.handleWorkDetailDown(
+                                                    itemLevel4._id,
+                                                    item
+                                                  );
+                                                  handleAnchorElLevel4Close();
+                                                }}
+                                              >
+                                                Down
+                                              </MenuItem>
+                                            </StyledMenu>
                                           </ListItem>
                                         </>
                                       );
