@@ -22,6 +22,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import PageviewIcon from "@mui/icons-material/Pageview";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -291,6 +292,28 @@ export default function EnhancedTable(props) {
                                 : row?.assigned_to?.first_name
                               : "N/A"}
                           </TableCell>
+                        ) : record === "createdAt" ? (
+                          <TableCell
+                            align="left"
+                            title={row?.subscription?.end_date}
+                          >
+                            {row?.createdAt
+                              ? moment(row?.end_date).format("DD/MM/YYYY")
+                              : "N/A"}
+                          </TableCell>
+                        ) : record === "vat" ? (
+                          <TableCell
+                            key={index}
+                            align="left"
+                            title={row?.vat?.value}
+                          >
+                            {row?.vat?.value
+                              ? row?.vat?.value?.length > 20
+                                ? row?.vat?.value.substring(0, 20) + "..."
+                                : row?.vat?.value
+                              : "N/A"}
+                            %
+                          </TableCell>
                         ) : (
                           <TableCell
                             key={index}
@@ -319,6 +342,14 @@ export default function EnhancedTable(props) {
                             }
                           >
                             <AssignmentIndIcon />
+                          </IconButton>
+                        ) : props.handleView ? (
+                          <IconButton
+                            color="info"
+                            aria-label="edit"
+                            onClick={props.handleView}
+                          >
+                            <PageviewIcon />
                           </IconButton>
                         ) : (
                           <>

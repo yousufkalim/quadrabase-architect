@@ -25,7 +25,10 @@ export default function index(props) {
         <option value="">Select An Option</option>
 
         {props?.options?.map((option) => (
-          <option value={option._id}>{option.name}</option>
+          <option value={option._id}>
+            {option.name ? option.name : option.value}
+            {option.value && "%"}
+          </option>
         ))}
       </TextField>
     </div>

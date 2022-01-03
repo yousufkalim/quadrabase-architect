@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+.App {
+  background-color: #eeeeee;
+  height: 100vh;
+}
+
 /* Primary Variables */
 :root {
   --primary: "green";

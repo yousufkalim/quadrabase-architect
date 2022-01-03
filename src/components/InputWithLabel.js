@@ -31,7 +31,6 @@ const InputWithLabel = ({
   min,
   max,
   style,
-  disabled,
 }) => {
   const classes = useStyles();
 
