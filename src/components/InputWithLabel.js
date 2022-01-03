@@ -27,6 +27,7 @@ const InputWithLabel = ({
   error = false,
   errorMessage = "",
   multiline = false,
+  disabled,
   min,
   max,
   style,
