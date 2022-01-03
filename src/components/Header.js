@@ -75,11 +75,13 @@ export default function Header() {
           Stakeholders/Chap0Part2
         </MenuItem>
         <MenuItem
-          onClick={handleClose}
-          onClick={() => history.push("/profile")}
+          style={{ width: 250 }}
+          onClick={() => history.push("/libraries")}
         >
-          My Profile
+          Project Libraries
         </MenuItem>
+        <MenuItem onClick={handleClose}>My Profile</MenuItem>
+
         <Divider />
         <MenuItem
           onClick={() => {

@@ -28,9 +28,9 @@ export const SubscriptionheadCells = [
 
 export const StakeholderheadCells = [
   {
-    id: "title",
+    id: "name",
 
-    label: "Title",
+    label: "Name",
   },
   {
     id: "email",

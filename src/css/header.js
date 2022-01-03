@@ -14,6 +14,7 @@ export const useStyles = makeStyles({
   },
   logo: {
     height: 30,
+    cursor: "pointer",
   },
   logout: {
     fontSize: 18,

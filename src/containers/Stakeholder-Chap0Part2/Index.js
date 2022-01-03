@@ -91,7 +91,7 @@ const Index = () => {
     try {
       const result = await api(
         "delete",
-        `/stakeholder/${deleteStakeholder}/${store.user._id}`
+        `/stakeholders/${deleteStakeholder}/${store.user._id}`
       );
       handleDeleteStakeholderModal();
     } catch (error) {
