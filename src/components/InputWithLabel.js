@@ -32,6 +32,7 @@ const InputWithLabel = ({
   error = false,
   errorMessage = "",
   multiline = false,
+  disabled,
   min,
   max,
   style,
@@ -65,6 +66,7 @@ const InputWithLabel = ({
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
         style={style}
+        disabled={disabled}
       />
     );
   } else if (type === "file") {
@@ -92,6 +94,7 @@ const InputWithLabel = ({
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
         style={style}
+        disabled={disabled}
       />
     );
   } else {
@@ -120,6 +123,7 @@ const InputWithLabel = ({
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
         style={style}
+        disabled={disabled}
       />
     );
   }

@@ -70,13 +70,25 @@ export default function Header() {
       >
         <MenuItem
           style={{ width: 250 }}
-          onClick={() => history.push("/stakeholder")}
+          onClick={() => history.push("/management")}
         >
           Stakeholders/Chap0Part2
         </MenuItem>
-        <MenuItem onClick={handleClose}>My Profile</MenuItem>
+        <MenuItem
+          onClick={handleClose}
+          onClick={() => history.push("/profile")}
+        >
+          My Profile
+        </MenuItem>
         <Divider />
-        <MenuItem onClick={onLogout}>Logout</MenuItem>
+        <MenuItem
+          onClick={() => {
+            onLogout();
+            history.push("/");
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </div>
   );
