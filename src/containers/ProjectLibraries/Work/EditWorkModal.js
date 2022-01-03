@@ -100,6 +100,7 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
             type="text"
             value={values.name}
             handleChange={(e) => handleChange(e.target.name, e.target.value)}
+            required={true}
           />
         </Grid>
         <Grid item zeroMinWidth xs>

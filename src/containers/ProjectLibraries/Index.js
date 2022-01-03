@@ -17,6 +17,8 @@ import AddCategoryModal from "./Categories/AddCategoryModal";
 import EditCategoryModal from "./Categories/EditCategoryModal";
 import AddWorkModal from "./Work/AddWorkModal";
 import EditWorkModal from "./Work/EditWorkModal";
+import AddWorkDetailsModal from "./WorkDetails/AddWorkDetailsModal";
+import EditWorkDetailsModal from "./WorkDetails/EditWorkDetailsModal";
 
 // component
 const Index = () => {
@@ -51,6 +53,16 @@ const Index = () => {
   const [openDeleteWorkModal, setOpenDeleteWorkModal] = useState(false);
   const [deleteWork, setDeleteWork] = useState();
 
+  // WorkDetails states
+  const [openAddWorkDetailModal, setOpenAddWorkDetailModal] = useState(false);
+  const [workDetailData, setWorkDetailData] = useState();
+  const [workAddWorkDetail, setWorkAddWorkDetail] = useState();
+  const [openEditWorkDetailModal, setOpenEditWorkDetailModal] = useState(false);
+  const [editWorkDetailData, setEditWorkDetailData] = useState();
+  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] =
+    useState(false);
+  const [deleteWorkDetail, setDeleteWorkDetail] = useState();
+
   //   useEffect to get all libraries of current user
   useEffect(() => {
     getLibraries();
@@ -65,6 +77,9 @@ const Index = () => {
     openAddWorkModal,
     openEditWorkModal,
     openDeleteWorkModal,
+    openAddWorkDetailModal,
+    openEditWorkDetailModal,
+    openDeleteWorkDetailModal,
   ]);
 
   //   func to get all libraries
@@ -105,6 +120,16 @@ const Index = () => {
     handleOpenDeleteWorkModal();
   };
 
+  //   func to delete Work Details
+  const handleDeleteWorkDetail = async () => {
+    const result = await api(
+      "delete",
+      `/BookLibraries/delete/WorkDetail/${deleteWorkDetail}`
+    );
+    toast.success(result.data.message);
+    handleOpenDeleteWorkDetailModal();
+  };
+
   //   handle families open/close modal
   const handleOpenFamiliesModal = () =>
     setOpenFamiliesModal(!openFamiliesModal);
@@ -133,7 +158,7 @@ const Index = () => {
       setLibAddCategory(id);
       let temp = librariesData.find((item) => {
         return item._id === id;
-      }).categories;
+      })?.categories;
       setCategoryData(temp);
     }
     setOpenAddCatgeoryModal(!openAddCatgeoryModal);
@@ -153,7 +178,7 @@ const Index = () => {
     setDeleteCategoryModal(!deleteCategoryModal);
   };
 
-  //   handle Categories open/close modal
+  //   handle Work open/close modal
   const handleOpenAddWorkModal = (id) => {
     if (id) {
       setCatAddWork(id);
@@ -184,6 +209,37 @@ const Index = () => {
     setOpenDeleteWorkModal(!openDeleteWorkModal);
   };
 
+  //   handle Work Details open/close modal
+  const handleOpenAddWorkDetailModal = (id) => {
+    if (id) {
+      setWorkAddWorkDetail(id);
+      let temp = [];
+      librariesData.map((item) => {
+        item.work_details.map((workdetail) => {
+          if (workdetail.work === id) {
+            temp.push(workdetail);
+          }
+        });
+      });
+      setWorkDetailData(temp);
+    }
+    setOpenAddWorkDetailModal(!openAddWorkDetailModal);
+  };
+
+  const handleOpenEditWorkDetailModal = (WorkDetail) => {
+    if (WorkDetail) {
+      setEditWorkDetailData(WorkDetail);
+    }
+    setOpenEditWorkDetailModal(!openEditWorkDetailModal);
+  };
+
+  const handleOpenDeleteWorkDetailModal = (id) => {
+    if (id) {
+      setDeleteWorkDetail(id);
+    }
+    setOpenDeleteWorkDetailModal(!openDeleteWorkDetailModal);
+  };
+
   // jsx
   return (
     <div>
@@ -193,9 +249,7 @@ const Index = () => {
         title="Manage Families"
         open={openFamiliesModal}
         onClose={handleOpenFamiliesModal}
-        component={
-          <AddFamilyModal handleOpenFamiliesModal={handleOpenFamiliesModal} />
-        }
+        component={<AddFamilyModal />}
       />
       {/* Libararies modals */}
       <Modal
@@ -231,6 +285,7 @@ const Index = () => {
         }
       />
       {/* Category modals */}
+      {console.log("openAddCatgeoryModal", openAddCatgeoryModal)}
       <Modal
         title="Add Category"
         open={openAddCatgeoryModal}
@@ -289,13 +344,46 @@ const Index = () => {
         }
       />
       <Modal
-        title="Delete Work"
         open={openDeleteWorkModal}
         onClose={handleOpenDeleteWorkModal}
         component={
           <DeleteModal
             handleCancel={handleOpenDeleteWorkModal}
             handleDelete={handleDeleteWork}
+          />
+        }
+      />
+      {/* Work Detail modals */}
+      <Modal
+        title="Add Work Detail"
+        open={openAddWorkDetailModal}
+        onClose={handleOpenAddWorkDetailModal}
+        component={
+          <AddWorkDetailsModal
+            handleOpenAddWorkDetailModal={handleOpenAddWorkDetailModal}
+            workDetailData={workDetailData}
+            work={workAddWorkDetail}
+          />
+        }
+      />
+      <Modal
+        title="Edit Work Detail"
+        open={openEditWorkDetailModal}
+        onClose={handleOpenEditWorkDetailModal}
+        component={
+          <EditWorkDetailsModal
+            handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
+            workDetail={editWorkDetailData}
+          />
+        }
+      />
+      <Modal
+        open={openDeleteWorkDetailModal}
+        onClose={handleOpenDeleteWorkDetailModal}
+        component={
+          <DeleteModal
+            handleCancel={handleOpenDeleteWorkDetailModal}
+            handleDelete={handleDeleteWorkDetail}
           />
         }
       />
@@ -312,6 +400,9 @@ const Index = () => {
           handleOpenAddWorkModal={handleOpenAddWorkModal}
           handleOpenEditWorkModal={handleOpenEditWorkModal}
           handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
+          handleOpenAddWorkDetailModal={handleOpenAddWorkDetailModal}
+          handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
+          handleOpenDeleteWorkDetailModal={handleOpenDeleteWorkDetailModal}
           level1={librariesData}
         />
       </div>

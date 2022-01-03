@@ -30,6 +30,7 @@ const InputWithLabel = ({
   min,
   max,
   style,
+  disabled,
 }) => {
   const classes = useStyles();
 
@@ -60,6 +61,7 @@ const InputWithLabel = ({
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
         style={style}
+        disabled={disabled}
       />
     );
   } else if (type === "file") {
@@ -87,6 +89,7 @@ const InputWithLabel = ({
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
         style={style}
+        disabled={disabled}
       />
     );
   } else {
@@ -115,6 +118,7 @@ const InputWithLabel = ({
         placeholder={placeholder}
         onChange={(e) => handleChange(e)}
         style={style}
+        disabled={disabled}
       />
     );
   }

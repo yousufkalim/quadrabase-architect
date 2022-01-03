@@ -15,6 +15,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Divider } from "@mui/material";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 export default function NestedList(props) {
   // for level 0 dropdown menu
@@ -67,6 +68,20 @@ export default function NestedList(props) {
   };
   const handleAnchorElLevel3Close = () => {
     setAnchorElLevel3(null);
+  };
+
+  // for level 3 dropdown menu
+  const [anchorElLevel4, setAnchorElLevel4] = useState(null);
+  const [itemLevel4, setItemLevel4] = useState();
+  const openLevel4 = Boolean(anchorElLevel4);
+  const handleAnchorElLevel4Click = (event, item) => {
+    if (item) {
+      setItemLevel4(item);
+    }
+    setAnchorElLevel4(event.currentTarget);
+  };
+  const handleAnchorElLevel4Close = () => {
+    setAnchorElLevel4(null);
   };
 
   // for opening level 1
@@ -156,11 +171,19 @@ export default function NestedList(props) {
           >
             <MenuItem
               style={{ width: 200 }}
-              onClick={props?.handleOpenLibrariesModal}
+              onClick={() => {
+                props?.handleOpenLibrariesModal();
+                handleAnchorElLevel0Close();
+              }}
             >
               Add Libraries
             </MenuItem>
-            <MenuItem onClick={props?.handleOpenFamiliesModal}>
+            <MenuItem
+              onClick={() => {
+                props?.handleOpenFamiliesModal();
+                handleAnchorElLevel0Close();
+              }}
+            >
               Manage Families
             </MenuItem>
           </Menu>
@@ -222,17 +245,19 @@ export default function NestedList(props) {
                 >
                   <MenuItem
                     style={{ width: 200 }}
-                    onClick={() =>
-                      props.handleOpenEditLibrariesModal(itemLevel1)
-                    }
+                    onClick={() => {
+                      props.handleOpenEditLibrariesModal(itemLevel1);
+                      handleAnchorElLevel1Close();
+                    }}
                   >
                     <EditIcon style={{ marginRight: 10 }} />
                     Edit
                   </MenuItem>
                   <MenuItem
-                    onClick={() =>
-                      props.handleDeleteLibraryModal(itemLevel1._id)
-                    }
+                    onClick={() => {
+                      props.handleDeleteLibraryModal(itemLevel1._id);
+                      handleAnchorElLevel1Close();
+                    }}
                   >
                     <DeleteIcon style={{ marginRight: 10 }} />
                     Delete
@@ -241,9 +266,10 @@ export default function NestedList(props) {
                   <MenuItem>Down</MenuItem>
                   <Divider />
                   <MenuItem
-                    onClick={() =>
-                      props.handleOpenAddCatgeoryModal(itemLevel1._id)
-                    }
+                    onClick={() => {
+                      props.handleOpenAddCatgeoryModal(itemLevel1._id);
+                      handleAnchorElLevel1Close();
+                    }}
                   >
                     Add Category
                   </MenuItem>
@@ -310,17 +336,19 @@ export default function NestedList(props) {
                         >
                           <MenuItem
                             style={{ width: 200 }}
-                            onClick={() =>
-                              props.handleOpenEditCatgeoryModal(itemLevel2)
-                            }
+                            onClick={() => {
+                              props.handleOpenEditCatgeoryModal(itemLevel2);
+                              handleAnchorElLevel2Close();
+                            }}
                           >
                             <EditIcon style={{ marginRight: 10 }} />
                             Edit
                           </MenuItem>
                           <MenuItem
-                            onClick={() =>
-                              props.handleDeleteCategoryModal(itemLevel2._id)
-                            }
+                            onClick={() => {
+                              props.handleDeleteCategoryModal(itemLevel2._id);
+                              handleAnchorElLevel2Close();
+                            }}
                           >
                             <DeleteIcon style={{ marginRight: 10 }} />
                             Delete
@@ -329,9 +357,10 @@ export default function NestedList(props) {
                           <MenuItem>Down</MenuItem>
                           <Divider />
                           <MenuItem
-                            onClick={() =>
-                              props.handleOpenAddWorkModal(itemLevel2._id)
-                            }
+                            onClick={() => {
+                              props.handleOpenAddWorkModal(itemLevel2._id);
+                              handleAnchorElLevel2Close();
+                            }}
                           >
                             Add Work
                           </MenuItem>
@@ -405,21 +434,23 @@ export default function NestedList(props) {
                                   >
                                     <MenuItem
                                       style={{ width: 200 }}
-                                      onClick={() =>
+                                      onClick={() => {
                                         props.handleOpenEditWorkModal(
                                           itemLevel3
-                                        )
-                                      }
+                                        );
+                                        handleAnchorElLevel3Close();
+                                      }}
                                     >
                                       <EditIcon style={{ marginRight: 10 }} />
                                       Edit
                                     </MenuItem>
                                     <MenuItem
-                                      onClick={() =>
+                                      onClick={() => {
                                         props.handleOpenDeleteWorkModal(
                                           itemLevel3._id
-                                        )
-                                      }
+                                        );
+                                        handleAnchorElLevel3Close();
+                                      }}
                                     >
                                       <DeleteIcon style={{ marginRight: 10 }} />
                                       Delete
@@ -428,11 +459,12 @@ export default function NestedList(props) {
                                     <MenuItem>Down</MenuItem>
                                     <Divider />
                                     <MenuItem
-                                      onClick={() =>
-                                        props.handleOpenAddWorkModal(
-                                          itemLevel2._id
-                                        )
-                                      }
+                                      onClick={() => {
+                                        props.handleOpenAddWorkDetailModal(
+                                          itemLevel3._id
+                                        );
+                                        handleAnchorElLevel3Close();
+                                      }}
                                     >
                                       Add Work Detail
                                     </MenuItem>
@@ -440,14 +472,100 @@ export default function NestedList(props) {
                                 </ListItem>
                                 {/* level 4 */}
                                 <Collapse in={openListLevel3 === work._id}>
-                                  <List component="div">
-                                    <ListItem sx={{ pl: 12 }}>
-                                      <ListItemIcon>
-                                        <StarBorder />
-                                      </ListItemIcon>
-                                      <ListItemText primary="Starred" />
-                                    </ListItem>
-                                  </List>
+                                  {item?.work_details?.map((work_detail) => {
+                                    if (work_detail.work === openListLevel3) {
+                                      return (
+                                        <>
+                                          <ListItem sx={{ pl: 12 }}>
+                                            {/* left Icon */}
+                                            <div style={{ marginRight: 25 }}>
+                                              <IconButton>
+                                                <BookmarkIcon />
+                                              </IconButton>
+                                            </div>
+                                            {/* label */}
+                                            <ListItemText
+                                              primary={work_detail.name}
+                                            />
+                                            {/* right icon */}
+                                            <ListItemIcon sx={{ mr: -4 }}>
+                                              <IconButton
+                                                id="demo-positioned-button"
+                                                aria-controls={
+                                                  openLevel4
+                                                    ? "demo-positioned-menu"
+                                                    : undefined
+                                                }
+                                                aria-haspopup="true"
+                                                aria-expanded={
+                                                  openLevel4
+                                                    ? "true"
+                                                    : undefined
+                                                }
+                                                onClick={(e) =>
+                                                  handleAnchorElLevel4Click(
+                                                    e,
+                                                    work_detail
+                                                  )
+                                                }
+                                              >
+                                                <MoreVertIcon />
+                                              </IconButton>
+                                            </ListItemIcon>
+                                            {/* drop down level 2 */}
+                                            <Menu
+                                              id="demo-positioned-menu"
+                                              aria-labelledby="demo-positioned-button"
+                                              anchorEl={anchorElLevel4}
+                                              open={openLevel4}
+                                              onClose={
+                                                handleAnchorElLevel4Close
+                                              }
+                                              anchorOrigin={{
+                                                vertical: "top",
+                                                horizontal: "left",
+                                              }}
+                                              transformOrigin={{
+                                                vertical: "top",
+                                                horizontal: "left",
+                                              }}
+                                              sx={{ mt: 4.5 }}
+                                            >
+                                              <MenuItem
+                                                style={{ width: 200 }}
+                                                onClick={() => {
+                                                  props.handleOpenEditWorkDetailModal(
+                                                    itemLevel4
+                                                  );
+                                                  handleAnchorElLevel4Close();
+                                                }}
+                                              >
+                                                <EditIcon
+                                                  style={{ marginRight: 10 }}
+                                                />
+                                                Edit
+                                              </MenuItem>
+                                              <MenuItem
+                                                onClick={() => {
+                                                  props.handleOpenDeleteWorkDetailModal(
+                                                    itemLevel4._id
+                                                  );
+                                                  handleAnchorElLevel4Close();
+                                                }}
+                                              >
+                                                <DeleteIcon
+                                                  style={{ marginRight: 10 }}
+                                                />
+                                                Delete
+                                              </MenuItem>
+                                              <MenuItem>Up</MenuItem>
+                                              <MenuItem>Down</MenuItem>
+                                            </Menu>
+                                          </ListItem>
+                                        </>
+                                      );
+                                    }
+                                  })}
                                 </Collapse>
                               </>
                             );

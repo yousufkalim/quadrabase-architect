@@ -20,6 +20,7 @@ export default function index(props) {
         InputProps={{
           style: { height: 50 },
         }}
+        required={props.required}
       >
         <option value="">Select An Option</option>
 

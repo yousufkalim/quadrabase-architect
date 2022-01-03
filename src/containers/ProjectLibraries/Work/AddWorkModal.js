@@ -90,6 +90,7 @@ const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
             value={values.unit}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
             options={options}
+            required={true}
           />
         </Grid>
       </Grid>

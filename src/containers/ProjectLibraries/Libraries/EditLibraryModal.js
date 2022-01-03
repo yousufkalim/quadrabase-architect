@@ -31,7 +31,7 @@ const AddLibraryModal = ({ library, handleOpenEditLibrariesModal }) => {
   // useEffect to set initialData
   useEffect(() => {
     let temp = [];
-    temp.push(library?.families?.map((item) => item._id));
+    temp.push(library?.families?.map((item) => item));
     library &&
       setValues((prev) => {
         prev.name = library.name;
