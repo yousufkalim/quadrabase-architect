@@ -13,7 +13,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
   const classes = useStyles();
   // states
   const [values, setValues] = useState({
-    title: "",
+    name: "",
     email: "",
     contact_no: "",
     entity: "",
@@ -27,7 +27,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
   // useEffect to set values
   useEffect(() => {
     setValues({
-      title: stakeholder.title,
+      name: stakeholder.name,
       email: stakeholder.email,
       contact_no: stakeholder.contact_no,
       entity: stakeholder.entity,
@@ -50,7 +50,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
   // handle Submit function
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await api("put", `/stakeholder/${stakeholder._id}`, values);
+    const result = await api("put", `/stakeholders/${stakeholder._id}`, values);
     toast.success(result.data.message);
     handleEditStakeholderModal();
   };
@@ -65,11 +65,11 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Title"
+                label="Name"
                 required={true}
-                name="title"
+                name="name"
                 type="text"
-                value={values.title}
+                value={values.name}
                 handleChange={(e) =>
                   handleChange(e.target.name, e.target.value)
                 }

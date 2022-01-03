@@ -13,7 +13,7 @@ const AddStakholder = ({ handleAddStakeholderModal }) => {
   const classes = useStyles();
   // states
   const [values, setValues] = useState({
-    title: "",
+    name: "",
     email: "",
     contact_no: "",
     entity: "",
@@ -37,7 +37,7 @@ const AddStakholder = ({ handleAddStakeholderModal }) => {
     e.preventDefault();
     const result = await api(
       "post",
-      `/stakeholder/create/${store.user._id}`,
+      `/stakeholders/create/${store.user._id}`,
       values
     );
     handleAddStakeholderModal();
@@ -54,11 +54,11 @@ const AddStakholder = ({ handleAddStakeholderModal }) => {
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Title"
+                label="Name"
                 required={true}
-                name="title"
+                name="name"
                 type="text"
-                value={values.title}
+                value={values.name}
                 handleChange={(e) =>
                   handleChange(e.target.name, e.target.value)
                 }
