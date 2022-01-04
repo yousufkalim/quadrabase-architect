@@ -31,6 +31,7 @@ const InputWithLabel = ({
   min,
   max,
   style,
+  inputStyle,
 }) => {
   const classes = useStyles();
 
@@ -110,6 +111,7 @@ const InputWithLabel = ({
         variant="outlined"
         InputProps={{
           className: multiline ? classes.multilineInput : classes.input,
+          style: inputStyle,
         }}
         InputLabelProps={{
           shrink: true,

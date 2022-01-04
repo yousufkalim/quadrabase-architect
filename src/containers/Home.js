@@ -9,6 +9,7 @@ import api from "../api";
 import { Divider } from "@mui/material";
 import moment from "moment";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useHistory } from "react-router-dom";
 
 // Importing Components
 import Header from "../components/Header";
@@ -25,6 +26,7 @@ import AddProjectModal from "./Project/AddProjectModal";
 export default function Home() {
   const classes = useStyles();
   const store = Store();
+  const history = useHistory();
 
   const [subscriptionsData, setSubscriptionsData] = useState([]);
   const [mySubscription, setMySubscription] = useState({});
@@ -96,6 +98,10 @@ export default function Home() {
   const handleBuyCreditsModal = () => setBuyCreditsModal(!buyCreditsModal);
   const handleRenewModalModal = () => setRenewModal(!renewModal);
   const handleAddProjectModal = () => setAddProjectModal(!addProjectModal);
+
+  const handleView = (id) => {
+    history.push(`/projectview/${id}`);
+  };
 
   console.log(store.user);
   return (
@@ -250,6 +256,7 @@ export default function Home() {
               data={projectData}
               rows={projectHeadCells}
               handleView={true}
+              handleView={handleView}
             />
           </div>
         </div>

@@ -6,7 +6,7 @@ import api from "../../api";
 
 // Importing Components
 import Header from "../../components/Header";
-import NestedList from "../../components/NestedList";
+import NestedList from "./component/NestedList";
 import Modal from "../../components/Modal";
 import AddFamilyModal from "./Families/AddFamilyModal";
 import AddLibraryModal from "./Libraries/AddLibraryModal";
@@ -28,7 +28,7 @@ const Index = () => {
   const [openFamiliesModal, setOpenFamiliesModal] = useState(false);
 
   // libraries states
-  const [librariesData, setLibrariesData] = useState(false);
+  const [librariesData, setLibrariesData] = useState([]);
   const [openLibrariesModal, setOpenLibrariesModal] = useState(false);
   const [openEditLibrariesModal, setOpenEditLibrariesModal] = useState(false);
   const [editLibrariesData, setEditLibrariesData] = useState();

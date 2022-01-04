@@ -347,7 +347,7 @@ export default function EnhancedTable(props) {
                           <IconButton
                             color="info"
                             aria-label="edit"
-                            onClick={props.handleView}
+                            onClick={() => props.handleView(row?._id)}
                           >
                             <PageviewIcon />
                           </IconButton>
