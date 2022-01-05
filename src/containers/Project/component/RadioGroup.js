@@ -10,7 +10,7 @@ export default function RowRadioButtonsGroup(props) {
     <FormControl component="fieldset">
       <Typography>{props.label}</Typography>
       <RadioGroup
-        row
+        row={props.row}
         name="row-radio-buttons-group"
         value={props.value}
         style={{ fontSize: 10 }}

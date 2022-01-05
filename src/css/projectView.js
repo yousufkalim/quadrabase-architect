@@ -31,7 +31,7 @@ export const useStyles = makeStyles({
     padding: "0 20px",
   },
   fotter_text: {
-    width: "50%",
+    width: "70%",
     display: "flex",
     justifyContent: "flex-end",
   },

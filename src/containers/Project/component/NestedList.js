@@ -7,7 +7,7 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { IconButton } from "@mui/material";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import FolderIcon from "@mui/icons-material/Folder";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
@@ -35,17 +35,6 @@ export default function NestedList(props) {
     }
   };
 
-  // for opening level 3
-  const [openListLevel3, setOpenListLevel3] = useState();
-
-  const handleOpenListLevel3Click = (id) => {
-    if (id) {
-      setOpenListLevel3(id);
-    } else {
-      setOpenListLevel3();
-    }
-  };
-
   return (
     <List
       sx={{
@@ -66,7 +55,7 @@ export default function NestedList(props) {
     >
       {/* level 1 */}
       {props.level1 &&
-        props.level1.map((item, index) => {
+        props.level1.map((item) => {
           return (
             <>
               <ListItem
@@ -145,7 +134,7 @@ export default function NestedList(props) {
                                   }}
                                 >
                                   <div style={{ marginRight: 10 }}>
-                                    <BookmarkIcon
+                                    <BookmarkBorderOutlinedIcon
                                       style={{
                                         color: "#f1966c",
                                         fontSize: 20,
@@ -165,10 +154,12 @@ export default function NestedList(props) {
                                           color: "#f1966c",
                                           fontSize: 20,
                                         }}
+                                        onClick={() =>
+                                          props.openModal(work, item)
+                                        }
                                       />
                                     </IconButton>
                                   </ListItemIcon>
-                                  {/* drop down level 2 */}
                                 </ListItem>
                               </>
                             );

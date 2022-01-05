@@ -3,7 +3,7 @@ import InputWithLabel from "../../components/InputWithLabel";
 import { useStyles } from "../../css/home";
 import { Grid, Button } from "@mui/material";
 import api from "../../api";
-import RowRadioButtonsGroup from "../../components/RadioGroup";
+import RowRadioButtonsGroup from "./component/RadioGroup";
 import InputDropdown from "../../components/InputDropdown";
 import { Store } from "../../StoreContext";
 import { toast } from "react-toastify";
@@ -132,6 +132,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         </Grid>
         <br />
         <RowRadioButtonsGroup
+          row={true}
           label="Type of Contract"
           data={TOC}
           value={values.market_type}
@@ -140,6 +141,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         />
         <br />
         <RowRadioButtonsGroup
+          row={true}
           label="Type of Project"
           data={TOP}
           value={values.structure}
