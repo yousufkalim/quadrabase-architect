@@ -7,7 +7,7 @@ import { Typography } from "@mui/material";
 
 export default function RowRadioButtonsGroup(props) {
   return (
-    <FormControl component="fieldset">
+    <FormControl component="fieldset" disabled={props.disabled}>
       <Typography>{props.label}</Typography>
       <RadioGroup
         row={props.row}

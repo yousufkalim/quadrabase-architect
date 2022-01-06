@@ -15,6 +15,8 @@ const AddWorkModal = ({
   setOpenWorkModal,
   projectWorkData,
   currentProject,
+  setSelectedWorkDetail,
+  setSelectedWork,
 }) => {
   const [values, setValues] = useState({
     name: "",
@@ -61,6 +63,7 @@ const AddWorkModal = ({
     try {
       let data = values;
       data.work_details = selectedWorkDetail;
+      console.log(data);
       data.ranking = projectWorkData && projectWorkData.length;
       const result = await api(
         "post",
@@ -68,6 +71,8 @@ const AddWorkModal = ({
         data
       );
       toast.success(result.data.message);
+      setSelectedWorkDetail([]);
+      setSelectedWork();
       setOpenWorkModal(false);
     } catch (err) {
       toast.error(err.response.data.message);

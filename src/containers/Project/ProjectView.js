@@ -19,10 +19,11 @@ import InputWithLabel from "../../components/InputWithLabel";
 import NestedList from "./component/NestedList";
 import Table from "./component/Table";
 import Modal from "../../components/Modal";
-import AddWorkDetailsModal from "./AddWork/AddWorkDetailsModal";
-import AddWorkModal from "./AddWork/AddWorkModal";
+import AddWorkDetailsModal from "./Modals/AddWorkDetailsModal";
+import AddWorkModal from "./Modals/AddWorkModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import PropertiesModal from "./Modals/PropertiesModal";
 
 const ProjectView = () => {
   const params = useParams();
@@ -42,12 +43,14 @@ const ProjectView = () => {
   const [projectWorkData, setProjectWorkData] = useState([]);
   const [totalHT, setTotalHT] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(null);
+  const [openPropertiesModal, setOpenPropertiesModal] = useState(false);
 
   useEffect(() => {
     getProject();
     getLibraries();
     getworks();
-  }, [store.user, openWorkModal]);
+  }, [store.user, openWorkModal, openPropertiesModal]);
 
   // func to get current project
   const getProject = async () => {
@@ -61,7 +64,6 @@ const ProjectView = () => {
     let data = result?.data?.works;
     let temp = 0;
     data.map((item) => {
-      console.log(temp);
       if (!item.workDetails) {
         temp += item.work.unit_price * item.work.quantity;
       } else {
@@ -116,6 +118,10 @@ const ProjectView = () => {
       setOpenWorkDetailModal(true);
     }
   };
+
+  const handleOpenPropertiesModal = () =>
+    setOpenPropertiesModal(!openPropertiesModal);
+
   // for dropdown menu
 
   const open = Boolean(anchorEl);
@@ -124,6 +130,20 @@ const ProjectView = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSearch = async () => {
+    const result = await api(
+      "get",
+      `/BookLibraries/search/getlibraries?q=${searchQuery}`
+    );
+    let data = result?.data?.bookLibraries;
+    data?.map((dt) => {
+      dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
+      dt.works = dt.works.sort((a, b) => a.ranking - b.ranking);
+      dt.work_details = dt.work_details.sort((a, b) => a.ranking - b.ranking);
+    });
+    setGeneralLibrariesData(data);
   };
 
   return (
@@ -136,7 +156,9 @@ const ProjectView = () => {
         component={
           <AddWorkModal
             selectedWork={selectedWork}
+            setSelectedWork={setSelectedWork}
             selectedWorkDetail={selectedWorkDetail}
+            setSelectedWorkDetail={setSelectedWorkDetail}
             setOpenWorkModal={setOpenWorkModal}
             projectWorkData={projectWorkData}
             currentProject={currentProject}
@@ -158,6 +180,17 @@ const ProjectView = () => {
           />
         }
       />
+      <Modal
+        title="Project Properties"
+        open={openPropertiesModal}
+        onClose={handleOpenPropertiesModal}
+        component={
+          <PropertiesModal
+            handleOpenPropertiesModal={handleOpenPropertiesModal}
+            currentProject={currentProject}
+          />
+        }
+      />
       <div className={classes.container}>
         <div className={classes.flex_container}>
           <div>
@@ -167,6 +200,7 @@ const ProjectView = () => {
               startIcon={
                 <BuildIcon style={{ color: "#f1966c", fontSize: 18 }} />
               }
+              onClick={handleOpenPropertiesModal}
             >
               Properties
             </Button>
@@ -209,9 +243,12 @@ const ProjectView = () => {
                 name="prescriber"
                 type="text"
                 inputStyle={{ height: 40, backgroundColor: "white" }}
+                value={searchQuery}
+                handleChange={(e) => setSearchQuery(e.target.value)}
               />
               <Button
                 variant="contained"
+                onClick={handleSearch}
                 style={{
                   backgroundColor: "lightgray",
                   height: 38,
@@ -407,7 +444,9 @@ const ProjectView = () => {
                     <div className={classes.flex_container}>
                       <div className={classes.fotter_text}>Total Price:</div>
                       <div>
-                        {totalHT * (1 + currentProject?.vat?.value / 100)}
+                        {Math.floor(
+                          totalHT * (1 + currentProject?.vat?.value / 100)
+                        )}
                       </div>
                     </div>
                   </div>
