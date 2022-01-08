@@ -18,16 +18,17 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
   const [values, setValues] = useState({
     name: "",
     unit: "",
+    unit_price: "",
     cctp_text: [],
-    btu_text: [],
+    bpu_text: [],
   });
   const [options, setOptions] = useState([]);
   const [cctp_text1, setcctp_text1] = useState("");
   const [cctp_text2, setcctp_text2] = useState("");
   const [cctp_text3, setcctp_text3] = useState("");
-  const [btu_text1, setbtu_text1] = useState("");
-  const [btu_text2, setbtu_text2] = useState("");
-  const [btu_text3, setbtu_text3] = useState("");
+  const [bpu_text1, setbpu_text1] = useState("");
+  const [bpu_text2, setbpu_text2] = useState("");
+  const [bpu_text3, setbpu_text3] = useState("");
 
   // useEffect to set intial data
   useEffect(() => {
@@ -35,16 +36,17 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
       setValues((prev) => {
         prev.name = work.name;
         prev.unit = work.unit;
+        prev.unit_price = work.unit_price;
         prev.cctp_text = [];
-        prev.btu_text = [];
+        prev.bpu_text = [];
         return { ...prev };
       });
     work.cctp_text[0] && setcctp_text1(work.cctp_text[0]);
     work.cctp_text[1] && setcctp_text2(work.cctp_text[1]);
     work.cctp_text[2] && setcctp_text3(work.cctp_text[2]);
-    work.btu_text[0] && setbtu_text1(work.btu_text[0]);
-    work.btu_text[1] && setbtu_text2(work.btu_text[1]);
-    work.btu_text[2] && setbtu_text3(work.btu_text[2]);
+    work.bpu_text[0] && setbpu_text1(work.bpu_text[0]);
+    work.bpu_text[1] && setbpu_text2(work.bpu_text[1]);
+    work.bpu_text[2] && setbpu_text3(work.bpu_text[2]);
   }, [work]);
   // useEffect to get all units
   useEffect(() => {
@@ -70,13 +72,13 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
     e.preventDefault();
     let data = values;
     data.cctp_text = [];
-    data.btu_text = [];
+    data.bpu_text = [];
     cctp_text1 && data.cctp_text.push(cctp_text1);
     cctp_text2 && data.cctp_text.push(cctp_text2);
     cctp_text3 && data.cctp_text.push(cctp_text3);
-    btu_text1 && data.btu_text.push(btu_text1);
-    btu_text2 && data.btu_text.push(btu_text2);
-    btu_text3 && data.btu_text.push(btu_text3);
+    bpu_text1 && data.bpu_text.push(bpu_text1);
+    bpu_text2 && data.bpu_text.push(bpu_text2);
+    bpu_text3 && data.bpu_text.push(bpu_text3);
     const result = await api(
       "put",
       `/BookLibraries/edit/Work/${work._id}`,
@@ -99,6 +101,15 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
             name="name"
             type="text"
             value={values.name}
+            handleChange={(e) => handleChange(e.target.name, e.target.value)}
+            required={true}
+          />
+        </Grid>
+        <Grid item zeroMinWidth xs>
+          <InputWithLabel
+            name="unit_price"
+            label="PU HT"
+            value={values.unit_price}
             handleChange={(e) => handleChange(e.target.name, e.target.value)}
             required={true}
           />
@@ -148,23 +159,23 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
         <Grid container spacing={2}>
           <Grid item zeroMinWidth xs>
             <TextEditor
-              onChange={(value) => setbtu_text1(value)}
-              value={btu_text1}
-              label={"BTU 1"}
+              onChange={(value) => setbpu_text1(value)}
+              value={bpu_text1}
+              label={"BPU 1"}
             />
           </Grid>
           <Grid item zeroMinWidth xs>
             <TextEditor
-              onChange={(value) => setbtu_text2(value)}
-              value={btu_text2}
-              label={"BTU 2"}
+              onChange={(value) => setbpu_text2(value)}
+              value={bpu_text2}
+              label={"BPU 2"}
             />
           </Grid>
           <Grid item zeroMinWidth xs>
             <TextEditor
-              onChange={(value) => setbtu_text3(value)}
-              value={btu_text3}
-              label={"BTU 3"}
+              onChange={(value) => setbpu_text3(value)}
+              value={bpu_text3}
+              label={"BPU 3"}
             />
           </Grid>
         </Grid>

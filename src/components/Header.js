@@ -80,7 +80,7 @@ export default function Header() {
         >
           Project Libraries
         </MenuItem>
-        <MenuItem onClick={handleClose}>My Profile</MenuItem>
+        <MenuItem onClick={() => history.push("/profile")}>My Profile</MenuItem>
 
         <Divider />
         <MenuItem

@@ -3,30 +3,35 @@ import React, { useState, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useStyles } from "../css/home";
 import { SubscriptionheadCells } from "../utils/tableHeads";
+import { ProjectheadCells } from "../utils/tableHeads";
 import { Store } from "../StoreContext";
 import api from "../api";
 import { Divider } from "@mui/material";
 import moment from "moment";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useHistory } from "react-router-dom";
 
 // Importing Components
 import Header from "../components/Header";
 import { Button } from "@mui/material";
-import SubscriptionTable from "../components/Tabel";
+import Table from "../components/Tabel";
 import Modal from "../components/Modal";
 import BuySubscription from "./Subscription/BuySubscription";
 import AssignSubscription from "./Subscription/AssignSubscription";
 import BuyCredits from "./Subscription/BuyCredits";
 import Renew from "./Subscription/Renew";
+import AddProjectModal from "./Project/AddProjectModal";
 
 // Home Component
 export default function Home() {
   const classes = useStyles();
   const store = Store();
+  const history = useHistory();
 
   const [subscriptionsData, setSubscriptionsData] = useState([]);
   const [mySubscription, setMySubscription] = useState({});
-  const [headCells, setheadCells] = useState("");
+  const [subscriptionHeadCells, setSubscriptionHeadCells] = useState("");
+  const [projectHeadCells, setProjectHeadCells] = useState("");
   const [buySubModal, setBuySubModal] = useState(false);
   const [assignSubModal, setAssignSubModal] = useState(false);
   const [buyCreditsModal, setBuyCreditsModal] = useState(false);
@@ -35,18 +40,29 @@ export default function Home() {
     id: "",
     email: "",
   });
+  const [addProjectModal, setAddProjectModal] = useState(false);
+  const [projectData, setProjectData] = useState([]);
 
   useEffect(() => {
     let array = [];
     SubscriptionheadCells.slice(0, SubscriptionheadCells.length - 1).map(
       (cell) => array.push(cell.id)
     );
-    setheadCells(array);
+    setSubscriptionHeadCells(array);
+    let temp = [];
+    ProjectheadCells.slice(0, ProjectheadCells.length - 1).map((cell) =>
+      temp.push(cell.id)
+    );
+    setProjectHeadCells(temp);
   }, []);
 
   useEffect(() => {
     getSubscriptions();
   }, [buySubModal, assignSubModal, buyCreditsModal, renewModal]);
+
+  useEffect(() => {
+    getProjects();
+  }, [addProjectModal]);
 
   const getSubscriptions = async () => {
     try {
@@ -56,6 +72,15 @@ export default function Home() {
         return item?.assigned_to?._id === store?.user?._id;
       });
       setMySubscription(current);
+    } catch (error) {
+      if (error.response) console.log(error.response.data.message, "error ");
+    }
+  };
+
+  const getProjects = async () => {
+    try {
+      const result = await api("get", `/project/byArchitect/${store.user._id}`);
+      setProjectData(result?.data?.project);
     } catch (error) {
       if (error.response) console.log(error.response.data.message, "error ");
     }
@@ -72,7 +97,13 @@ export default function Home() {
   };
   const handleBuyCreditsModal = () => setBuyCreditsModal(!buyCreditsModal);
   const handleRenewModalModal = () => setRenewModal(!renewModal);
+  const handleAddProjectModal = () => setAddProjectModal(!addProjectModal);
 
+  const handleView = (id) => {
+    history.push(`/projectview/${id}`);
+  };
+
+  console.log(store.user);
   return (
     <div>
       <Header />
@@ -115,8 +146,16 @@ export default function Home() {
           />
         }
       />
-      <div>
-        <div className={classes.sub_container}>
+      <Modal
+        title="Add Project"
+        open={addProjectModal}
+        onClose={handleAddProjectModal}
+        component={
+          <AddProjectModal handleAddProjectModal={handleAddProjectModal} />
+        }
+      />
+      <div className={classes.container}>
+        <div className={classes.left_container}>
           <div className={classes.flex_container}>
             <span style={{ fontSize: 24 }}>
               <i>Subscriptions</i>
@@ -131,10 +170,10 @@ export default function Home() {
             </Button>
           </div>
           <div style={{ marginTop: 10 }}>
-            <SubscriptionTable
+            <Table
               headCells={SubscriptionheadCells}
               data={subscriptionsData}
-              rows={headCells}
+              rows={subscriptionHeadCells}
               handleAssign={handleAssignSubModal}
             />
           </div>
@@ -185,6 +224,40 @@ export default function Home() {
                 )}
               </>
             )}
+          </div>
+        </div>
+        <div className={classes.right_container}>
+          <div className={classes.flex_container}>
+            <span style={{ fontSize: 24 }}>
+              <i>
+                My Projects({store?.user?.projects?.length}/
+                {store?.user?.credit})
+              </i>
+            </span>
+
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              style={{
+                backgroundColor:
+                  store?.user?.projects?.length >= store?.user?.credit
+                    ? "lightgray"
+                    : "#3b373c",
+              }}
+              onClick={handleAddProjectModal}
+              disabled={store?.user?.projects?.length >= store?.user?.credit}
+            >
+              New Project
+            </Button>
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <Table
+              headCells={ProjectheadCells}
+              data={projectData}
+              rows={projectHeadCells}
+              handleView={true}
+              handleView={handleView}
+            />
           </div>
         </div>
       </div>

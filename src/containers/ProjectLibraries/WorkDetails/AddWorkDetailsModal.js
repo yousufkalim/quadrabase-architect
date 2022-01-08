@@ -22,6 +22,7 @@ const AddWorkDetailsModal = ({
   const [values, setValues] = useState({
     name: "",
     unit: "",
+    unit_price: "",
   });
   const [options, setOptions] = useState([]);
 
@@ -67,6 +68,15 @@ const AddWorkDetailsModal = ({
         type="text"
         value={values.name}
         handleChange={(e) => handleChange(e.target.name, e.target.value)}
+      />
+      <br />
+      <br />
+      <InputWithLabel
+        name="unit_price"
+        label="PU HT"
+        value={values.unit_price}
+        handleChange={(e) => handleChange(e.target.name, e.target.value)}
+        required={true}
       />
       <br />
       <br />

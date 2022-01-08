@@ -95,3 +95,41 @@ export const Chap0Part2headCells = [
     label: "Actions",
   },
 ];
+export const ProjectheadCells = [
+  {
+    id: "name",
+
+    label: "Name",
+  },
+  {
+    id: "prescriber",
+
+    label: "Prescriber",
+  },
+  {
+    id: "vat",
+
+    label: "VAT",
+  },
+  {
+    id: "market_type",
+
+    label: "Market Place",
+  },
+  {
+    id: "structure",
+
+    label: "Type Of Project",
+  },
+  {
+    id: "createdAt",
+
+    label: "Date/Time",
+  },
+
+  {
+    id: "actions",
+
+    label: "Actions",
+  },
+];
