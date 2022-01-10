@@ -4,13 +4,13 @@ import { useParams } from "react-router";
 import api from "../../api";
 import { useStyles } from "../../css/projectView";
 import BuildIcon from "@mui/icons-material/Build";
-import SaveIcon from "@mui/icons-material/Save";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import { Store } from "../../StoreContext";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { toast } from "react-toastify";
 
 // components
 import Header from "../../components/Header";
@@ -19,10 +19,15 @@ import InputWithLabel from "../../components/InputWithLabel";
 import NestedList from "./component/NestedList";
 import Table from "./component/Table";
 import Modal from "../../components/Modal";
-import AddWorkDetailsModal from "./AddWork/AddWorkDetailsModal";
-import AddWorkModal from "./AddWork/AddWorkModal";
+import AddWorkDetailsModal from "./Modals/AddWorkDetailsModal";
+import AddWorkModal from "./Modals/AddWorkModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import PropertiesModal from "./Modals/PropertiesModal";
+import CctpModal from "./Modals/CctpModal";
+import DeleteModal from "../../components/DeleteModal";
+import EditWorkModal from "./Modals/EditWorkModal";
+import EditWorkDetailModal from "./Modals/EditWorkDetailModal";
 
 const ProjectView = () => {
   const params = useParams();
@@ -42,12 +47,33 @@ const ProjectView = () => {
   const [projectWorkData, setProjectWorkData] = useState([]);
   const [totalHT, setTotalHT] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(null);
+  const [openPropertiesModal, setOpenPropertiesModal] = useState(false);
+  const [openCctpModal, setOpenCctpModal] = useState(false);
+  const [cctp_text, setCctp_text] = useState();
+  const [openDeleteWorkModal, setOpenDeleteWorkModal] = useState(false);
+  const [deleteWorkId, setDeleteWorkId] = useState();
+  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] =
+    useState(false);
+  const [deleteWorkDetailId, setDeleteWorkDetailId] = useState();
+  const [openEditWorkModal, setOpenEditWorkModal] = useState(false);
+  const [editWork, setEditWork] = useState();
+  const [openEditWorkDetailModal, setOpenEditWorkDetailModal] = useState(false);
+  const [editWorkDetail, seteditWorkDetail] = useState();
 
   useEffect(() => {
     getProject();
     getLibraries();
     getworks();
-  }, [store.user, openWorkModal]);
+  }, [
+    store.user,
+    openWorkModal,
+    openPropertiesModal,
+    openDeleteWorkModal,
+    openDeleteWorkDetailModal,
+    openEditWorkModal,
+    openEditWorkDetailModal,
+  ]);
 
   // func to get current project
   const getProject = async () => {
@@ -61,13 +87,13 @@ const ProjectView = () => {
     let data = result?.data?.works;
     let temp = 0;
     data.map((item) => {
-      console.log(temp);
       if (!item.workDetails) {
         temp += item.work.unit_price * item.work.quantity;
       } else {
-        temp +=
-          item.work.unit_price * item.work.quantity +
-          item.workDetails.unit_price;
+        temp += item.workDetails.unit_price
+          ? item.work.unit_price * item.work.quantity +
+            item.workDetails.quantity * item.workDetails.unit_price
+          : item.work.unit_price * item.work.quantity;
       }
     });
     setTotalHT(temp);
@@ -97,6 +123,40 @@ const ProjectView = () => {
     setProjectGeneralLibrariesData(temp);
   };
 
+  // delete work func
+  const handleDeleteWork = async () => {
+    try {
+      const response = await api(
+        "delete",
+        `/project/deleteWork/${currentProject._id}`,
+        {
+          data: { workId: deleteWorkId },
+        }
+      );
+      handleOpenDeleteWorkModal();
+      toast.success(response.data.message);
+    } catch (error) {
+      if (error.response) console.log(error.response.data.message, "error ");
+    }
+  };
+
+  // delete work Detail func
+  const handleDeleteWorkDetail = async () => {
+    try {
+      const response = await api(
+        "delete",
+        `/project/deleteWorkDetail/${currentProject._id}`,
+        {
+          data: { workDetailId: deleteWorkDetailId },
+        }
+      );
+      handleOpenDeleteWorkDetailModal();
+      toast.success(response.data.message);
+    } catch (error) {
+      if (error.response) console.log(error.response.data.message, "error ");
+    }
+  };
+
   // open modal func
   const openModal = (work, library) => {
     if (work.work_details.length === 0) {
@@ -116,6 +176,44 @@ const ProjectView = () => {
       setOpenWorkDetailModal(true);
     }
   };
+
+  const handleOpenPropertiesModal = () =>
+    setOpenPropertiesModal(!openPropertiesModal);
+
+  const handleOpenCctpModal = (cctp) => {
+    if (cctp) {
+      setCctp_text(cctp);
+    }
+    setOpenCctpModal(!openCctpModal);
+  };
+
+  const handleOpenDeleteWorkModal = (id) => {
+    if (id) {
+      setDeleteWorkId(id);
+    }
+    setOpenDeleteWorkModal(!openDeleteWorkModal);
+  };
+
+  const handleOpenDeleteWorkDetailModal = (id) => {
+    if (id) {
+      setDeleteWorkDetailId(id);
+    }
+    setOpenDeleteWorkDetailModal(!openDeleteWorkDetailModal);
+  };
+
+  const handleOpenEditWorkModal = (work) => {
+    if (work) {
+      setEditWork(work);
+    }
+    setOpenEditWorkModal(!openEditWorkModal);
+  };
+
+  const handleOpenEditWorkDetailModal = (workDetail) => {
+    if (workDetail) {
+      seteditWorkDetail(workDetail);
+    }
+    setOpenEditWorkDetailModal(!openEditWorkDetailModal);
+  };
   // for dropdown menu
 
   const open = Boolean(anchorEl);
@@ -124,6 +222,20 @@ const ProjectView = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSearch = async () => {
+    const result = await api(
+      "get",
+      `/BookLibraries/search/getlibraries?q=${searchQuery}`
+    );
+    let data = result?.data?.bookLibraries;
+    data?.map((dt) => {
+      dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
+      dt.works = dt.works.sort((a, b) => a.ranking - b.ranking);
+      dt.work_details = dt.work_details.sort((a, b) => a.ranking - b.ranking);
+    });
+    setGeneralLibrariesData(data);
   };
 
   return (
@@ -136,7 +248,9 @@ const ProjectView = () => {
         component={
           <AddWorkModal
             selectedWork={selectedWork}
+            setSelectedWork={setSelectedWork}
             selectedWorkDetail={selectedWorkDetail}
+            setSelectedWorkDetail={setSelectedWorkDetail}
             setOpenWorkModal={setOpenWorkModal}
             projectWorkData={projectWorkData}
             currentProject={currentProject}
@@ -158,8 +272,80 @@ const ProjectView = () => {
           />
         }
       />
+      <Modal
+        title="Project Properties"
+        open={openPropertiesModal}
+        onClose={handleOpenPropertiesModal}
+        component={
+          <PropertiesModal
+            handleOpenPropertiesModal={handleOpenPropertiesModal}
+            currentProject={currentProject}
+          />
+        }
+      />
+      <Modal
+        title="CCTP"
+        open={openCctpModal}
+        onClose={handleOpenCctpModal}
+        component={
+          <CctpModal
+            handleOpenCctpModal={handleOpenCctpModal}
+            cctp_text={cctp_text}
+          />
+        }
+      />
+      <Modal
+        open={openDeleteWorkModal}
+        onClose={handleOpenDeleteWorkModal}
+        component={
+          <DeleteModal
+            handleCancel={handleOpenDeleteWorkModal}
+            handleDelete={handleDeleteWork}
+          />
+        }
+      />
+
+      <Modal
+        open={openDeleteWorkDetailModal}
+        onClose={handleOpenDeleteWorkDetailModal}
+        component={
+          <DeleteModal
+            handleCancel={handleOpenDeleteWorkDetailModal}
+            handleDelete={handleDeleteWorkDetail}
+          />
+        }
+      />
+      <Modal
+        title="Edit a Work"
+        open={openEditWorkModal}
+        onClose={handleOpenEditWorkModal}
+        component={
+          <EditWorkModal
+            handleOpenEditWorkModal={handleOpenEditWorkModal}
+            selectedWork={editWork}
+            currentProject={currentProject}
+          />
+        }
+      />
+      <Modal
+        title="Edit a Work Detail"
+        open={openEditWorkDetailModal}
+        onClose={handleOpenEditWorkDetailModal}
+        component={
+          <EditWorkDetailModal
+            handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
+            selectedWorkDetail={editWorkDetail}
+            currentProject={currentProject}
+          />
+        }
+      />
       <div className={classes.container}>
         <div className={classes.flex_container}>
+          <div>
+            <span style={{ fontSize: 24 }}>
+              <i>{currentProject?.name}</i>
+            </span>
+          </div>
           <div>
             <Button
               variant="contained"
@@ -167,23 +353,10 @@ const ProjectView = () => {
               startIcon={
                 <BuildIcon style={{ color: "#f1966c", fontSize: 18 }} />
               }
+              onClick={handleOpenPropertiesModal}
             >
               Properties
             </Button>
-            <Button
-              variant="contained"
-              className={classes.btn}
-              startIcon={
-                <SaveIcon style={{ color: "#f1966c", fontSize: 18 }} />
-              }
-            >
-              Backup
-            </Button>
-            <span style={{ fontSize: 24 }}>
-              <i>{currentProject?.name}</i>
-            </span>
-          </div>
-          <div>
             <Button
               variant="contained"
               className={classes.btn}
@@ -209,9 +382,12 @@ const ProjectView = () => {
                 name="prescriber"
                 type="text"
                 inputStyle={{ height: 40, backgroundColor: "white" }}
+                value={searchQuery}
+                handleChange={(e) => setSearchQuery(e.target.value)}
               />
               <Button
                 variant="contained"
+                onClick={handleSearch}
                 style={{
                   backgroundColor: "lightgray",
                   height: 38,
@@ -229,6 +405,7 @@ const ProjectView = () => {
                 width="100%"
                 maxHeight="50vh"
                 openModal={openModal}
+                handleOpenCctpModal={handleOpenCctpModal}
               />
               <div style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}>
                 <i>Project Libraries</i>
@@ -238,6 +415,7 @@ const ProjectView = () => {
                 width="100%"
                 maxHeight="20vh"
                 openModal={openModal}
+                handleOpenCctpModal={handleOpenCctpModal}
               />
             </div>
           </div>
@@ -374,8 +552,16 @@ const ProjectView = () => {
                 overflow: "hidden",
               }}
             >
-              <div style={{ height: "68vh" }}>
-                <Table projectWorkData={projectWorkData} />
+              <div style={{ height: "68vh", overflow: "auto" }}>
+                <Table
+                  projectWorkData={projectWorkData}
+                  handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
+                  handleOpenDeleteWorkDetailModal={
+                    handleOpenDeleteWorkDetailModal
+                  }
+                  handleOpenEditWorkModal={handleOpenEditWorkModal}
+                  handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
+                />
               </div>
               <div
                 style={{
@@ -407,7 +593,9 @@ const ProjectView = () => {
                     <div className={classes.flex_container}>
                       <div className={classes.fotter_text}>Total Price:</div>
                       <div>
-                        {totalHT * (1 + currentProject?.vat?.value / 100)}
+                        {Math.floor(
+                          totalHT * (1 + currentProject?.vat?.value / 100)
+                        )}
                       </div>
                     </div>
                   </div>

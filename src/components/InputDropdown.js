@@ -22,11 +22,17 @@ export default function index(props) {
         }}
         required={props.required}
       >
-        <option value="">Select An Option</option>
+        <option value="" disabled>
+          Select An Option
+        </option>
 
         {props?.options?.map((option) => (
           <option value={option._id}>
-            {option.name ? option.name : option.value}
+            {option.name
+              ? option.name
+              : option.title
+              ? option.title
+              : option.value}
             {option.value && "%"}
           </option>
         ))}

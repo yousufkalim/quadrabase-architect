@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -17,18 +16,7 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function MultipleSelect(props) {
-  const theme = useTheme();
-
   return (
     <div>
       <FormControl sx={{ width: "100%" }}>
@@ -54,11 +42,7 @@ export default function MultipleSelect(props) {
         >
           {props.options &&
             props.options.map((option) => (
-              <MenuItem
-                key={option._id}
-                value={option._id}
-                style={getStyles(option._id, props.value, theme)}
-              >
+              <MenuItem key={option._id} value={option._id}>
                 {option.name}
               </MenuItem>
             ))}
