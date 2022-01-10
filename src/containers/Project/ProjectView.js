@@ -4,7 +4,6 @@ import { useParams } from "react-router";
 import api from "../../api";
 import { useStyles } from "../../css/projectView";
 import BuildIcon from "@mui/icons-material/Build";
-import SaveIcon from "@mui/icons-material/Save";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 import { Store } from "../../StoreContext";
@@ -24,6 +23,7 @@ import AddWorkModal from "./Modals/AddWorkModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
+import CctpModal from "./Modals/CctpModal";
 
 const ProjectView = () => {
   const params = useParams();
@@ -45,6 +45,8 @@ const ProjectView = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
   const [openPropertiesModal, setOpenPropertiesModal] = useState(false);
+  const [openCctpModal, setOpenCctpModal] = useState(false);
+  const [cctp_text, setCctp_text] = useState();
 
   useEffect(() => {
     getProject();
@@ -67,9 +69,10 @@ const ProjectView = () => {
       if (!item.workDetails) {
         temp += item.work.unit_price * item.work.quantity;
       } else {
-        temp +=
-          item.work.unit_price * item.work.quantity +
-          item.workDetails.unit_price;
+        temp += item.workDetails.unit_price
+          ? item.work.unit_price * item.work.quantity +
+            item.workDetails.unit_price
+          : item.work.unit_price * item.work.quantity;
       }
     });
     setTotalHT(temp);
@@ -121,6 +124,13 @@ const ProjectView = () => {
 
   const handleOpenPropertiesModal = () =>
     setOpenPropertiesModal(!openPropertiesModal);
+
+  const handleOpenCctpModal = (cctp) => {
+    if (cctp) {
+      setCctp_text(cctp);
+    }
+    setOpenCctpModal(!openCctpModal);
+  };
 
   // for dropdown menu
 
@@ -191,8 +201,24 @@ const ProjectView = () => {
           />
         }
       />
+      <Modal
+        title="CCTP"
+        open={openCctpModal}
+        onClose={handleOpenCctpModal}
+        component={
+          <CctpModal
+            handleOpenCctpModal={handleOpenCctpModal}
+            cctp_text={cctp_text}
+          />
+        }
+      />
       <div className={classes.container}>
         <div className={classes.flex_container}>
+          <div>
+            <span style={{ fontSize: 24 }}>
+              <i>{currentProject?.name}</i>
+            </span>
+          </div>
           <div>
             <Button
               variant="contained"
@@ -204,20 +230,6 @@ const ProjectView = () => {
             >
               Properties
             </Button>
-            <Button
-              variant="contained"
-              className={classes.btn}
-              startIcon={
-                <SaveIcon style={{ color: "#f1966c", fontSize: 18 }} />
-              }
-            >
-              Backup
-            </Button>
-            <span style={{ fontSize: 24 }}>
-              <i>{currentProject?.name}</i>
-            </span>
-          </div>
-          <div>
             <Button
               variant="contained"
               className={classes.btn}
@@ -266,6 +278,7 @@ const ProjectView = () => {
                 width="100%"
                 maxHeight="50vh"
                 openModal={openModal}
+                handleOpenCctpModal={handleOpenCctpModal}
               />
               <div style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}>
                 <i>Project Libraries</i>
@@ -275,6 +288,7 @@ const ProjectView = () => {
                 width="100%"
                 maxHeight="20vh"
                 openModal={openModal}
+                handleOpenCctpModal={handleOpenCctpModal}
               />
             </div>
           </div>
@@ -411,7 +425,7 @@ const ProjectView = () => {
                 overflow: "hidden",
               }}
             >
-              <div style={{ height: "68vh" }}>
+              <div style={{ height: "68vh", overflow: "auto" }}>
                 <Table projectWorkData={projectWorkData} />
               </div>
               <div

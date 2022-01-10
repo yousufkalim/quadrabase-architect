@@ -111,7 +111,6 @@ function a11yProps(index) {
 // component
 const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
   const classes = useStyles();
-  const store = Store();
 
   //  States
   const [values, setValues] = useState({

@@ -20,7 +20,6 @@ const AddWorkModal = ({
 }) => {
   const [values, setValues] = useState({
     name: "",
-    ranking: 0,
     unit: "",
     unit_price: "",
     quantity: 1,
@@ -63,8 +62,6 @@ const AddWorkModal = ({
     try {
       let data = values;
       data.work_details = selectedWorkDetail;
-      console.log(data);
-      data.ranking = projectWorkData && projectWorkData.length;
       const result = await api(
         "post",
         `/project/addWork/${currentProject._id}`,
