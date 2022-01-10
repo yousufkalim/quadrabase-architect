@@ -26,6 +26,8 @@ import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
 import CctpModal from "./Modals/CctpModal";
 import DeleteModal from "../../components/DeleteModal";
+import EditWorkModal from "./Modals/EditWorkModal";
+import EditWorkDetailModal from "./Modals/EditWorkDetailModal";
 
 const ProjectView = () => {
   const params = useParams();
@@ -54,6 +56,10 @@ const ProjectView = () => {
   const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] =
     useState(false);
   const [deleteWorkDetailId, setDeleteWorkDetailId] = useState();
+  const [openEditWorkModal, setOpenEditWorkModal] = useState(false);
+  const [editWork, setEditWork] = useState();
+  const [openEditWorkDetailModal, setOpenEditWorkDetailModal] = useState(false);
+  const [editWorkDetail, seteditWorkDetail] = useState();
 
   useEffect(() => {
     getProject();
@@ -65,6 +71,8 @@ const ProjectView = () => {
     openPropertiesModal,
     openDeleteWorkModal,
     openDeleteWorkDetailModal,
+    openEditWorkModal,
+    openEditWorkDetailModal,
   ]);
 
   // func to get current project
@@ -84,7 +92,7 @@ const ProjectView = () => {
       } else {
         temp += item.workDetails.unit_price
           ? item.work.unit_price * item.work.quantity +
-            item.workDetails.unit_price
+            item.workDetails.quantity * item.workDetails.unit_price
           : item.work.unit_price * item.work.quantity;
       }
     });
@@ -192,6 +200,20 @@ const ProjectView = () => {
     }
     setOpenDeleteWorkDetailModal(!openDeleteWorkDetailModal);
   };
+
+  const handleOpenEditWorkModal = (work) => {
+    if (work) {
+      setEditWork(work);
+    }
+    setOpenEditWorkModal(!openEditWorkModal);
+  };
+
+  const handleOpenEditWorkDetailModal = (workDetail) => {
+    if (workDetail) {
+      seteditWorkDetail(workDetail);
+    }
+    setOpenEditWorkDetailModal(!openEditWorkDetailModal);
+  };
   // for dropdown menu
 
   const open = Boolean(anchorEl);
@@ -290,6 +312,30 @@ const ProjectView = () => {
           <DeleteModal
             handleCancel={handleOpenDeleteWorkDetailModal}
             handleDelete={handleDeleteWorkDetail}
+          />
+        }
+      />
+      <Modal
+        title="Edit a Work"
+        open={openEditWorkModal}
+        onClose={handleOpenEditWorkModal}
+        component={
+          <EditWorkModal
+            handleOpenEditWorkModal={handleOpenEditWorkModal}
+            selectedWork={editWork}
+            currentProject={currentProject}
+          />
+        }
+      />
+      <Modal
+        title="Edit a Work Detail"
+        open={openEditWorkDetailModal}
+        onClose={handleOpenEditWorkDetailModal}
+        component={
+          <EditWorkDetailModal
+            handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
+            selectedWorkDetail={editWorkDetail}
+            currentProject={currentProject}
           />
         }
       />
@@ -513,6 +559,8 @@ const ProjectView = () => {
                   handleOpenDeleteWorkDetailModal={
                     handleOpenDeleteWorkDetailModal
                   }
+                  handleOpenEditWorkModal={handleOpenEditWorkModal}
+                  handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
                 />
               </div>
               <div

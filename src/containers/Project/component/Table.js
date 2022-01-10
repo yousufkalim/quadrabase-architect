@@ -58,6 +58,8 @@ export default function DenseTable({
   projectWorkData,
   handleOpenDeleteWorkModal,
   handleOpenDeleteWorkDetailModal,
+  handleOpenEditWorkModal,
+  handleOpenEditWorkDetailModal,
 }) {
   // for level 0 dropdown menu
   const [anchorElLevel0, setAnchorElLevel0] = useState(null);
@@ -171,7 +173,14 @@ export default function DenseTable({
                       >
                         To Delete
                       </MenuItem>
-                      <MenuItem>To Modify</MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleOpenEditWorkModal(menuItem0);
+                          handleAnchorElLevel0Close();
+                        }}
+                      >
+                        To Modify
+                      </MenuItem>
                     </StyledMenu>
                   </TableCell>
                   <TableCell
@@ -266,7 +275,14 @@ export default function DenseTable({
                           >
                             To Delete
                           </MenuItem>
-                          <MenuItem>To Modify</MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleOpenEditWorkModal(menuItem1);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            To Modify
+                          </MenuItem>
                         </StyledMenu>
                       </TableCell>
                       <TableCell
@@ -360,7 +376,14 @@ export default function DenseTable({
                         >
                           To Delete
                         </MenuItem>
-                        <MenuItem>To Modify</MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleOpenEditWorkDetailModal(menuItem2);
+                            handleAnchorElLevel2Close();
+                          }}
+                        >
+                          To Modify
+                        </MenuItem>
                       </StyledMenu>
                     </TableCell>
                     <TableCell
@@ -379,7 +402,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      1
+                      {row.workDetails.quantity}
                     </TableCell>
                     <TableCell
                       align="right"
@@ -397,7 +420,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row.workDetails.unit_price}
+                      {row.workDetails.quantity * row.workDetails.unit_price}
                     </TableCell>
                   </TableRow>
                 </>
