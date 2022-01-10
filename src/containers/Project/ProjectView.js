@@ -10,6 +10,7 @@ import { Store } from "../../StoreContext";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { toast } from "react-toastify";
 
 // components
 import Header from "../../components/Header";
@@ -24,6 +25,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
 import CctpModal from "./Modals/CctpModal";
+import DeleteModal from "../../components/DeleteModal";
 
 const ProjectView = () => {
   const params = useParams();
@@ -47,12 +49,23 @@ const ProjectView = () => {
   const [openPropertiesModal, setOpenPropertiesModal] = useState(false);
   const [openCctpModal, setOpenCctpModal] = useState(false);
   const [cctp_text, setCctp_text] = useState();
+  const [openDeleteWorkModal, setOpenDeleteWorkModal] = useState(false);
+  const [deleteWorkId, setDeleteWorkId] = useState();
+  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] =
+    useState(false);
+  const [deleteWorkDetailId, setDeleteWorkDetailId] = useState();
 
   useEffect(() => {
     getProject();
     getLibraries();
     getworks();
-  }, [store.user, openWorkModal, openPropertiesModal]);
+  }, [
+    store.user,
+    openWorkModal,
+    openPropertiesModal,
+    openDeleteWorkModal,
+    openDeleteWorkDetailModal,
+  ]);
 
   // func to get current project
   const getProject = async () => {
@@ -102,6 +115,40 @@ const ProjectView = () => {
     setProjectGeneralLibrariesData(temp);
   };
 
+  // delete work func
+  const handleDeleteWork = async () => {
+    try {
+      const response = await api(
+        "delete",
+        `/project/deleteWork/${currentProject._id}`,
+        {
+          data: { workId: deleteWorkId },
+        }
+      );
+      handleOpenDeleteWorkModal();
+      toast.success(response.data.message);
+    } catch (error) {
+      if (error.response) console.log(error.response.data.message, "error ");
+    }
+  };
+
+  // delete work Detail func
+  const handleDeleteWorkDetail = async () => {
+    try {
+      const response = await api(
+        "delete",
+        `/project/deleteWorkDetail/${currentProject._id}`,
+        {
+          data: { workDetailId: deleteWorkDetailId },
+        }
+      );
+      handleOpenDeleteWorkDetailModal();
+      toast.success(response.data.message);
+    } catch (error) {
+      if (error.response) console.log(error.response.data.message, "error ");
+    }
+  };
+
   // open modal func
   const openModal = (work, library) => {
     if (work.work_details.length === 0) {
@@ -132,6 +179,19 @@ const ProjectView = () => {
     setOpenCctpModal(!openCctpModal);
   };
 
+  const handleOpenDeleteWorkModal = (id) => {
+    if (id) {
+      setDeleteWorkId(id);
+    }
+    setOpenDeleteWorkModal(!openDeleteWorkModal);
+  };
+
+  const handleOpenDeleteWorkDetailModal = (id) => {
+    if (id) {
+      setDeleteWorkDetailId(id);
+    }
+    setOpenDeleteWorkDetailModal(!openDeleteWorkDetailModal);
+  };
   // for dropdown menu
 
   const open = Boolean(anchorEl);
@@ -209,6 +269,27 @@ const ProjectView = () => {
           <CctpModal
             handleOpenCctpModal={handleOpenCctpModal}
             cctp_text={cctp_text}
+          />
+        }
+      />
+      <Modal
+        open={openDeleteWorkModal}
+        onClose={handleOpenDeleteWorkModal}
+        component={
+          <DeleteModal
+            handleCancel={handleOpenDeleteWorkModal}
+            handleDelete={handleDeleteWork}
+          />
+        }
+      />
+
+      <Modal
+        open={openDeleteWorkDetailModal}
+        onClose={handleOpenDeleteWorkDetailModal}
+        component={
+          <DeleteModal
+            handleCancel={handleOpenDeleteWorkDetailModal}
+            handleDelete={handleDeleteWorkDetail}
           />
         }
       />
@@ -426,7 +507,13 @@ const ProjectView = () => {
               }}
             >
               <div style={{ height: "68vh", overflow: "auto" }}>
-                <Table projectWorkData={projectWorkData} />
+                <Table
+                  projectWorkData={projectWorkData}
+                  handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
+                  handleOpenDeleteWorkDetailModal={
+                    handleOpenDeleteWorkDetailModal
+                  }
+                />
               </div>
               <div
                 style={{

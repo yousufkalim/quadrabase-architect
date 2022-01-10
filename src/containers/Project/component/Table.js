@@ -54,7 +54,11 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function DenseTable({ projectWorkData }) {
+export default function DenseTable({
+  projectWorkData,
+  handleOpenDeleteWorkModal,
+  handleOpenDeleteWorkDetailModal,
+}) {
   // for level 0 dropdown menu
   const [anchorElLevel0, setAnchorElLevel0] = useState(null);
   const [menuItem0, setMenuItem0] = useState([]);
@@ -114,7 +118,7 @@ export default function DenseTable({ projectWorkData }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {projectWorkData.map((row) => {
+          {projectWorkData.map((row, index) => {
             if (!row.workDetails) {
               return (
                 <TableRow hover>
@@ -159,7 +163,14 @@ export default function DenseTable({ projectWorkData }) {
                       }}
                       sx={{ mt: 1 }}
                     >
-                      <MenuItem>To Delete</MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleOpenDeleteWorkModal(menuItem0._id);
+                          handleAnchorElLevel0Close();
+                        }}
+                      >
+                        To Delete
+                      </MenuItem>
                       <MenuItem>To Modify</MenuItem>
                     </StyledMenu>
                   </TableCell>
@@ -204,87 +215,99 @@ export default function DenseTable({ projectWorkData }) {
             } else {
               return (
                 <>
-                  <TableRow hover>
-                    <TableCell
-                      style={{
-                        borderRight: "1px solid lightgray",
-                        width: "35vw",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {row.work.name.substring(0, 50)}
-                      {row.work.name.length > 50 && "..."}
-                      <ArrowDropDownIcon
-                        id="demo-positioned-button"
-                        aria-controls={
-                          openLevel1 ? "demo-positioned-menu" : undefined
-                        }
-                        aria-haspopup="true"
-                        aria-expanded={openLevel1 ? "true" : undefined}
-                        onClick={(e) => handleAnchorElLevel1Click(e, row.work)}
-                        sx={{
-                          fontSize: 18,
-                          cursor: "pointer",
+                  {row.work._id !== projectWorkData[index - 1]?.work._id && (
+                    <TableRow hover>
+                      <TableCell
+                        style={{
+                          borderRight: "1px solid lightgray",
+                          width: "35vw",
+                          display: "flex",
+                          alignItems: "center",
                         }}
-                      />
-                      <StyledMenu
-                        id="demo-positioned-menu"
-                        aria-labelledby="demo-positioned-button"
-                        anchorEl={anchorElLevel1}
-                        open={openLevel1}
-                        onClose={handleAnchorElLevel1Close}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        sx={{ mt: 1 }}
                       >
-                        <MenuItem>To Delete</MenuItem>
-                        <MenuItem>To Modify</MenuItem>
-                      </StyledMenu>
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      style={{
-                        borderRight: "1px solid lightgray",
-                        width: "10vw",
-                      }}
-                    >
-                      {row.workUnit.name}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      style={{
-                        borderRight: "1px solid lightgray",
-                        width: "10vw",
-                      }}
-                    >
-                      {row.work.quantity}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      style={{
-                        borderRight: "1px solid lightgray",
-                        width: "10vw",
-                      }}
-                    >
-                      {row.work.unit_price}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      style={{
-                        borderRight: "1px solid lightgray",
-                        width: "10vw",
-                      }}
-                    >
-                      {row.work.unit_price * row.work.quantity}
-                    </TableCell>
-                  </TableRow>
+                        {row.work.name.substring(0, 50)}
+                        {row.work.name.length > 50 && "..."}
+                        <ArrowDropDownIcon
+                          id="demo-positioned-button"
+                          aria-controls={
+                            openLevel1 ? "demo-positioned-menu" : undefined
+                          }
+                          aria-haspopup="true"
+                          aria-expanded={openLevel1 ? "true" : undefined}
+                          onClick={(e) =>
+                            handleAnchorElLevel1Click(e, row.work)
+                          }
+                          sx={{
+                            fontSize: 18,
+                            cursor: "pointer",
+                          }}
+                        />
+                        <StyledMenu
+                          id="demo-positioned-menu"
+                          aria-labelledby="demo-positioned-button"
+                          anchorEl={anchorElLevel1}
+                          open={openLevel1}
+                          onClose={handleAnchorElLevel1Close}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          sx={{ mt: 1 }}
+                        >
+                          <MenuItem
+                            onClick={() => {
+                              handleOpenDeleteWorkModal(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            To Delete
+                          </MenuItem>
+                          <MenuItem>To Modify</MenuItem>
+                        </StyledMenu>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{
+                          borderRight: "1px solid lightgray",
+                          width: "10vw",
+                        }}
+                      >
+                        {row.workUnit.name}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{
+                          borderRight: "1px solid lightgray",
+                          width: "10vw",
+                        }}
+                      >
+                        {row.work.quantity}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{
+                          borderRight: "1px solid lightgray",
+                          width: "10vw",
+                        }}
+                      >
+                        {row.work.unit_price}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{
+                          borderRight: "1px solid lightgray",
+                          width: "10vw",
+                        }}
+                      >
+                        {row.work.unit_price * row.work.quantity}
+                      </TableCell>
+                    </TableRow>
+                  )}
+
                   <TableRow hover style={{ backgroundColor: "#eeeeee" }}>
                     <TableCell
                       component="th"
@@ -329,7 +352,14 @@ export default function DenseTable({ projectWorkData }) {
                         }}
                         sx={{ mt: 1 }}
                       >
-                        <MenuItem>To Delete</MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleOpenDeleteWorkDetailModal(menuItem2._id);
+                            handleAnchorElLevel2Close();
+                          }}
+                        >
+                          To Delete
+                        </MenuItem>
                         <MenuItem>To Modify</MenuItem>
                       </StyledMenu>
                     </TableCell>
@@ -340,7 +370,7 @@ export default function DenseTable({ projectWorkData }) {
                         width: "10vw",
                       }}
                     >
-                      {row.workUnit.name}
+                      {row.workDetailsUnit.name}
                     </TableCell>
                     <TableCell
                       align="right"
