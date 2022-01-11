@@ -19,12 +19,8 @@ const BuySubscription = ({ handleBuySubModal }) => {
 
   // function to get all subs
   const getAllSubscriptions = async () => {
-    try {
-      const result = await api("get", `/Subscriptions/getAll/architect`);
-      setSubscriptions(result?.data?.subscription);
-    } catch (error) {
-      console.log(error?.response?.data?.message, "error ");
-    }
+    const result = await api("get", `/Subscriptions/getAll/architect`);
+    setSubscriptions(result?.data?.subscription);
   };
 
   // on Buy Subscription click

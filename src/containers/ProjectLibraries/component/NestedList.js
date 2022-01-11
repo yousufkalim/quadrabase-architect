@@ -193,7 +193,7 @@ export default function NestedList(props) {
             aria-expanded={openLevel0 ? "true" : undefined}
             onClick={handleAnchorElLevel0Click}
           >
-            <MoreVertIcon onClick={() => console.log("on icon click")} />
+            <MoreVertIcon />
           </IconButton>
           {/* drop down level 0 */}
           <StyledMenu

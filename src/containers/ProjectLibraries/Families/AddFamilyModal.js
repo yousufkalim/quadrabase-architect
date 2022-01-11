@@ -37,7 +37,6 @@ const AddFamilyModal = () => {
 
   // handle delete
   const handleDelete = async (id) => {
-    console.log("iddd:", id);
     const result = await api("delete", `/Families/delete/${id}`);
     toast.success(result.data.message);
     setUpdateFamily();

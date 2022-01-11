@@ -131,36 +131,28 @@ const ProjectView = () => {
 
   // delete work func
   const handleDeleteWork = async () => {
-    try {
-      const response = await api(
-        "delete",
-        `/project/deleteWork/${currentProject._id}`,
-        {
-          data: { workId: deleteWorkId },
-        }
-      );
-      handleOpenDeleteWorkModal();
-      toast.success(response.data.message);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const response = await api(
+      "delete",
+      `/project/deleteWork/${currentProject._id}`,
+      {
+        data: { workId: deleteWorkId },
+      }
+    );
+    handleOpenDeleteWorkModal();
+    toast.success(response.data.message);
   };
 
   // delete work Detail func
   const handleDeleteWorkDetail = async () => {
-    try {
-      const response = await api(
-        "delete",
-        `/project/deleteWorkDetail/${currentProject._id}`,
-        {
-          data: { workDetailId: deleteWorkDetailId },
-        }
-      );
-      handleOpenDeleteWorkDetailModal();
-      toast.success(response.data.message);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const response = await api(
+      "delete",
+      `/project/deleteWorkDetail/${currentProject._id}`,
+      {
+        data: { workDetailId: deleteWorkDetailId },
+      }
+    );
+    handleOpenDeleteWorkDetailModal();
+    toast.success(response.data.message);
   };
 
   // open modal func
@@ -355,7 +347,6 @@ const ProjectView = () => {
           />
         }
       />
-      {console.log("editChap0Part2", editChap0Part2)}
       <Modal
         title="Edit Chap. 0 part 2"
         open={openEditChap0Part2Modal}

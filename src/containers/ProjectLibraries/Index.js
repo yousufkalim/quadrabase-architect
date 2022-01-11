@@ -302,7 +302,6 @@ const Index = () => {
       let prevIndex = filteredIndex - 1;
 
       let prev = tempArr[prevIndex];
-      console.log("prevIndex: ", categories);
       api("put", `/BookLibraries/update/editCategory/${id}`, {
         ranking: prevIndex,
       }).then((res) => {
@@ -466,7 +465,6 @@ const Index = () => {
         }
       />
       {/* Category modals */}
-      {console.log("openAddCatgeoryModal", openAddCatgeoryModal)}
       <Modal
         title="Add Category"
         open={openAddCatgeoryModal}

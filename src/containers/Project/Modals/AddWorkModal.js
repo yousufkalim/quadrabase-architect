@@ -59,21 +59,17 @@ const AddWorkModal = ({
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let data = values;
-      data.work_details = selectedWorkDetail;
-      const result = await api(
-        "post",
-        `/project/addWork/${currentProject._id}`,
-        data
-      );
-      toast.success(result.data.message);
-      setSelectedWorkDetail([]);
-      setSelectedWork();
-      setOpenWorkModal(false);
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    let data = values;
+    data.work_details = selectedWorkDetail;
+    const result = await api(
+      "post",
+      `/project/addWork/${currentProject._id}`,
+      data
+    );
+    toast.success(result.data.message);
+    setSelectedWorkDetail([]);
+    setSelectedWork();
+    setOpenWorkModal(false);
   };
 
   return (

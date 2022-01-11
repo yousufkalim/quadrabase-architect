@@ -172,32 +172,20 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
 
   //   func to get stakeholders
   const getStakeholders = async () => {
-    try {
-      const result = await api("get", `/Stakeholders/`);
-      setStakeholderOptions(result.data.stakeholders);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/Stakeholders/`);
+    setStakeholderOptions(result.data.stakeholders);
   };
 
   //   func to get vat
   const getVat = async () => {
-    try {
-      const result = await api("get", `/VAT/getAll`);
-      setOptions(result?.data?.vat);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/VAT/getAll`);
+    setOptions(result?.data?.vat);
   };
 
   //   func to get Chap0Part2Data
   const getChap0Part2 = async () => {
-    try {
-      const result = await api("get", `/ArchitectsChap0/current/getByProject`);
-      setChapOptions(result.data.data);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/ArchitectsChap0/current/getByProject`);
+    setChapOptions(result.data.data);
   };
 
   // handle change function
@@ -258,31 +246,15 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
   //   handle submit
   const handleSubmit2 = async (e) => {
     e.preventDefault();
-    try {
-      const result = await api(
-        "put",
-        `/project/${currentProject._id}`,
-        values2
-      );
-      toast.success(result.data.message);
-      handleOpenPropertiesModal();
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    const result = await api("put", `/project/${currentProject._id}`, values2);
+    toast.success(result.data.message);
+    handleOpenPropertiesModal();
   };
   //   handle submit
   const handleSubmit3 = async () => {
-    try {
-      const result = await api(
-        "put",
-        `/project/${currentProject._id}`,
-        values3
-      );
-      toast.success(result.data.message);
-      handleOpenPropertiesModal();
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    const result = await api("put", `/project/${currentProject._id}`, values3);
+    toast.success(result.data.message);
+    handleOpenPropertiesModal();
   };
 
   const handleTabChange = (event, newValue) => {
