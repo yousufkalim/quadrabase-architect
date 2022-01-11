@@ -314,6 +314,21 @@ export default function EnhancedTable(props) {
                               : "N/A"}
                             %
                           </TableCell>
+                        ) : record === "text" ? (
+                          <TableCell
+                            key={index}
+                            align="left"
+                            title={row?.vat?.value}
+                          >
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  row?.text.length > 20
+                                    ? row?.text.substring(0, 20) + "..."
+                                    : row?.text,
+                              }}
+                            ></div>
+                          </TableCell>
                         ) : (
                           <TableCell
                             key={index}

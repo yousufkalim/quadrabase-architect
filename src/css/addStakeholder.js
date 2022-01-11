@@ -6,7 +6,6 @@ export const useStyles = makeStyles({
   form: {
     marginTop: "auto",
     marginBottom: "auto",
-    textAlign: "center",
     width: 650,
   },
   container: {
