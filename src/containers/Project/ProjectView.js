@@ -21,6 +21,9 @@ import Table from "./component/Table";
 import Modal from "../../components/Modal";
 import AddWorkDetailsModal from "./Modals/AddWorkDetailsModal";
 import AddWorkModal from "./Modals/AddWorkModal";
+import ReportEstimationModal from "./Modals/ReportEstimationModal";
+import ReportDQEModal from "./Modals/ReportDQEModal";
+import ReportDQEBPU from "./Modals/ReportBPUModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
@@ -30,6 +33,7 @@ import EditWorkModal from "./Modals/EditWorkModal";
 import EditWorkDetailModal from "./Modals/EditWorkDetailModal";
 
 const ProjectView = () => {
+
   const params = useParams();
   const { id } = params;
   const classes = useStyles();
@@ -53,13 +57,16 @@ const ProjectView = () => {
   const [cctp_text, setCctp_text] = useState();
   const [openDeleteWorkModal, setOpenDeleteWorkModal] = useState(false);
   const [deleteWorkId, setDeleteWorkId] = useState();
-  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] =
-    useState(false);
+  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] = useState(false);
   const [deleteWorkDetailId, setDeleteWorkDetailId] = useState();
   const [openEditWorkModal, setOpenEditWorkModal] = useState(false);
   const [editWork, setEditWork] = useState();
   const [openEditWorkDetailModal, setOpenEditWorkDetailModal] = useState(false);
   const [editWorkDetail, seteditWorkDetail] = useState();
+
+  const [openEstimationReportModal, setOpenEstimationReportModal] = useState(false);
+  const [openDQEReportModal, setOpenDQEReportModal] = useState(false);
+  const [openBPUReportModal, setOpenBPUReportModal] = useState(false);
 
   useEffect(() => {
     getProject();
@@ -223,6 +230,18 @@ const ProjectView = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const openEstimationModal = () => {
+    handleClose();
+    setOpenEstimationReportModal(true);
+  }
+  const openDQEModal = () => {
+    handleClose();
+    setOpenDQEReportModal(true);
+  }
+  const openBPUModal = () => {
+    handleClose();
+    setOpenBPUReportModal(true);
+  }
 
   const handleSearch = async () => {
     const result = await api(
@@ -337,6 +356,36 @@ const ProjectView = () => {
             selectedWorkDetail={editWorkDetail}
             currentProject={currentProject}
           />
+        }
+      />
+      <Modal
+        title="Estimation"
+        open={openEstimationReportModal}
+        onClose={() => setOpenEstimationReportModal(false)}
+        component={
+          <ReportEstimationModal
+            currentProject={currentProject}
+            projectWorkData={projectWorkData}
+          />
+        }
+      />
+      <Modal
+        title="DQE"
+        open={openDQEReportModal}
+        onClose={() => setOpenDQEReportModal(false)}
+        component={
+          <ReportDQEModal
+            currentProject={currentProject}
+            projectWorkData={projectWorkData}
+          />
+        }
+      />
+      <Modal
+        title="BPU"
+        open={openBPUReportModal}
+        onClose={() => setOpenBPUReportModal(false)}
+        component={
+          <ReportDQEBPU />
         }
       />
       <div className={classes.container}>
@@ -505,19 +554,19 @@ const ProjectView = () => {
                 sx={{ mt: 2.5 }}
               >
                 <MenuItem
+                  onClick={openEstimationModal}
                   style={{ width: 180, height: 28, fontSize: 15 }}
-                  onClick={handleClose}
                 >
                   Generate Estimate
                 </MenuItem>
                 <MenuItem
-                  onClick={handleClose}
+                  onClick={openDQEModal}
                   style={{ height: 28, fontSize: 15 }}
                 >
                   Generate The DQE
                 </MenuItem>
                 <MenuItem
-                  onClick={handleClose}
+                  onClick={openBPUModal}
                   style={{ height: 28, fontSize: 15 }}
                 >
                   Generate BPU
