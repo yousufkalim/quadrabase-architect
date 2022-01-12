@@ -62,6 +62,7 @@ const AddWorkModal = ({
     try {
       let data = values;
       data.work_details = selectedWorkDetail;
+      data.workId = selectedWork._id;
       const result = await api(
         "post",
         `/project/addWork/${currentProject._id}`,

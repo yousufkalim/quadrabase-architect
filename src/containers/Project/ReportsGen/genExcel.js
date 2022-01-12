@@ -98,7 +98,7 @@ const exportXLSXEstimation = (data, currentProject, noPrice) => {
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
-  XLSX.writeFile(wb, "sheetjs.xlsx");
+  XLSX.writeFile(wb, `${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}.xlsx`);
 };
 
 function handleFooter(ws, style, bodyDataXLSX, footerData){

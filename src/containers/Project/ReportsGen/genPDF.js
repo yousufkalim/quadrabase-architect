@@ -4,18 +4,18 @@ import "jspdf-autotable";
 import {
   pdfXLSXHeadGen,
   pdfXLSXRowsGenEstimation,
+  pdfXLSXRowsGenBPU,
   footerDataGen,
   pdfXLSXColumns,
   pdfXLSXFooterColumns,
-  pdfXLSXColumnsBPU,
-  pdfXLSXRowsBPU
+  pdfXLSXColumnsBPU
 } from "./data.js";
 
 function exportPDFEstimation(data, currentProject, noPrice){
 
   const pdfXLSXHead = pdfXLSXHeadGen(
-    "Estimation",
-    "Project"
+    `${noPrice ? "DQE" : "Estimation"}`,
+    `${currentProject?.name ?? "N/A"}`
   );
   const realDataPDF = pdfXLSXRowsGenEstimation(data, noPrice); // It's the same thing in case of pdf plugin.
   const footerData = footerDataGen(data, currentProject, noPrice);
@@ -141,16 +141,17 @@ function exportPDFEstimation(data, currentProject, noPrice){
 
   doc.autoTable(contentFootTable);
 
-  doc.save("report.pdf");
+  doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}`);
 }
 
-function exportPDFBPU(){
+function exportPDFBPU(data, currentProject){
 
   const pdfXLSXHead = pdfXLSXHeadGen(
     "BPU",
-    "Project"
+    `${currentProject?.name ?? "N/A"}`
   );
-  const realDataPDF = pdfXLSXRowsBPU; // It's the same thing in case of pdf plugin.
+
+  const realDataPDF = pdfXLSXRowsGenBPU(data);
 
   const unit = "pt";
   const size = "A4"; // Use A1, A2, A3 or A4
@@ -159,9 +160,6 @@ function exportPDFBPU(){
   const doc = new jsPDF(orientation, unit, size);
 
   doc.setFontSize(12);
-
-  // Not used
-  // doc.text(title, 40, 40);
 
   // It is important to draw tables one by one so that value of
   // doc.lastAutoTable.settings.startY is updated and synced.
@@ -215,10 +213,10 @@ function exportPDFBPU(){
 
   doc.autoTable(contentMainTable);
 
-  doc.save("report.pdf");
+  doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - BPU`);
 }
 
 export {
   exportPDFEstimation,
-  exportPDFBPU
+  exportPDFBPU,
 }

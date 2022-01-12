@@ -1,4 +1,8 @@
 
+import { 
+  TextRun,
+} from "docx";
+
 function dateNowFormatted() {
   return "01/1/2022"
 }
@@ -129,14 +133,18 @@ function footerDataGen(data, currentProject, noPrice){
   let footerData = [];
 
   let totalHT = 0;
-  data.map((item) => {
+  data.map((item, index) => {
     if (!item.workDetails) {
       totalHT += item.work.unit_price * item.work.quantity;
     } else {
-      totalHT += item.workDetails.unit_price
-        ? item.work.unit_price * item.work.quantity +
-          item.workDetails.quantity * item.workDetails.unit_price
-        : item.work.unit_price * item.work.quantity;
+      if (item.work._id !== data[index - 1]?.work._id) {
+        totalHT += item.workDetails.unit_price
+          ? item.work.unit_price * item.work.quantity +
+            item.workDetails.quantity * item.workDetails.unit_price
+          : item.work.unit_price * item.work.quantity;
+      } else {
+        totalHT += item.workDetails.quantity * item.workDetails.unit_price;
+      }
     }
   });
 
@@ -162,6 +170,67 @@ function footerDataGen(data, currentProject, noPrice){
 
 }
 
+function pdfXLSXRowsGenBPU(data){
+
+  const pdfXLSXRows = [];
+
+  let workIndex = 1;
+  for( let i = 0; i < data.length; i++ ){
+    if(data[i].work.bpu_text.length == 0){
+      continue;
+    }
+    const arr = [];
+    arr.push(`${workIndex}.1`);
+    arr.push(`${data[i].work.name}\n${data[i].work.bpu_text}`);
+    arr.push(data[i].work.unit_price ? "PU HT \n(en chiffres)" : "");
+    pdfXLSXRows.push(arr);
+    workIndex = workIndex + 1;
+  }
+
+  return pdfXLSXRows;
+
+}
+
+function pdfXLSXRowsGenCCTP(data){
+
+  const pdfXLSXRows = [];
+
+  for( let i = 0; i < data.length; i++ ){
+    const CCTPArr = data[i].work.cctp_text;
+    if(CCTPArr.length == 0){
+      continue;
+    }
+    const obj = {
+      "title": `${i+1}. ${data[i].work.name}`,
+      "cctp_arr": CCTPArr
+    };
+    pdfXLSXRows.push(obj);
+  }
+
+  return pdfXLSXRows;
+
+}
+
+function textRunsSplitGen(str){
+
+  let strSingle = String(str);
+  let strArr = strSingle.split("\n");
+
+  const textRunArr = [];
+  for(let i = 0; i < strArr.length; i++){
+    textRunArr.push(
+      new TextRun({
+        text: strArr[i],
+        size: 24,
+        break: i == 0 ? 0 : 1 // If first string then no line breaks
+      })
+    );
+  }
+
+  return textRunArr;
+
+}
+
 const pdfXLSXColumns = [
   "No #",
   "Name",
@@ -184,68 +253,15 @@ const pdfXLSXColumnsBPU = [
   "",
 ];
 
-const pdfXLSXRowsBPU = [
-  [
-    `1.1`,
-    `Réalisation des plans d'exécution
-    Ce prix rémunère, au forfait, la réalisation des études et des plans d’exécution de
-    l'ensemble des ouvrages à réaliser, conformément aux prescriptions du CCTP.
-    Il comprend notamment :
-    - La réalisation des études et notes de calcul des ouvrages à réaliser sur la base de la
-    réglementation et des normes applicables,
-    - L’établissement de tous les plans d’exécution, de nivellement et les carnets de détails
-    nécessaires à la bonne réalisation des ouvrages,
-    - Les notices des modes opératoires, process de réalisation et de montage sur chantier,
-    - Le descriptif définissant la nature, la qualité et la provenance des matériaux utilisés,
-    - Les documentations techniques des fournisseurs ainsi que les guides et
-    recommandations de pose, de réglage et d'utilisation des ouvrages,
-    - Le programme d'exécution, les essais, les résultats d'essais préalables.
-    Toutes sujétions de fournitures et de main d’oeuvre comprises.
-    LE FORFAIT (EN TOUTES LETTRES):`,
-    `PU HT
-    (en chiffres)`
-  ],
-  [
-    `1.2`,
-    `Travaux de dégagement partiel ou total des réseaux enterrés
-    Ce prix rémunère, au mètre cube, les travaux de dégagement partiel ou total des
-    réseaux enterrés situés dans la tranchée ou à proximité de celle-ci, exécutés par tous
-    moyens mécaniques et manuels appropriés, conformément au guide technique.
-    Il comprend notamment :
-    - L'amenée sur site et le repliement des matériels nécessaires aux fouilles,
-    - L'extraction des matériaux,
-    - Les opérations de relevés,
-    - Le chargement et l’évacuation des matériaux excédentaires ou jugés non réutilisables
-    suivant les prescriptions du SOGED.
-    Toutes sujétions de fournitures et de main d’oeuvre comprises.
-    LE MÈTRE CUBE (EN TOUTES LETTRES):`,
-    `PU HT
-    (en chiffres)`
-  ],
-  [
-    `1.3`,
-    `Clôtures fixes de chantier grillage simple torsion galvanisé - Maille 50x50
-    Ce prix rémunère, au mètre linéaire, la fourniture et la mise en place autour du chantier
-    d’une clôture provisoire grillagée sur piquets, maille losange 50x50, fil galvanisé simple
-    torsion Classe C, Ø2.7mm, conformément aux prescriptions du CCTP.
-    Il comprend notamment :
-    - La fourniture à pied d’oeuvre du grillage, fils tendeurs, tendeurs et clips de fixation,
-    - La fourniture et la pose des piquets,
-    - Le montage des fils tendeurs, tendeurs et mise en tension,
-    - Le montage du grillage et fixation, y compris coupes et ajustement.
-    - Le démontage et le repliement en fin de travaux.
-    Toutes sujétions de fournitures et de main d’oeuvre comprises.`,
-    ``
-  ]
-];
-
 export {
   pdfXLSXHeadGen,
   pdfXLSXRowsGenEstimation,
   realDataXLSXGenEstimation,
+  pdfXLSXRowsGenBPU,
+  pdfXLSXRowsGenCCTP,
   footerDataGen,
+  textRunsSplitGen,
   pdfXLSXColumns,
   pdfXLSXFooterColumns,
   pdfXLSXColumnsBPU,
-  pdfXLSXRowsBPU
 }

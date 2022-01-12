@@ -23,7 +23,8 @@ import AddWorkDetailsModal from "./Modals/AddWorkDetailsModal";
 import AddWorkModal from "./Modals/AddWorkModal";
 import ReportEstimationModal from "./Modals/ReportEstimationModal";
 import ReportDQEModal from "./Modals/ReportDQEModal";
-import ReportDQEBPU from "./Modals/ReportBPUModal";
+import ReportBPUModal from "./Modals/ReportBPUModal";
+import ReportCCTPModal from "./Modals/ReportCCTPModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
@@ -67,6 +68,7 @@ const ProjectView = () => {
   const [openEstimationReportModal, setOpenEstimationReportModal] = useState(false);
   const [openDQEReportModal, setOpenDQEReportModal] = useState(false);
   const [openBPUReportModal, setOpenBPUReportModal] = useState(false);
+  const [openCCTPReportModal, setOpenCCTPReportModal] = useState(false);
 
   useEffect(() => {
     getProject();
@@ -242,6 +244,10 @@ const ProjectView = () => {
     handleClose();
     setOpenBPUReportModal(true);
   }
+  const openCCTPModal = () => {
+    handleClose();
+    setOpenCCTPReportModal(true);
+  }
 
   const handleSearch = async () => {
     const result = await api(
@@ -385,7 +391,21 @@ const ProjectView = () => {
         open={openBPUReportModal}
         onClose={() => setOpenBPUReportModal(false)}
         component={
-          <ReportDQEBPU />
+          <ReportBPUModal
+            currentProject={currentProject}
+            projectWorkData={projectWorkData}
+          />
+        }
+      />
+      <Modal
+        title="CCTP"
+        open={openCCTPReportModal}
+        onClose={() => setOpenCCTPReportModal(false)}
+        component={
+          <ReportCCTPModal
+            currentProject={currentProject}
+            projectWorkData={projectWorkData}
+          />
         }
       />
       <div className={classes.container}>
@@ -580,7 +600,7 @@ const ProjectView = () => {
 
                 <Divider />
                 <MenuItem
-                  onClick={handleClose}
+                  onClick={openCCTPModal}
                   style={{ height: 25, fontSize: 15 }}
                 >
                   Generate The CCTP
