@@ -4,10 +4,11 @@ import api from "../../api";
 import InputWithLabel from "../../components/InputWithLabel";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
-
+import { UpdateStore } from "../../StoreContext";
 // component
 const BuySubscription = ({ assignSub, handleAssignSubModal }) => {
   const [email, setEmail] = useState("");
+  const updateStore = UpdateStore();
 
   useEffect(() => {
     setEmail(assignSub?.email);
@@ -20,6 +21,10 @@ const BuySubscription = ({ assignSub, handleAssignSubModal }) => {
       email: email,
     };
     const result = await api("put", `/licenses/${assignSub.id}`, data);
+    const response = await api("get", "/Architects/current/loggedIn");
+    if (response.data.user) {
+      updateStore({ loggedIn: true, user: response.data.user });
+    }
     toast.success(result.data.message);
     handleAssignSubModal();
   };

@@ -169,7 +169,7 @@ export default function Home() {
             <i>My Subscription</i>
           </span>
           <div className={classes.my_sub}>
-            {!mySubscription ? (
+            {!mySubscription.architect ? (
               <span className={classes.my_sub_info}>
                 No Subscription Assigned
               </span>
@@ -221,8 +221,6 @@ export default function Home() {
                 {mySubscription?.credit})
               </i>
             </span>
-
-            {console.log(mySubscription)}
             <Button
               variant="contained"
               startIcon={<AddIcon />}

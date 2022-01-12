@@ -5,9 +5,11 @@ import SubscriptionCard from "./SubscriptionCard";
 import { Button } from "@mui/material";
 import { Store } from "../../StoreContext";
 import { toast } from "react-toastify";
+import { UpdateStore } from "../../StoreContext";
 // component
 const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
   const store = Store();
+  const updateStore = UpdateStore();
   // states
   const [subscriptions, setSubscriptions] = useState();
   const [selected, setSelected] = useState(""); ///state for selected subscription
@@ -60,6 +62,10 @@ const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
       data
     );
     toast.success(result.data.message);
+    const response = await api("get", "/Architects/current/loggedIn");
+    if (response.data.user) {
+      updateStore({ loggedIn: true, user: response.data.user });
+    }
     handleRenewModalModal();
   };
 
