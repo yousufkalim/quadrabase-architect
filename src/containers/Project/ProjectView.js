@@ -579,7 +579,7 @@ const ProjectView = () => {
                 overflow: "hidden",
               }}
             >
-              <div style={{ height: "68vh", overflow: "auto" }}>
+              <div style={{ height: "80%", overflow: "auto" }}>
                 <Table
                   projectWorkData={projectWorkData}
                   handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
@@ -592,7 +592,7 @@ const ProjectView = () => {
               </div>
               <div
                 style={{
-                  height: "28vh",
+                  height: "20%",
                 }}
               >
                 <Divider style={{ backgroundColor: "lightgray" }} />
