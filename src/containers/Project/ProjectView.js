@@ -92,15 +92,20 @@ const ProjectView = () => {
     const result = await api("get", `/project/works/${id}`);
     let data = result?.data?.works;
     let temp = 0;
-    data.map((item) => {
+    data.map((item, index) => {
       if (!item.workDetails) {
         temp += item.work.unit_price * item.work.quantity;
       } else {
-        temp += item.workDetails.unit_price
-          ? item.work.unit_price * item.work.quantity +
-            item.workDetails.quantity * item.workDetails.unit_price
-          : item.work.unit_price * item.work.quantity;
+        if (item.work._id !== data[index - 1]?.work._id) {
+          temp += item.workDetails.unit_price
+            ? item.work.unit_price * item.work.quantity +
+              item.workDetails.quantity * item.workDetails.unit_price
+            : item.work.unit_price * item.work.quantity;
+        } else {
+          temp += item.workDetails.quantity * item.workDetails.unit_price;
+        }
       }
+      console.log(temp);
     });
     setTotalHT(temp);
     setProjectWorkData(data);
