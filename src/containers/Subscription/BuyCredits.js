@@ -24,28 +24,42 @@ const BuySubscription = ({ mySubscription, handleBuyCreditsModal }) => {
   };
 
   // on Buy Subscription click
+  // const handleClick = async () => {
+  //   const data = {
+  //     line_items: [
+  //       {
+  //         price_data: {
+  //           currency: "eur",
+  //           product_data: {
+  //             name: selected.name,
+  //           },
+  //           unit_amount: parseInt(selected.price) * 100,
+  //         },
+  //         quantity: 1,
+  //       },
+  //     ],
+  //     metaData: {
+  //       type: "buy credits",
+  //       subscription: selected._id,
+  //       licenseId: mySubscription._id,
+  //     },
+  //   };
+  //   const result = await api("post", `/licenses/checkout/`, data);
+  //   window.location = result.data.url;
+  //   handleBuyCreditsModal();
+  // };
+
+  // on Buy Subscription click
   const handleClick = async () => {
     const data = {
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: selected.name,
-            },
-            unit_amount: parseInt(selected.price) * 100,
-          },
-          quantity: 1,
-        },
-      ],
-      metaData: {
-        type: "buy credits",
-        subscription: selected._id,
-        licenseId: mySubscription._id,
-      },
+      subscription: selected._id,
     };
-    const result = await api("post", `/licenses/checkout/`, data);
-    window.location = result.data.url;
+    const result = await api(
+      "put",
+      `/licenses/buycredits/${mySubscription._id}`,
+      data
+    );
+    toast.success(result.data.message);
     handleBuyCreditsModal();
   };
 
