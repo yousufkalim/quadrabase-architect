@@ -60,6 +60,7 @@ const AddWorkModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     let data = values;
+    data.workId = selectedWork._id;
     data.work_details = selectedWorkDetail;
     const result = await api(
       "post",

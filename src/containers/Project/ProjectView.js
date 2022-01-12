@@ -105,7 +105,6 @@ const ProjectView = () => {
           temp += item.workDetails.quantity * item.workDetails.unit_price;
         }
       }
-      console.log(temp);
     });
     setTotalHT(temp);
     setProjectWorkData(data);
