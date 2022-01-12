@@ -65,51 +65,32 @@ const Index = () => {
 
   //   func to get stakeholders
   const getStakeholders = async () => {
-    try {
-      const result = await api("get", `/Architects/current/getStakeholders`);
-      setStakeholdersData(result.data.stakeholders);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/Architects/current/getStakeholders`);
+    setStakeholdersData(result.data.stakeholders);
   };
 
   //   func to get Chap0Part2Data
   const getChap0Part2 = async () => {
-    try {
-      const result = await api(
-        "get",
-        `/ArchitectsChap0/current/architectchap0part2`
-      );
-      setChap0Part2Data(result.data.architectsChap0);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api(
+      "get",
+      `/ArchitectsChap0/current/architectchap0part2`
+    );
+    setChap0Part2Data(result.data.architectsChap0);
   };
 
   //   func to delete stakeholders
   const handleDeleteStakeholder = async () => {
-    try {
-      const result = await api(
-        "delete",
-        `/stakeholders/${deleteStakeholder}/${store.user._id}`
-      );
-      handleDeleteStakeholderModal();
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api(
+      "delete",
+      `/stakeholders/${deleteStakeholder}/${store.user._id}`
+    );
+    handleDeleteStakeholderModal();
   };
 
   //   func to delete chap0part2
   const handleDeleteChap0Part2 = async () => {
-    try {
-      const result = await api(
-        "delete",
-        `/ArchitectsChap0/${deleteChap0part2}`
-      );
-      handleDeleteChap0Part2Modal();
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("delete", `/ArchitectsChap0/${deleteChap0part2}`);
+    handleDeleteChap0Part2Modal();
   };
 
   //   funct to open/close modal

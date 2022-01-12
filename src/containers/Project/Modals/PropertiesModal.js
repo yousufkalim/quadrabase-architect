@@ -17,6 +17,7 @@ import InputWithLabel from "../../../components/InputWithLabel";
 import InputDropdown from "../../../components/InputDropdown";
 import RowRadioButtonsGroup from "../component/RadioGroup";
 import InputWithOptions from "../../../components/InputWithOptions";
+import { TextField } from "@mui/material";
 
 const Textarea = styled.textarea`
   margin-right: 4rem;
@@ -149,7 +150,7 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
           ? currentProject.description
           : "";
         prev.chap0part2 = currentProject.chap0part2
-          ? currentProject.chap0part2
+          ? currentProject.chap0part2.id._id
           : "";
         return { ...prev };
       });
@@ -171,36 +172,20 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
 
   //   func to get stakeholders
   const getStakeholders = async () => {
-    try {
-      const result = await api("get", `/Stakeholders/`);
-      console.log("stakeholders", result.data);
-      setStakeholderOptions(result.data.stakeholders);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/Stakeholders/`);
+    setStakeholderOptions(result.data.stakeholders);
   };
 
   //   func to get vat
   const getVat = async () => {
-    try {
-      const result = await api("get", `/VAT/getAll`);
-      setOptions(result?.data?.vat);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/VAT/getAll`);
+    setOptions(result?.data?.vat);
   };
 
   //   func to get Chap0Part2Data
   const getChap0Part2 = async () => {
-    try {
-      const result = await api(
-        "get",
-        `/ArchitectsChap0/current/architectchap0part2`
-      );
-      setChapOptions(result.data.architectsChap0);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/ArchitectsChap0/current/getByProject`);
+    setChapOptions(result.data.data);
   };
 
   // handle change function
@@ -234,48 +219,42 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
   //   handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let data = values;
-      !values.reference && delete data.reference;
-      !values.description && delete data.description;
-      !values.chap0part2 && delete data.chap0part2;
-      console.log(data);
-      const result = await api("put", `/project/${currentProject._id}`, data);
-      toast.success(result.data.message);
-      handleOpenPropertiesModal();
-    } catch (err) {
-      toast.error(err.response.data.message);
+    let data = values;
+    !values.reference && delete data.reference;
+    !values.description && delete data.description;
+    if (
+      !values.chap0part2 ||
+      (currentProject.chap0part2 &&
+        currentProject.chap0part2.id._id == data.chap0part2)
+    ) {
+      delete data.chap0part2;
+    } else {
+      chapOptions?.architectsChap0?.map((item) => {
+        if (item._id == data.chap0part2) {
+          data.chap0part2 = { id: values.chap0part2, status: "selected" };
+        }
+      });
+      if (!data.chap0part2.status) {
+        data.chap0part2 = { id: values.chap0part2, status: "modified" };
+      }
     }
+    const result = await api("put", `/project/${currentProject._id}`, data);
+    toast.success(result.data.message);
+    handleOpenPropertiesModal();
   };
 
   //   handle submit
   const handleSubmit2 = async (e) => {
     e.preventDefault();
-    try {
-      const result = await api(
-        "put",
-        `/project/${currentProject._id}`,
-        values2
-      );
-      toast.success(result.data.message);
-      handleOpenPropertiesModal();
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    const result = await api("put", `/project/${currentProject._id}`, values2);
+    toast.success(result.data.message);
+    handleOpenPropertiesModal();
   };
   //   handle submit
   const handleSubmit3 = async () => {
-    try {
-      const result = await api(
-        "put",
-        `/project/${currentProject._id}`,
-        values3
-      );
-      toast.success(result.data.message);
-      handleOpenPropertiesModal();
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    const result = await api("put", `/project/${currentProject._id}`, values3);
+    toast.success(result.data.message);
+    handleOpenPropertiesModal();
   };
 
   const handleTabChange = (event, newValue) => {
@@ -349,18 +328,51 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
           />
           <br />
           <br />
-          <InputDropdown
-            label="Chap. 0 part 2"
+          <TextField
             name="chap0part2"
-            value={values.chap0part2}
-            options={chapOptions}
-            type="text"
+            label="Chap. 0 part 2"
             onChange={(e) => handleChange(e.target.name, e.target.value)}
-          />
+            select
+            fullWidth
+            SelectProps={{ native: true }}
+            value={values.chap0part2}
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+              style: { color: "#3b373c" },
+            }}
+            InputProps={{
+              style: { height: 50 },
+            }}
+            required={true}
+          >
+            <option value="" disabled></option>
+
+            <option value="general" disabled>
+              General Chap. 0 part 2
+            </option>
+            {chapOptions?.chap0?.map((option) => (
+              <option value={option._id}>{option.title}</option>
+            ))}
+            <option value="architect" disabled>
+              Architect Chap. 0 part 2
+            </option>
+            {chapOptions?.architectsChap0?.map((option) => (
+              <option value={option._id}>{option.title}</option>
+            ))}
+          </TextField>
+          <br />
           <br />
           {/* register button */}
           <div style={{ width: "100%", textAlign: "right" }}>
-            <Button variant="contained" className={classes.btn} type="submit">
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: "#3b373c",
+                height: "35px",
+              }}
+              type="submit"
+            >
               Update
             </Button>
           </div>
@@ -397,7 +409,7 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <InputWithOptions
-          label="Select Family"
+          label="Select Speaker"
           required={true}
           name="family"
           value={values3.stakeholders}

@@ -65,25 +65,17 @@ export default function Home() {
   }, [addProjectModal]);
 
   const getSubscriptions = async () => {
-    try {
-      const result = await api("get", `/licenses/${store.user._id}`);
-      setSubscriptionsData(result.data.license);
-      let current = result.data?.license?.find((item) => {
-        return item?.assigned_to?._id === store?.user?._id;
-      });
-      setMySubscription(current);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/licenses/${store.user._id}`);
+    setSubscriptionsData(result.data.license);
+    let current = result.data?.license?.find((item) => {
+      return item?.assigned_to?._id === store?.user?._id;
+    });
+    setMySubscription(current);
   };
 
   const getProjects = async () => {
-    try {
-      const result = await api("get", `/project/byArchitect/${store.user._id}`);
-      setProjectData(result?.data?.project);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/project/byArchitect/${store.user._id}`);
+    setProjectData(result?.data?.project);
   };
 
   const handleBuySubModal = () => setBuySubModal(!buySubModal);
@@ -103,7 +95,6 @@ export default function Home() {
     history.push(`/projectview/${id}`);
   };
 
-  console.log(store.user);
   return (
     <div>
       <Header />

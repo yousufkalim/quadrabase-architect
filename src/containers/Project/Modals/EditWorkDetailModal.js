@@ -54,24 +54,20 @@ const EditWorkDetailModal = ({
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let data = {
-        workDetailId: selectedWorkDetail._id,
-        name: values.name,
-        unit: values.unit,
-        unit_price: values.unit_price,
-        quantity: values.quantity,
-      };
-      const result = await api(
-        "put",
-        `/project/updateWorkDetail/${currentProject._id}`,
-        data
-      );
-      toast.success(result.data.message);
-      handleOpenEditWorkDetailModal();
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    let data = {
+      workDetailId: selectedWorkDetail._id,
+      name: values.name,
+      unit: values.unit,
+      unit_price: values.unit_price,
+      quantity: values.quantity,
+    };
+    const result = await api(
+      "put",
+      `/project/updateWorkDetail/${currentProject._id}`,
+      data
+    );
+    toast.success(result.data.message);
+    handleOpenEditWorkDetailModal();
   };
 
   return (
