@@ -26,6 +26,10 @@ import {
   pdfXLSXColumnsBPU,
 } from "./data.js";
 
+const Spacer = new Paragraph({
+  text: "",
+});
+
 function exportDOCXestimation(data, currentProject, noPrice){
 
   const pdfXLSXHead = pdfXLSXHeadGen(
@@ -38,15 +42,20 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const tableHeader = [
     new Table({
+      alignment: AlignmentType.CENTER,
       rows: [
         new TableRow({
           children: [
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[0],
-                  style: "bold",
                   alignment: AlignmentType.START,
+                  children: [
+                    new TextRun({
+                      text: pdfXLSXHead[0],
+                      size: 22,
+                    })
+                  ]
                 })
               ],
               verticalAlign: VerticalAlign.CENTER,
@@ -58,9 +67,14 @@ function exportDOCXestimation(data, currentProject, noPrice){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[1],
-                  style: "bold",
                   alignment: AlignmentType.CENTER,
+                  children: [
+                    new TextRun({
+                      text: pdfXLSXHead[1],
+                      size: 22,
+                      bold: true
+                    })
+                  ]
                 })
               ],
               verticalAlign: VerticalAlign.CENTER,
@@ -77,9 +91,13 @@ function exportDOCXestimation(data, currentProject, noPrice){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[2],
-                  style: "bold",
                   alignment: AlignmentType.END,
+                  children: [
+                    new TextRun({
+                      text: pdfXLSXHead[2],
+                      size: 22,
+                    })
+                  ]
                 })
               ],
               verticalAlign: VerticalAlign.CENTER,
@@ -101,8 +119,13 @@ function exportDOCXestimation(data, currentProject, noPrice){
     const tableCell = new TableCell({
       children: [
         new Paragraph({
-          text: pdfXLSXColumns[i],
-          alignment: AlignmentType.START,
+          alignment: AlignmentType.CENTER,
+          children: [
+            new TextRun({
+              text: pdfXLSXColumns[i],
+              size: 26,
+            })
+          ]
         })
       ],
       verticalAlign: VerticalAlign.CENTER,
@@ -148,6 +171,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const tableBody = [
     new Table({
+      alignment: AlignmentType.CENTER,
       rows: [
         new TableRow({
           children: tableBodyColumns,
@@ -164,8 +188,13 @@ function exportDOCXestimation(data, currentProject, noPrice){
     const tableCell1 = new TableCell({
       children: [
         new Paragraph({
-          text: pdfXLSXFooterColumns[i],
-          alignment: AlignmentType.START,
+          alignment: AlignmentType.END,
+          children: [
+            new TextRun({
+              text: pdfXLSXFooterColumns[i],
+              bold: true
+            })
+          ]
         })
       ],
       verticalAlign: VerticalAlign.CENTER,
@@ -175,8 +204,13 @@ function exportDOCXestimation(data, currentProject, noPrice){
     const tableCell2 = new TableCell({
       children: [
         new Paragraph({
-          text: `${footerData[i]}`,
-          alignment: AlignmentType.START,
+          alignment: AlignmentType.END,
+          children: [
+            new TextRun({
+              text: `${footerData[i]}`,
+              bold: true
+            })
+          ]
         })
       ],
       verticalAlign: VerticalAlign.CENTER,
@@ -193,6 +227,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const tableFooter = [
     new Table({
+      alignment: AlignmentType.RIGHT,
       rows: [
         ...tableFooterRows
       ],
@@ -201,7 +236,9 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const children = [
     ...tableHeader,
+    Spacer,
     ...tableBody,
+    Spacer,
     ...tableFooter
   ];
 

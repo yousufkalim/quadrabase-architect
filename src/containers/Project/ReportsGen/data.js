@@ -40,6 +40,9 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
   for( let i = 0; i < data.length; i++ ){
 
     if(_id != data[i].work._id){
+
+      workDetailIndex = 1; // We know that for sure.
+      
       const arr = [];
 
       arr.push(`${workIndex}.${workDetailIndex}`);
@@ -58,6 +61,9 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
       pdfXLSXRows.push(arr);
 
       if(data[i].workDetails){
+
+        workDetailIndex = workDetailIndex + 1; // Start adding WorkDetails
+
         const arrD = [];
   
         arrD.push(`${workIndex}.${workDetailIndex}`);
@@ -75,14 +81,13 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
   
         pdfXLSXRows.push(arrD);
 
-        workDetailIndex = workDetailIndex + 1;
       }
 
       workIndex = workIndex + 1;
     } else {
       // Just add WorkDetail here.
 
-      workDetailIndex = 1;
+      workDetailIndex = workDetailIndex + 1; // Well it immediately becomes sub task.
 
       const arrD = [];
 
@@ -101,7 +106,7 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
 
       pdfXLSXRows.push(arrD);
 
-      workDetailIndex = workDetailIndex + 1;
+      
     }
 
     _id = data[i].work._id;
