@@ -60,6 +60,8 @@ const AddWorkModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     let data = values;
+    data.cctp_text = selectedWork.cctp_text;
+    data.bpu_text = selectedWork.bpu_text;
     data.work_details = selectedWorkDetail;
     const result = await api(
       "post",

@@ -5,7 +5,7 @@ import { makeStyles } from "@mui/styles";
 export const useStyles = makeStyles({
   main_container: {
     position: "relative",
-    overflow: "hidden",
+    overflowX: "hidden",
     height: "100vh",
   },
   container: {

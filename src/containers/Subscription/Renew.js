@@ -5,9 +5,11 @@ import SubscriptionCard from "./SubscriptionCard";
 import { Button } from "@mui/material";
 import { Store } from "../../StoreContext";
 import { toast } from "react-toastify";
+import { UpdateStore } from "../../StoreContext";
 // component
 const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
   const store = Store();
+  const updateStore = UpdateStore();
   // states
   const [subscriptions, setSubscriptions] = useState();
   const [selected, setSelected] = useState(""); ///state for selected subscription
@@ -24,28 +26,46 @@ const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
   };
 
   // on Buy Subscription click
+  // const handleClick = async () => {
+  //   const data = {
+  //     line_items: [
+  //       {
+  //         price_data: {
+  //           currency: "eur",
+  //           product_data: {
+  //             name: selected.name,
+  //           },
+  //           unit_amount: parseInt(selected.price) * 100,
+  //         },
+  //         quantity: 1,
+  //       },
+  //     ],
+  //     metaData: {
+  //       type: "renew",
+  //       subscription: selected._id,
+  //       licenseId: mySubscription._id,
+  //     },
+  //   };
+  //   const result = await api("post", `/licenses/checkout/`, data);
+  //   window.location = result.data.url;
+  //   handleRenewModalModal();
+  // };
+
+  // on Buy Subscription click
   const handleClick = async () => {
     const data = {
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: selected.name,
-            },
-            unit_amount: parseInt(selected.price) * 100,
-          },
-          quantity: 1,
-        },
-      ],
-      metaData: {
-        type: "renew",
-        subscription: selected._id,
-        licenseId: mySubscription._id,
-      },
+      subscription: selected._id,
     };
-    const result = await api("post", `/licenses/checkout/`, data);
-    window.location = result.data.url;
+    const result = await api(
+      "put",
+      `/licenses/renew/${mySubscription._id}`,
+      data
+    );
+    toast.success(result.data.message);
+    const response = await api("get", "/Architects/current/loggedIn");
+    if (response.data.user) {
+      updateStore({ loggedIn: true, user: response.data.user });
+    }
     handleRenewModalModal();
   };
 
