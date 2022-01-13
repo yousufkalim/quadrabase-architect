@@ -36,7 +36,6 @@ import EditWorkDetailModal from "./Modals/EditWorkDetailModal";
 import EditChap0Part2 from "./Modals/EditChap0Part2";
 
 const ProjectView = () => {
-
   const params = useParams();
   const history = useHistory();
   const { id } = params;
@@ -61,7 +60,8 @@ const ProjectView = () => {
   const [cctp_text, setCctp_text] = useState();
   const [openDeleteWorkModal, setOpenDeleteWorkModal] = useState(false);
   const [deleteWorkId, setDeleteWorkId] = useState();
-  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] = useState(false);
+  const [openDeleteWorkDetailModal, setOpenDeleteWorkDetailModal] =
+    useState(false);
   const [deleteWorkDetailId, setDeleteWorkDetailId] = useState();
   const [openEditWorkModal, setOpenEditWorkModal] = useState(false);
   const [editWork, setEditWork] = useState();
@@ -70,7 +70,8 @@ const ProjectView = () => {
   const [openEditChap0Part2Modal, setOpenEditChap0Part2Modal] = useState(false);
   const [editChap0Part2, setEditChap0Part2] = useState();
 
-  const [openEstimationReportModal, setOpenEstimationReportModal] = useState(false);
+  const [openEstimationReportModal, setOpenEstimationReportModal] =
+    useState(false);
   const [openDQEReportModal, setOpenDQEReportModal] = useState(false);
   const [openBPUReportModal, setOpenBPUReportModal] = useState(false);
   const [openCCTPReportModal, setOpenCCTPReportModal] = useState(false);
@@ -247,19 +248,19 @@ const ProjectView = () => {
   const openEstimationModal = () => {
     handleClose();
     setOpenEstimationReportModal(true);
-  }
+  };
   const openDQEModal = () => {
     handleClose();
     setOpenDQEReportModal(true);
-  }
+  };
   const openBPUModal = () => {
     handleClose();
     setOpenBPUReportModal(true);
-  }
+  };
   const openCCTPModal = () => {
     handleClose();
     setOpenCCTPReportModal(true);
-  }
+  };
 
   const handleSearch = async () => {
     const result = await api(
@@ -417,6 +418,9 @@ const ProjectView = () => {
           <ReportCCTPModal
             currentProject={currentProject}
             projectWorkData={projectWorkData}
+          />
+        }
+      />
       <Modal
         title="Edit Chap. 0 part 2"
         open={openEditChap0Part2Modal}
