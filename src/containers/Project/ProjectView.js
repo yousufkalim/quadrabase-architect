@@ -11,6 +11,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router";
 
 // components
 import Header from "../../components/Header";
@@ -32,10 +33,12 @@ import CctpModal from "./Modals/CctpModal";
 import DeleteModal from "../../components/DeleteModal";
 import EditWorkModal from "./Modals/EditWorkModal";
 import EditWorkDetailModal from "./Modals/EditWorkDetailModal";
+import EditChap0Part2 from "./Modals/EditChap0Part2";
 
 const ProjectView = () => {
 
   const params = useParams();
+  const history = useHistory();
   const { id } = params;
   const classes = useStyles();
   const store = Store();
@@ -64,6 +67,8 @@ const ProjectView = () => {
   const [editWork, setEditWork] = useState();
   const [openEditWorkDetailModal, setOpenEditWorkDetailModal] = useState(false);
   const [editWorkDetail, seteditWorkDetail] = useState();
+  const [openEditChap0Part2Modal, setOpenEditChap0Part2Modal] = useState(false);
+  const [editChap0Part2, setEditChap0Part2] = useState();
 
   const [openEstimationReportModal, setOpenEstimationReportModal] = useState(false);
   const [openDQEReportModal, setOpenDQEReportModal] = useState(false);
@@ -82,6 +87,7 @@ const ProjectView = () => {
     openDeleteWorkDetailModal,
     openEditWorkModal,
     openEditWorkDetailModal,
+    openEditChap0Part2Modal,
   ]);
 
   // func to get current project
@@ -95,14 +101,18 @@ const ProjectView = () => {
     const result = await api("get", `/project/works/${id}`);
     let data = result?.data?.works;
     let temp = 0;
-    data.map((item) => {
+    data.map((item, index) => {
       if (!item.workDetails) {
         temp += item.work.unit_price * item.work.quantity;
       } else {
-        temp += item.workDetails.unit_price
-          ? item.work.unit_price * item.work.quantity +
-            item.workDetails.quantity * item.workDetails.unit_price
-          : item.work.unit_price * item.work.quantity;
+        if (item.work._id !== data[index - 1]?.work._id) {
+          temp += item.workDetails.unit_price
+            ? item.work.unit_price * item.work.quantity +
+              item.workDetails.quantity * item.workDetails.unit_price
+            : item.work.unit_price * item.work.quantity;
+        } else {
+          temp += item.workDetails.quantity * item.workDetails.unit_price;
+        }
       }
     });
     setTotalHT(temp);
@@ -134,36 +144,28 @@ const ProjectView = () => {
 
   // delete work func
   const handleDeleteWork = async () => {
-    try {
-      const response = await api(
-        "delete",
-        `/project/deleteWork/${currentProject._id}`,
-        {
-          data: { workId: deleteWorkId },
-        }
-      );
-      handleOpenDeleteWorkModal();
-      toast.success(response.data.message);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const response = await api(
+      "delete",
+      `/project/deleteWork/${currentProject._id}`,
+      {
+        data: { workId: deleteWorkId },
+      }
+    );
+    handleOpenDeleteWorkModal();
+    toast.success(response.data.message);
   };
 
   // delete work Detail func
   const handleDeleteWorkDetail = async () => {
-    try {
-      const response = await api(
-        "delete",
-        `/project/deleteWorkDetail/${currentProject._id}`,
-        {
-          data: { workDetailId: deleteWorkDetailId },
-        }
-      );
-      handleOpenDeleteWorkDetailModal();
-      toast.success(response.data.message);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const response = await api(
+      "delete",
+      `/project/deleteWorkDetail/${currentProject._id}`,
+      {
+        data: { workDetailId: deleteWorkDetailId },
+      }
+    );
+    handleOpenDeleteWorkDetailModal();
+    toast.success(response.data.message);
   };
 
   // open modal func
@@ -223,6 +225,16 @@ const ProjectView = () => {
     }
     setOpenEditWorkDetailModal(!openEditWorkDetailModal);
   };
+
+  const handleOpenEditChap0Part2Modal = () => {
+    if (currentProject.chap0part2) {
+      setEditChap0Part2(currentProject.chap0part2);
+      setOpenEditChap0Part2Modal(!openEditChap0Part2Modal);
+    } else {
+      alert("Please select a chap. 0 part 2 from properties");
+    }
+  };
+
   // for dropdown menu
 
   const open = Boolean(anchorEl);
@@ -405,6 +417,15 @@ const ProjectView = () => {
           <ReportCCTPModal
             currentProject={currentProject}
             projectWorkData={projectWorkData}
+      <Modal
+        title="Edit Chap. 0 part 2"
+        open={openEditChap0Part2Modal}
+        onClose={handleOpenEditChap0Part2Modal}
+        component={
+          <EditChap0Part2
+            handleOpenEditChap0Part2Modal={handleOpenEditChap0Part2Modal}
+            editChap0Part2={editChap0Part2}
+            currentProject={currentProject}
           />
         }
       />
@@ -432,6 +453,7 @@ const ProjectView = () => {
               startIcon={
                 <LogoutIcon style={{ color: "#f1966c", fontSize: 18 }} />
               }
+              onClick={() => history.push("/")}
             >
               To Leave
             </Button>
@@ -515,6 +537,7 @@ const ProjectView = () => {
                     color: "#f1966c",
                   },
                 }}
+                onClick={handleOpenEditChap0Part2Modal}
               />
               <div
                 style={{
@@ -621,7 +644,7 @@ const ProjectView = () => {
                 overflow: "hidden",
               }}
             >
-              <div style={{ height: "68vh", overflow: "auto" }}>
+              <div style={{ height: "80%", overflow: "auto" }}>
                 <Table
                   projectWorkData={projectWorkData}
                   handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
@@ -634,7 +657,7 @@ const ProjectView = () => {
               </div>
               <div
                 style={{
-                  height: "28vh",
+                  height: "20%",
                 }}
               >
                 <Divider style={{ backgroundColor: "lightgray" }} />

@@ -59,17 +59,13 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
 
   //   func to get vat
   const getVat = async () => {
-    try {
-      const result = await api("get", `/VAT/getAll`);
-      setOptions(result?.data?.vat);
-      result &&
-        setValues((prev) => {
-          prev.vat = result.data.vat[0]._id;
-          return { ...prev };
-        });
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/VAT/getAll`);
+    setOptions(result?.data?.vat);
+    result &&
+      setValues((prev) => {
+        prev.vat = result.data.vat[0]._id;
+        return { ...prev };
+      });
   };
 
   // handle change function
@@ -86,7 +82,6 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
     let data = values;
     data.architect = store.user._id;
     const result = await api("post", `/project/create`, data);
-    console.log("result: ", result);
     toast.success(result.data.message);
     handleAddProjectModal();
   };
@@ -117,7 +112,6 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
               type="text"
             />
           </Grid>
-          {console.log("options", options)}
           <Grid item zeroMinWidth xs>
             <InputDropdown
               label="VAT"

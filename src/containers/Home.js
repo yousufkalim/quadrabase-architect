@@ -65,25 +65,14 @@ export default function Home() {
   }, [addProjectModal]);
 
   const getSubscriptions = async () => {
-    try {
-      const result = await api("get", `/licenses/${store.user._id}`);
-      setSubscriptionsData(result.data.license);
-      let current = result.data?.license?.find((item) => {
-        return item?.assigned_to?._id === store?.user?._id;
-      });
-      setMySubscription(current);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/licenses/${store.user._id}`);
+    setSubscriptionsData(result.data.license);
+    setMySubscription(store?.user?.subscriptions.license);
   };
 
   const getProjects = async () => {
-    try {
-      const result = await api("get", `/project/byArchitect/${store.user._id}`);
-      setProjectData(result?.data?.project);
-    } catch (error) {
-      if (error.response) console.log(error.response.data.message, "error ");
-    }
+    const result = await api("get", `/project/byArchitect/${store.user._id}`);
+    setProjectData(result?.data?.project);
   };
 
   const handleBuySubModal = () => setBuySubModal(!buySubModal);
@@ -103,7 +92,6 @@ export default function Home() {
     history.push(`/projectview/${id}`);
   };
 
-  console.log(store.user);
   return (
     <div>
       <Header />
@@ -181,21 +169,20 @@ export default function Home() {
             <i>My Subscription</i>
           </span>
           <div className={classes.my_sub}>
-            {!mySubscription ? (
+            {!mySubscription.architect ? (
               <span className={classes.my_sub_info}>
                 No Subscription Assigned
               </span>
             ) : (
               <>
                 <span className={classes.my_sub_info}>
-                  <div>Name:</div>{" "}
                   <div>{mySubscription?.subscription?.name}</div>
                 </span>
                 <span className={classes.my_sub_info}>
                   <div>Number of remaining projects:</div>{" "}
                   <div>{mySubscription?.credit}</div>
                 </span>
-                {mySubscription?.assigned_to?._id === store?.user?._id && (
+                {mySubscription?.architect === store?.user?._id && (
                   <Button
                     variant="contained"
                     startIcon={<AddIcon />}
@@ -212,7 +199,7 @@ export default function Home() {
                     {moment(mySubscription?.end_date).format("DD/MM/YYYY")}
                   </div>
                 </span>
-                {mySubscription?.assigned_to?._id === store?.user?._id && (
+                {mySubscription?.architect === store?.user?._id && (
                   <Button
                     variant="contained"
                     startIcon={<RefreshIcon />}
@@ -231,21 +218,20 @@ export default function Home() {
             <span style={{ fontSize: 24 }}>
               <i>
                 My Projects({store?.user?.projects?.length}/
-                {store?.user?.credit})
+                {mySubscription?.credit})
               </i>
             </span>
-
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               style={{
                 backgroundColor:
-                  store?.user?.projects?.length >= store?.user?.credit
+                  store?.user?.projects?.length >= mySubscription?.credit
                     ? "lightgray"
                     : "#3b373c",
               }}
               onClick={handleAddProjectModal}
-              disabled={store?.user?.projects?.length >= store?.user?.credit}
+              disabled={store?.user?.projects?.length >= mySubscription?.credit}
             >
               New Project
             </Button>

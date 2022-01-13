@@ -114,7 +114,7 @@ export const ProjectheadCells = [
   {
     id: "market_type",
 
-    label: "Market Place",
+    label: "Type Of Contract",
   },
   {
     id: "structure",

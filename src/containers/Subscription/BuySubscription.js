@@ -19,37 +19,43 @@ const BuySubscription = ({ handleBuySubModal }) => {
 
   // function to get all subs
   const getAllSubscriptions = async () => {
-    try {
-      const result = await api("get", `/Subscriptions/getAll/architect`);
-      setSubscriptions(result?.data?.subscription);
-    } catch (error) {
-      console.log(error?.response?.data?.message, "error ");
-    }
+    const result = await api("get", `/Subscriptions/getAll/architect`);
+    setSubscriptions(result?.data?.subscription);
   };
+
+  // on Buy Subscription click
+  // const handleClick = async () => {
+  //   const data = {
+  //     line_items: [
+  //       {
+  //         price_data: {
+  //           currency: "eur",
+  //           product_data: {
+  //             name: selected.name,
+  //           },
+  //           unit_amount: parseInt(selected.price) * 100,
+  //         },
+  //         quantity: 1,
+  //       },
+  //     ],
+  //     metaData: {
+  //       type: "buy subscription",
+  //       subscription: selected._id,
+  //       architectId: store.user._id,
+  //     },
+  //   };
+  //   const result = await api("post", `/licenses/checkout/`, data);
+  //   window.location = result.data.url;
+  //   handleBuySubModal();
+  // };
 
   // on Buy Subscription click
   const handleClick = async () => {
     const data = {
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: selected.name,
-            },
-            unit_amount: parseInt(selected.price) * 100,
-          },
-          quantity: 1,
-        },
-      ],
-      metaData: {
-        type: "buy subscription",
-        subscription: selected._id,
-        architectId: store.user._id,
-      },
+      subscription: selected._id,
     };
-    const result = await api("post", `/licenses/checkout/`, data);
-    window.location = result.data.url;
+    const result = await api("post", `/licenses/buy/${store.user._id}`, data);
+    toast.success(result.data.message);
     handleBuySubModal();
   };
 
