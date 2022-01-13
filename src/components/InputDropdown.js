@@ -10,6 +10,7 @@ export default function index(props) {
         onChange={props.onChange}
         select
         fullWidth
+        disabled={props.disabled}
         SelectProps={{ native: true }}
         value={props.value}
         variant={props.variant ? props.variant : "outlined"}

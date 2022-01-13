@@ -10,6 +10,9 @@ import { useStyles } from "../../../css/projectLibraries";
 import { Button, Grid } from "@mui/material";
 import TextEditor from "../../../components/TextEditor";
 import InputDropdown from "../../../components/InputDropdown";
+import AddMemoizedProvider from "../component/MemorizedProvider";
+import AddMemoizedProviders from "../component/MemoizedProviders";
+import DocViewer from "../component/DocViewer";
 
 // component
 const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
@@ -23,13 +26,14 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
     bpu_text: [],
   });
   const [options, setOptions] = useState([]);
+  const [ProviderOptions, setProviderOptions] = React.useState([]);
   const [cctp_text1, setcctp_text1] = useState("");
   const [cctp_text2, setcctp_text2] = useState("");
   const [cctp_text3, setcctp_text3] = useState("");
   const [bpu_text1, setbpu_text1] = useState("");
   const [bpu_text2, setbpu_text2] = useState("");
   const [bpu_text3, setbpu_text3] = useState("");
-
+  const [ProviderDataArr, setProviderDataArr] = React.useState([]);
   // useEffect to set intial data
   useEffect(() => {
     work &&
@@ -47,10 +51,12 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
     work.bpu_text[0] && setbpu_text1(work.bpu_text[0]);
     work.bpu_text[1] && setbpu_text2(work.bpu_text[1]);
     work.bpu_text[2] && setbpu_text3(work.bpu_text[2]);
+    work.providers && setProviderDataArr(work.providers);
   }, [work]);
   // useEffect to get all units
   useEffect(() => {
     getUnits();
+    getAllProviders();
   }, []);
 
   // func to getAll Units
@@ -59,11 +65,36 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
     setOptions(result.data.units);
   };
 
+  // func to getAll Providers
+  const getAllProviders = async () => {
+    const result = await api("get", `/Providers/get/all`);
+    setProviderOptions(result.data.providers);
+  };
+
   // handle change function
   const handleChange = (name, value) => {
     setValues((prev) => {
       prev[name] = value;
       return { ...prev };
+    });
+  };
+
+  const handleAdd = (obj) => {
+    setProviderDataArr([...ProviderDataArr, obj]);
+  };
+
+  const handleDelete = async (id) => {
+    let filteredData = ProviderDataArr.filter((dt) => dt.provider !== id);
+    setProviderDataArr(filteredData);
+  };
+
+  const handleUpdate = (obj) => {
+    let filteredIndex = ProviderDataArr.findIndex(
+      (dt) => dt.provider == obj.provider
+    );
+    setProviderDataArr((prev) => {
+      prev[filteredIndex] = obj;
+      return [...prev];
     });
   };
 
@@ -79,6 +110,7 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
     bpu_text1 && data.bpu_text.push(bpu_text1);
     bpu_text2 && data.bpu_text.push(bpu_text2);
     bpu_text3 && data.bpu_text.push(bpu_text3);
+    data.providers = ProviderDataArr;
     const result = await api(
       "put",
       `/BookLibraries/edit/Work/${work._id}`,
@@ -125,7 +157,6 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
         </Grid>
       </Grid>
 
-      <br />
       <br />
       <div style={{ height: 210, marginBottom: -20 }}>
         <Grid container spacing={2}>
@@ -182,6 +213,52 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
       </div>
       <br />
       <br />
+      <div>
+        <AddMemoizedProvider
+          ProviderOptions={ProviderOptions}
+          onAdd={handleAdd}
+        />
+      </div>
+      <br />
+      <div>
+        {console.log(ProviderDataArr)}
+        {ProviderDataArr && ProviderDataArr.length > 0 ? (
+          <>
+            <div
+              style={{
+                width: "100%",
+                border: "1px solid lightgray",
+                padding: 20,
+                marginBottom: 20,
+              }}
+            >
+              {ProviderDataArr &&
+                ProviderDataArr.map(({ documents, provider }, index) => (
+                  <div key={index} className="mt-2">
+                    <AddMemoizedProviders
+                      _id={index}
+                      name={provider}
+                      documents={documents}
+                      ProviderOptions={ProviderOptions}
+                      onDelete={() => handleDelete(provider)}
+                      handleUpdate={handleUpdate}
+                    />
+                    {documents && (
+                      <div>
+                        <DocViewer
+                          documents={documents}
+                          style={{ maxHeight: "200px" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+      </div>
 
       {/* create button */}
       <div style={{ width: "100%", textAlign: "right" }}>
