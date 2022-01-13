@@ -1,6 +1,8 @@
 
 import { 
+  Paragraph,
   TextRun,
+  UnderlineType
 } from "docx";
 
 function dateNowFormatted() {
@@ -219,6 +221,21 @@ function pdfXLSXRowsGenCCTP(data){
 function textRunsSplitGen(str){
 
   let strSingle = String(str);
+
+  let textRunArr = [];
+  if(strSingle.includes("</")){ // .includes("</") is a better check than [0]="<"
+    textRunArr = handleBuiltInCCTPs(str);
+  } else {
+    textRunArr = handleImportedCCTPs(str);
+  }
+
+  return textRunArr;
+
+}
+
+function handleImportedCCTPs(str){
+
+  let strSingle = String(str);
   let strArr = strSingle.split("\n");
 
   const textRunArr = [];
@@ -232,9 +249,217 @@ function textRunsSplitGen(str){
     );
   }
 
-  return textRunArr;
+  const objsArr = [
+    new Paragraph({
+      children: [
+        ...textRunArr
+      ]
+    })
+  ];
+
+  return objsArr;
 
 }
+
+function handleBuiltInCCTPs(str){
+
+  let strSingle = String(str);
+
+  const elMain = document.createElement("div");
+  elMain.innerHTML = strSingle;
+  let htmlCollectionMain = elMain.children;
+
+  const parsedObjsArr = [];
+  for( let i = 0; i < htmlCollectionMain.length; i++ ){
+    const obj = parseHTMLTag(htmlCollectionMain[i]);
+    parsedObjsArr.push(obj);
+  }
+
+  const docxObjsArr = [];
+  for( let i = 0; i < parsedObjsArr.length; i++ ){
+    let currentObj = parsedObjsArr[i];
+    let docxObj = tagsToDocxMap[currentObj.tagName] && tagsToDocxMap[currentObj.tagName](currentObj);
+    if(docxObj){
+      if(Array.isArray(docxObj)){
+        docxObjsArr.push(...docxObj);
+      } else {
+        docxObjsArr.push(docxObj);
+      }
+    }
+  }
+
+  return docxObjsArr;
+
+}
+
+function parseHTMLTag(tag){
+
+  const tagName = tag.tagName;
+  const innerHTML = tag.innerHTML;
+  const classList = tag.classList;
+
+  const embedded = [];
+
+  if(innerHTML[0] == "<"){
+
+    const elMain = document.createElement("div");
+    elMain.innerHTML = innerHTML;
+    let htmlCollection = elMain.children;
+
+    for( let i = 0; i < htmlCollection.length; i++ ){
+      const obj = parseHTMLTag(htmlCollection[i]);
+      embedded.push(obj);
+    }
+  }
+
+  return {
+    "tagName": tagName,
+    "innerHTML": innerHTML,
+    "classList": classList,
+    "embedded": embedded
+  };
+
+}
+
+const tagsToDocxMap = {
+  "P": function(_){
+    const text = _.innerHTML;
+
+    if(_.embedded.length == 0){
+      return new Paragraph({
+        children: [
+          new TextRun({
+            text: text,
+            size: 24,
+          })
+        ]
+      });
+    } else {
+      const obj = _.embedded[0]; // Well incase of "P". We will be dealing with first embedded entry only.
+      return tagsToDocxMap[obj.tagName] && tagsToDocxMap[obj.tagName](obj);
+    }
+  },
+  "BR": function(_){
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: "", // We know this for sure
+        })
+      ]
+    });
+  },
+  "STRONG": function(_){
+    const text = _.innerHTML;
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: text,
+          bold: true,
+        })
+      ]
+    });
+  },
+  "EM": function(_){
+    const text = _.innerHTML;
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: text,
+          italics: true,
+        })
+      ]
+    });
+  },
+  "U": function(_){
+    const text = _.innerHTML;
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: text,
+          underline: {
+            color: "#f2f2f2",
+            type: UnderlineType.DASH
+          },
+        })
+      ]
+    });
+  },
+  "S": function(_){
+    const text = _.innerHTML;
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: text,
+          strike: true,
+        })
+      ]
+    });
+  },
+  "OL": function(_){
+    const embeddedArr = _.embedded;
+
+    const listItemsArr = [];
+    for( let i = 0; i < embeddedArr.length; i++ ){
+      const obj = embeddedArr[i];
+      const objElm = tagsToDocxMap[obj.tagName] && tagsToDocxMap[obj.tagName](obj);
+      if(objElm){
+        listItemsArr.push(objElm);
+      }
+    }
+
+    return listItemsArr;
+  },
+  "UL": function(_){
+    const embeddedArr = _.embedded;
+
+    const listItemsArr = [];
+    for( let i = 0; i < embeddedArr.length; i++ ){
+      const obj = embeddedArr[i];
+      const objElm = tagsToDocxMap[obj.tagName] && tagsToDocxMap[obj.tagName](obj);
+      if(objElm){
+        listItemsArr.push(objElm);
+      }
+    }
+
+    return listItemsArr;
+  },
+  "LI": function(_){
+    const text = _.innerHTML;
+
+    return new Paragraph({
+      text: text,
+      bullet: {
+        level: 0
+      }
+    });
+  },
+  "SPAN": function(_){
+    const text = _.innerHTML;
+    const classList = _.classList;
+
+    let size;
+    if(classList == "ql-size-small"){
+      size = 20;
+    } else if(classList == "ql-size-large"){
+      size = 40;
+    } else if(classList == "ql-size-huge"){
+      size = 60;
+    }
+
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: text,
+          size: size
+        })
+      ]
+    });
+  },
+};
 
 const pdfXLSXColumns = [
   "No #",

@@ -356,16 +356,10 @@ function exportDOCXBPU(data, currentProject){
     const currentRow = pdfXLSXRows[i];
     const tableRowCells = [];
     for( let j = 0; j < currentRow.length; j++ ){
-      let textRuns = textRunsSplitGen(currentRow[j]);
+      let docxObjs = textRunsSplitGen(currentRow[j]);
+      console.log(docxObjs);
       const tableCell = new TableCell({
-        children: [
-          new Paragraph({
-            alignment: AlignmentType.START,
-            children: [
-              ...textRuns
-            ]
-          })
-        ],
+        children: docxObjs,
         verticalAlign: VerticalAlign.CENTER,
         margins: normalMargin,
       });
@@ -497,21 +491,10 @@ function exportDOCXCCTP(data, currentProject){
     const CCTPArr = pdfXLSXRows[i].cctp_arr;
 
     for( let j = 0; j < CCTPArr.length; j++ ){
-
-      let textRuns = textRunsSplitGen(CCTPArr[j]);
-
+      let docxObjs = textRunsSplitGen(CCTPArr[j]);
       bodyChild.push(
-        new Paragraph({
-          spacing: {
-            before: 60,
-            after: 60
-          },
-          children: [
-            ...textRuns
-          ],
-        })
+        ...docxObjs
       );
-
     }
   }
 
