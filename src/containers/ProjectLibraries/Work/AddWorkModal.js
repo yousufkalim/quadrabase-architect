@@ -72,10 +72,10 @@ const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
 
   const handleUpdate = (obj) => {
     let filteredIndex = ProviderDataArr.findIndex(
-      (dt) => dt.provider == obj.provider
+      (dt) => dt.provider == obj.currentProvider
     );
     setProviderDataArr((prev) => {
-      prev[filteredIndex] = obj;
+      prev[filteredIndex] = obj.data;
       return [...prev];
     });
   };
