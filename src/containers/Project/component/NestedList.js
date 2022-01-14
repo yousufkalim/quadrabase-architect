@@ -190,18 +190,29 @@ export default function NestedList(props) {
                         }}
                         sx={{ mt: 1 }}
                       >
-                        {menuItem0?.cctp_text?.map((cctp, index) => {
-                          return (
-                            <MenuItem
-                              onClick={() => {
-                                props.handleOpenCctpModal(cctp);
-                                handleAnchorElLevel0Close();
-                              }}
-                            >
-                              Text CCTP {index + 1}
-                            </MenuItem>
-                          );
-                        })}
+                        {menuItem0?.cctp_text?.length >= 1 ? (
+                          menuItem0?.cctp_text?.map((cctp, index) => {
+                            return (
+                              <MenuItem
+                                onClick={() => {
+                                  props.handleOpenCctpModal(cctp);
+                                  handleAnchorElLevel0Close();
+                                }}
+                              >
+                                Text CCTP {index + 1}
+                              </MenuItem>
+                            );
+                          })
+                        ) : (
+                          <MenuItem
+                            onClick={() => {
+                              handleAnchorElLevel1Close();
+                            }}
+                            disabled
+                          >
+                            Empty
+                          </MenuItem>
+                        )}
                       </StyledMenu>
                     </div>
                   }
@@ -298,18 +309,29 @@ export default function NestedList(props) {
                                 }}
                                 sx={{ mt: 1 }}
                               >
-                                {menuItem1?.cctp_text?.map((cctp, index) => {
-                                  return (
-                                    <MenuItem
-                                      onClick={() => {
-                                        props.handleOpenCctpModal(cctp);
-                                        handleAnchorElLevel1Close();
-                                      }}
-                                    >
-                                      Text CCTP {index + 1}
-                                    </MenuItem>
-                                  );
-                                })}
+                                {menuItem1?.cctp_text?.length >= 1 ? (
+                                  menuItem1?.cctp_text?.map((cctp, index) => {
+                                    return (
+                                      <MenuItem
+                                        onClick={() => {
+                                          props.handleOpenCctpModal(cctp);
+                                          handleAnchorElLevel1Close();
+                                        }}
+                                      >
+                                        Text CCTP {index + 1}
+                                      </MenuItem>
+                                    );
+                                  })
+                                ) : (
+                                  <MenuItem
+                                    onClick={() => {
+                                      handleAnchorElLevel1Close();
+                                    }}
+                                    disabled
+                                  >
+                                    Empty
+                                  </MenuItem>
+                                )}
                               </StyledMenu>
                             </div>
                           }
@@ -377,21 +399,32 @@ export default function NestedList(props) {
                                           }}
                                           sx={{ mt: 1 }}
                                         >
-                                          {menuItem2?.cctp_text?.map(
-                                            (cctp, index) => {
-                                              return (
-                                                <MenuItem
-                                                  onClick={() => {
-                                                    props.handleOpenCctpModal(
-                                                      cctp
-                                                    );
-                                                    handleAnchorElLevel2Close();
-                                                  }}
-                                                >
-                                                  Text CCTP {index + 1}
-                                                </MenuItem>
-                                              );
-                                            }
+                                          {menuItem2?.cctp_text?.length >= 1 ? (
+                                            menuItem2?.cctp_text?.map(
+                                              (cctp, index) => {
+                                                return (
+                                                  <MenuItem
+                                                    onClick={() => {
+                                                      props.handleOpenCctpModal(
+                                                        cctp
+                                                      );
+                                                      handleAnchorElLevel2Close();
+                                                    }}
+                                                  >
+                                                    Text CCTP {index + 1}
+                                                  </MenuItem>
+                                                );
+                                              }
+                                            )
+                                          ) : (
+                                            <MenuItem
+                                              onClick={() => {
+                                                handleAnchorElLevel2Close();
+                                              }}
+                                              disabled
+                                            >
+                                              Empty
+                                            </MenuItem>
                                           )}
                                         </StyledMenu>
                                       </div>
@@ -402,15 +435,16 @@ export default function NestedList(props) {
                                       mr: -4,
                                     }}
                                   >
-                                    <IconButton>
+                                    <IconButton
+                                      onClick={() =>
+                                        props.openModal(work, item)
+                                      }
+                                    >
                                       <AddCircleRoundedIcon
                                         style={{
                                           color: "#f1966c",
                                           fontSize: 20,
                                         }}
-                                        onClick={() =>
-                                          props.openModal(work, item)
-                                        }
                                       />
                                     </IconButton>
                                   </ListItemIcon>
