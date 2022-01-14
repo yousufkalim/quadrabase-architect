@@ -95,7 +95,7 @@ function exportPDFEstimation(data, currentProject, noPrice){
   doc.autoTable(contentMainTable);
 
   const contentFootTable = {
-    startY: doc.lastAutoTable.settings.startY + (30 * pdfXLSXColumns.length),
+    startY: doc.lastAutoTable.settings.startY + (22 * realDataPDF.length ),
     theme: 'plain',
     head: [[
       pdfXLSXFooterColumns[0],
