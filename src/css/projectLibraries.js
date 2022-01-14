@@ -22,11 +22,21 @@ export const useStyles = makeStyles({
     marginBottom: "auto",
     textAlign: "left",
     width: "60vw",
+    maxHeight: 600,
+    overflow: "auto",
   },
   smform: {
     marginTop: "auto",
     marginBottom: "auto",
     textAlign: "left",
     width: "35vw",
+  },
+  docViewer: {
+    height: "400px !important",
+    overflow: "scroll !important",
+    backgroundColor: "#f9f9f9 !important",
+    "& #pdf-controls": {
+      display: "none",
+    },
   },
 });
