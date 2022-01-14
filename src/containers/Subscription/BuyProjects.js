@@ -7,7 +7,7 @@ import { Store } from "../../StoreContext";
 import { toast } from "react-toastify";
 import { UpdateStore } from "../../StoreContext";
 // component
-const BuySubscription = ({ mySubscription, handleBuyCreditsModal }) => {
+const BuySubscription = ({ mySubscription, handleBuyProjectsModals }) => {
   const store = Store();
   const updateStore = UpdateStore();
   // states
@@ -58,7 +58,7 @@ const BuySubscription = ({ mySubscription, handleBuyCreditsModal }) => {
     };
     const result = await api(
       "put",
-      `/licenses/buycredits/${mySubscription._id}`,
+      `/licenses/buyprojects/${mySubscription._id}`,
       data
     );
     const response = await api("get", "/Architects/current/loggedIn");
@@ -66,7 +66,7 @@ const BuySubscription = ({ mySubscription, handleBuyCreditsModal }) => {
       updateStore({ loggedIn: true, user: response.data.user });
     }
     toast.success(result.data.message);
-    handleBuyCreditsModal();
+    handleBuyProjectsModals();
   };
 
   return (
@@ -92,7 +92,7 @@ const BuySubscription = ({ mySubscription, handleBuyCreditsModal }) => {
           disabled={!selected}
           onClick={handleClick}
         >
-          Buy Credits
+          Buy Projects
         </Button>
       </div>
     </>

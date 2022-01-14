@@ -15,6 +15,11 @@ export const SubscriptionheadCells = [
     label: "Credits",
   },
   {
+    id: "projects",
+
+    label: "Projects",
+  },
+  {
     id: "assignedToName",
 
     label: "Assigned To",
