@@ -18,7 +18,7 @@ import Table from "../components/Tabel";
 import Modal from "../components/Modal";
 import BuySubscription from "./Subscription/BuySubscription";
 import AssignSubscription from "./Subscription/AssignSubscription";
-import BuyCredits from "./Subscription/BuyCredits";
+import BuyProjects from "./Subscription/BuyProjects";
 import Renew from "./Subscription/Renew";
 import AddProjectModal from "./Project/AddProjectModal";
 
@@ -34,7 +34,7 @@ export default function Home() {
   const [projectHeadCells, setProjectHeadCells] = useState("");
   const [buySubModal, setBuySubModal] = useState(false);
   const [assignSubModal, setAssignSubModal] = useState(false);
-  const [buyCreditsModal, setBuyCreditsModal] = useState(false);
+  const [buyProjectsModal, setBuyProjectsModal] = useState(false);
   const [renewModal, setRenewModal] = useState(false);
   const [assignSub, setAssignSub] = useState({
     id: "",
@@ -58,7 +58,7 @@ export default function Home() {
 
   useEffect(() => {
     getSubscriptions();
-  }, [buySubModal, assignSubModal, buyCreditsModal, renewModal]);
+  }, [buySubModal, assignSubModal, buyProjectsModal, renewModal]);
 
   useEffect(() => {
     getProjects();
@@ -67,7 +67,8 @@ export default function Home() {
   const getSubscriptions = async () => {
     const result = await api("get", `/licenses/${store.user._id}`);
     setSubscriptionsData(result.data.license);
-    setMySubscription(store?.user?.subscriptions.license);
+    console.log("result", result);
+    setMySubscription(store?.user?.subscriptions);
   };
 
   const getProjects = async () => {
@@ -84,7 +85,7 @@ export default function Home() {
     }
     setAssignSubModal(!assignSubModal);
   };
-  const handleBuyCreditsModal = () => setBuyCreditsModal(!buyCreditsModal);
+  const handleBuyProjectsModals = () => setBuyProjectsModal(!buyProjectsModal);
   const handleRenewModalModal = () => setRenewModal(!renewModal);
   const handleAddProjectModal = () => setAddProjectModal(!addProjectModal);
 
@@ -113,13 +114,13 @@ export default function Home() {
         }
       />
       <Modal
-        title="Buy Credits"
-        open={buyCreditsModal}
-        onClose={handleBuyCreditsModal}
+        title="Buy Projects"
+        open={buyProjectsModal}
+        onClose={handleBuyProjectsModals}
         component={
-          <BuyCredits
+          <BuyProjects
             mySubscription={mySubscription}
-            handleBuyCreditsModal={handleBuyCreditsModal}
+            handleBuyProjectsModals={handleBuyProjectsModals}
           />
         }
       />
@@ -169,29 +170,41 @@ export default function Home() {
             <i>My Subscription</i>
           </span>
           <div className={classes.my_sub}>
-            {!mySubscription.architect ? (
+            {console.log("mySubscription", mySubscription)}
+            {!mySubscription?.assigned_to ? (
               <span className={classes.my_sub_info}>
                 No Subscription Assigned
               </span>
             ) : (
               <>
                 <span className={classes.my_sub_info}>
-                  <div>{mySubscription?.subscription?.name}</div>
-                </span>
-                <span className={classes.my_sub_info}>
                   <div>Number of remaining projects:</div>{" "}
-                  <div>{mySubscription?.credit}</div>
+                  <div>{mySubscription?.projects}</div>
                 </span>
-                {mySubscription?.architect === store?.user?._id && (
+                {mySubscription.architect ? (
+                  <>
+                    {mySubscription?.architect === store?.user?._id && (
+                      <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
+                        onClick={handleBuyProjectsModals}
+                      >
+                        Buy Projects
+                      </Button>
+                    )}
+                  </>
+                ) : (
                   <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
-                    onClick={handleBuyCreditsModal}
+                    onClick={handleBuyProjectsModals}
                   >
-                    Buy Credits
+                    Buy Projects
                   </Button>
                 )}
+
                 <Divider variant="middle" style={{ marginBottom: 10 }} />
                 <span className={classes.my_sub_info}>
                   <div>Subscription Valid until:</div>{" "}
@@ -199,7 +212,20 @@ export default function Home() {
                     {moment(mySubscription?.end_date).format("DD/MM/YYYY")}
                   </div>
                 </span>
-                {mySubscription?.architect === store?.user?._id && (
+                {mySubscription.architect ? (
+                  <>
+                    {mySubscription?.architect === store?.user?._id && (
+                      <Button
+                        variant="contained"
+                        startIcon={<RefreshIcon />}
+                        style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
+                        onClick={handleRenewModalModal}
+                      >
+                        renew
+                      </Button>
+                    )}
+                  </>
+                ) : (
                   <Button
                     variant="contained"
                     startIcon={<RefreshIcon />}
@@ -218,7 +244,7 @@ export default function Home() {
             <span style={{ fontSize: 24 }}>
               <i>
                 My Projects({store?.user?.projects?.length}/
-                {mySubscription?.credit})
+                {mySubscription?.projects})
               </i>
             </span>
             <Button
@@ -226,12 +252,14 @@ export default function Home() {
               startIcon={<AddIcon />}
               style={{
                 backgroundColor:
-                  store?.user?.projects?.length >= mySubscription?.credit
+                  store?.user?.projects?.length >= mySubscription?.projects
                     ? "lightgray"
                     : "#3b373c",
               }}
               onClick={handleAddProjectModal}
-              disabled={store?.user?.projects?.length >= mySubscription?.credit}
+              disabled={
+                store?.user?.projects?.length >= mySubscription?.projects
+              }
             >
               New Project
             </Button>

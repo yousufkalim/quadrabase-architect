@@ -22,13 +22,19 @@ const SubscriptionCard = ({
           <i>{subscription?.name}</i>
         </Typography>
         <Typography variant="h6">Price: ${subscription?.price}</Typography>
+
         {component !== "buy Credits" && (
           <Typography variant="h6">
             Number of Month: {subscription?.duration}
           </Typography>
         )}
-        {component !== "renew" && (
+        {(component !== "buy Credits" || component !== "renew") && (
           <Typography variant="h6">Credits: {subscription?.credit}</Typography>
+        )}
+        {component !== "renew" && (
+          <Typography variant="h6">
+            Projects: {subscription?.projects}
+          </Typography>
         )}
       </CardContent>
     </Card>
