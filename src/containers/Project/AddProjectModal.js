@@ -5,7 +5,7 @@ import { Grid, Button } from "@mui/material";
 import api from "../../api";
 import RowRadioButtonsGroup from "./component/RadioGroup";
 import InputDropdown from "../../components/InputDropdown";
-import { Store } from "../../StoreContext";
+import { Store, UpdateStore } from "../../StoreContext";
 import { toast } from "react-toastify";
 
 const TOC = [
@@ -41,6 +41,7 @@ const TOP = [
 const AddProjectModal = ({ handleAddProjectModal }) => {
   const classes = useStyles();
   const store = Store();
+  const updateStore = UpdateStore();
 
   //  States
   const [values, setValues] = useState({
@@ -84,6 +85,10 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
     const result = await api("post", `/project/create`, data);
     toast.success(result.data.message);
     handleAddProjectModal();
+    const response = await api("get", "/Architects/current/loggedIn");
+    if (response.data.user) {
+      updateStore({ loggedIn: true, user: response.data.user });
+    }
   };
 
   return (

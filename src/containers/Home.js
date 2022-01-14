@@ -58,7 +58,13 @@ export default function Home() {
 
   useEffect(() => {
     getSubscriptions();
-  }, [buySubModal, assignSubModal, buyProjectsModal, renewModal]);
+  }, [
+    buySubModal,
+    assignSubModal,
+    buyProjectsModal,
+    renewModal,
+    addProjectModal,
+  ]);
 
   useEffect(() => {
     getProjects();
@@ -244,7 +250,7 @@ export default function Home() {
             <span style={{ fontSize: 24 }}>
               <i>
                 My Projects({store?.user?.projects?.length}/
-                {mySubscription?.projects})
+                {mySubscription?.projects ? mySubscription?.projects : 0})
               </i>
             </span>
             <Button
@@ -252,12 +258,14 @@ export default function Home() {
               startIcon={<AddIcon />}
               style={{
                 backgroundColor:
+                  !mySubscription?.projects ||
                   store?.user?.projects?.length >= mySubscription?.projects
                     ? "lightgray"
                     : "#3b373c",
               }}
               onClick={handleAddProjectModal}
               disabled={
+                !mySubscription?.projects ||
                 store?.user?.projects?.length >= mySubscription?.projects
               }
             >
