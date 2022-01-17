@@ -185,7 +185,9 @@ export default function Home() {
               <>
                 <span className={classes.my_sub_info}>
                   <div>Number of remaining projects:</div>{" "}
-                  <div>{mySubscription?.projects}</div>
+                  <div>
+                    {mySubscription?.projects - store?.user?.projects?.length}
+                  </div>
                 </span>
                 {mySubscription.architect ? (
                   <>

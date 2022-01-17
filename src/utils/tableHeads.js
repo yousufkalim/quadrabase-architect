@@ -129,7 +129,7 @@ export const ProjectheadCells = [
   {
     id: "createdAt",
 
-    label: "Date/Time",
+    label: "Date",
   },
 
   {
