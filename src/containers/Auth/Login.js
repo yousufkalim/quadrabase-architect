@@ -5,6 +5,8 @@ import { Typography } from "@mui/material";
 import { UpdateStore } from "../../StoreContext";
 import { onSubmit } from "../../utils/onLogin";
 import { useStyles } from "../../css/login";
+import ForgetPasswordModal from "./components/ForgetPasswordModal";
+import Modal from "../../components/Modal";
 
 // Login component
 const Login = () => {
@@ -13,15 +15,23 @@ const Login = () => {
   // getting update store function from update store context
   const updateStore = UpdateStore();
 
-  // All the required states for registeration
+  // All the required states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // add more states here
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(!openModal);
 
   // returning jsx
   return (
     // main conatiner
     <div className={classes.container}>
+      <Modal
+        title="Forget Password"
+        open={openModal}
+        onClose={handleOpenModal}
+        component={<ForgetPasswordModal handleOpenModal={handleOpenModal} />}
+      />
       {/* Login form */}
       <form
         onSubmit={(e) => onSubmit(e, email, password, updateStore)}
@@ -50,6 +60,19 @@ const Login = () => {
           type="password"
           handleChange={(e) => setPassword(e.target.value)}
         />
+        <div
+          style={{
+            width: "100%",
+            textAlign: "left",
+          }}
+        >
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={() => setOpenModal(true)}
+          >
+            Forget Password?
+          </span>
+        </div>
         {/* add new fields here */}
         {/* login button */}
         <button type="submit" className={classes.btn}>
