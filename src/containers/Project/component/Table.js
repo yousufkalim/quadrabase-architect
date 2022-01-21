@@ -190,7 +190,7 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {row.workUnit.name}
+                    {row?.workUnit?.name}
                   </TableCell>
                   <TableCell
                     align="right"
@@ -234,8 +234,8 @@ export default function DenseTable({
                           alignItems: "center",
                         }}
                       >
-                        {row.work.name.substring(0, 50)}
-                        {row.work.name.length > 50 && "..."}
+                        {row?.work?.name?.substring(0, 50)}
+                        {row?.work?.name?.length > 50 && "..."}
                         <ArrowDropDownIcon
                           id="demo-positioned-button"
                           aria-controls={
@@ -319,8 +319,9 @@ export default function DenseTable({
                         alignItems: "center",
                       }}
                     >
-                      &nbsp;&nbsp;&nbsp;{row.workDetails.name.substring(0, 50)}
-                      {row.workDetails.name.length > 50 && "..."}
+                      &nbsp;&nbsp;&nbsp;
+                      {row?.workDetails?.name?.substring(0, 50)}
+                      {row?.workDetails?.name?.length > 50 && "..."}
                       <ArrowDropDownIcon
                         id="demo-positioned-button"
                         aria-controls={
@@ -377,7 +378,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row.workDetailsUnit.name}
+                      {row?.workDetailsUnit?.name}
                     </TableCell>
                     <TableCell
                       align="right"
@@ -386,7 +387,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row.workDetails.quantity}
+                      {row?.workDetails?.quantity}
                     </TableCell>
                     <TableCell
                       align="right"
@@ -395,7 +396,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row.workDetails.unit_price}
+                      {row?.workDetails?.unit_price}
                     </TableCell>
                     <TableCell
                       align="right"
@@ -404,7 +405,8 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row.workDetails.quantity * row.workDetails.unit_price}
+                      {row?.workDetails?.quantity *
+                        row?.workDetails?.unit_price}
                     </TableCell>
                   </TableRow>
                 </>
