@@ -83,6 +83,7 @@ const ProjectView = () => {
   }, [
     store.user,
     openWorkModal,
+    openWorkDetailModal,
     openPropertiesModal,
     openDeleteWorkModal,
     openDeleteWorkDetailModal,
@@ -107,10 +108,7 @@ const ProjectView = () => {
         temp += item.work.unit_price * item.work.quantity;
       } else {
         if (item.work._id !== data[index - 1]?.work._id) {
-          temp += item.workDetails.unit_price
-            ? item.work.unit_price * item.work.quantity +
-              item.workDetails.quantity * item.workDetails.unit_price
-            : item.work.unit_price * item.work.quantity;
+          temp += item.workDetails.quantity * item.workDetails.unit_price;
         } else {
           temp += item.workDetails.quantity * item.workDetails.unit_price;
         }
@@ -302,11 +300,12 @@ const ProjectView = () => {
         component={
           <AddWorkDetailsModal
             selectedWork={selectedWork}
+            setSelectedWork={setSelectedWork}
             workDetails={workDetails}
             selectedWorkDetail={selectedWorkDetail}
             setSelectedWorkDetail={setSelectedWorkDetail}
             setOpenWorkDetailModal={setOpenWorkDetailModal}
-            setOpenWorkModal={setOpenWorkModal}
+            currentProject={currentProject}
           />
         }
       />

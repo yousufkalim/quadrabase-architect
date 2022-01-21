@@ -275,14 +275,6 @@ export default function DenseTable({
                           >
                             To Delete
                           </MenuItem>
-                          <MenuItem
-                            onClick={() => {
-                              handleOpenEditWorkModal(menuItem1);
-                              handleAnchorElLevel1Close();
-                            }}
-                          >
-                            To Modify
-                          </MenuItem>
                         </StyledMenu>
                       </TableCell>
                       <TableCell
@@ -291,36 +283,28 @@ export default function DenseTable({
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
-                      >
-                        {row.workUnit.name}
-                      </TableCell>
+                      ></TableCell>
                       <TableCell
                         align="right"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
-                      >
-                        {row.work.quantity}
-                      </TableCell>
+                      ></TableCell>
                       <TableCell
                         align="right"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
-                      >
-                        {row.work.unit_price}
-                      </TableCell>
+                      ></TableCell>
                       <TableCell
                         align="right"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
-                      >
-                        {row.work.unit_price * row.work.quantity}
-                      </TableCell>
+                      ></TableCell>
                     </TableRow>
                   )}
 
