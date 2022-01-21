@@ -43,7 +43,7 @@ export default function index(props) {
           // "video",
         ]}
         placeholder={props.placeholder}
-        style={{ height: 100, marginTop: 10 }}
+        style={{ height: props.height ? props.height : 100, marginTop: 10 }}
       />
     </div>
   );
