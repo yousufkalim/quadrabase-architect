@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import { Store } from "../../../StoreContext";
+import PropTypes from "prop-types";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -13,6 +14,43 @@ import InputDropdown from "../../../components/InputDropdown";
 import AddMemoizedProvider from "../component/MemorizedProvider";
 import AddMemoizedProviders from "../component/MemoizedProviders";
 import DocViewer from "../component/DocViewer";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 // component
 const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
@@ -30,10 +68,14 @@ const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
   const [cctp_text1, setcctp_text1] = useState("");
   const [cctp_text2, setcctp_text2] = useState("");
   const [cctp_text3, setcctp_text3] = useState("");
+  const [cctp_text4, setcctp_text4] = useState("");
   const [bpu_text1, setbpu_text1] = useState("");
-  const [bpu_text2, setbpu_text2] = useState("");
-  const [bpu_text3, setbpu_text3] = useState("");
   const [ProviderDataArr, setProviderDataArr] = React.useState([]);
+  const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTabIndex(newValue);
+  };
 
   // useEffect to get all units
   useEffect(() => {
@@ -89,9 +131,8 @@ const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
     cctp_text1 && data.cctp_text.push(cctp_text1);
     cctp_text2 && data.cctp_text.push(cctp_text2);
     cctp_text3 && data.cctp_text.push(cctp_text3);
+    cctp_text4 && data.cctp_text.push(cctp_text4);
     bpu_text1 && data.bpu_text.push(bpu_text1);
-    bpu_text2 && data.bpu_text.push(bpu_text2);
-    bpu_text3 && data.bpu_text.push(bpu_text3);
     data.categoryId = category;
     data.providers = ProviderDataArr;
     data.ranking = workData ? workData.length : 0;
@@ -136,63 +177,62 @@ const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
           />
         </Grid>
       </Grid>
+      <br />
 
-      <br />
-      <div style={{ height: 210, marginBottom: -20 }}>
-        <Grid container spacing={2}>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text1(value)}
-              value={cctp_text1}
-              label={"CCTP 1"}
-            />
-          </Grid>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text2(value)}
-              value={cctp_text2}
-              label={"CCTP 2"}
-            />
-          </Grid>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text3(value)}
-              value={cctp_text3}
-              label={"CCTP 3"}
-            />
-          </Grid>
-        </Grid>
-      </div>
-      <br />
-      <br />
-      <br />
-      <div style={{ height: 210 }}>
-        <Grid container spacing={2}>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setbpu_text1(value)}
-              value={bpu_text1}
-              label={"BPU 1"}
-            />
-          </Grid>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setbpu_text2(value)}
-              value={bpu_text2}
-              label={"BPU 2"}
-            />
-          </Grid>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setbpu_text3(value)}
-              value={bpu_text3}
-              label={"BPU 3"}
-            />
-          </Grid>
-        </Grid>
-      </div>
+      {/* CCTP Tab View */}
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "#f2f2f2" }}>
+          <Tabs
+            value={selectedTabIndex}
+            onChange={handleTabChange}
+            aria-label="CCTPs"
+          >
+            <Tab label="CCTP1" {...a11yProps(0)} />
+            <Tab label="CCTP2" {...a11yProps(1)} />
+            <Tab label="CCTP3" {...a11yProps(2)} />
+            <Tab label="CCTP4" {...a11yProps(2)} />
+            <Tab label="BPU" {...a11yProps(4)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={selectedTabIndex} index={0}>
+          <TextEditor
+            onChange={(value) => setcctp_text1(value)}
+            value={cctp_text1}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={1}>
+          <TextEditor
+            onChange={(value) => setcctp_text2(value)}
+            value={cctp_text2}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={2}>
+          <TextEditor
+            onChange={(value) => setcctp_text3(value)}
+            value={cctp_text3}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={3}>
+          <TextEditor
+            onChange={(value) => setcctp_text4(value)}
+            value={cctp_text4}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={4}>
+          <TextEditor
+            onChange={(value) => setbpu_text1(value)}
+            value={bpu_text1}
+            height={200}
+          />
+        </TabPanel>
+      </Box>
       <br />
       <br />
+
       <div>
         <AddMemoizedProvider
           ProviderOptions={ProviderOptions}

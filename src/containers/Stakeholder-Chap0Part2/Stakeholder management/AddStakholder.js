@@ -139,7 +139,6 @@ const AddStakholder = ({ handleAddStakeholderModal }) => {
 
           <InputWithLabel
             label="Address 2"
-            required={true}
             name="address2"
             type="text"
             value={values.address2}

@@ -2,12 +2,50 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
 import { useStyles } from "../../../css/projectLibraries";
 import { Button, Grid } from "@mui/material";
 import TextEditor from "../../../components/TextEditor";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 // component
 const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
@@ -21,6 +59,11 @@ const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
   const [cctp_text2, setcctp_text2] = React.useState("");
   const [cctp_text3, setcctp_text3] = React.useState("");
   const [cctp_text4, setcctp_text4] = React.useState("");
+  const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTabIndex(newValue);
+  };
 
   useEffect(() => {
     category &&
@@ -76,44 +119,51 @@ const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
       />
       <br />
       <br />
-      <div style={{ height: 210, marginBottom: -20 }}>
-        <Grid container spacing={2}>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text1(value)}
-              value={cctp_text1}
-              label={"CCTP 1"}
-            />
-          </Grid>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text2(value)}
-              value={cctp_text2}
-              label={"CCTP 2"}
-            />
-          </Grid>
-        </Grid>
-      </div>
+
+      {/* CCTP Tab View */}
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "#f2f2f2" }}>
+          <Tabs
+            value={selectedTabIndex}
+            onChange={handleTabChange}
+            aria-label="CCTPs"
+          >
+            <Tab label="CCTP1" {...a11yProps(0)} />
+            <Tab label="CCTP2" {...a11yProps(1)} />
+            <Tab label="CCTP3" {...a11yProps(2)} />
+            <Tab label="CCTP4" {...a11yProps(2)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={selectedTabIndex} index={0}>
+          <TextEditor
+            onChange={(value) => setcctp_text1(value)}
+            value={cctp_text1}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={1}>
+          <TextEditor
+            onChange={(value) => setcctp_text2(value)}
+            value={cctp_text2}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={2}>
+          <TextEditor
+            onChange={(value) => setcctp_text3(value)}
+            value={cctp_text3}
+            height={200}
+          />
+        </TabPanel>
+        <TabPanel value={selectedTabIndex} index={3}>
+          <TextEditor
+            onChange={(value) => setcctp_text4(value)}
+            value={cctp_text4}
+            height={200}
+          />
+        </TabPanel>
+      </Box>
       <br />
-      <br />
-      <div style={{ height: 210 }}>
-        <Grid container spacing={2}>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text3(value)}
-              value={cctp_text3}
-              label={"CCTP 3"}
-            />
-          </Grid>
-          <Grid item zeroMinWidth xs>
-            <TextEditor
-              onChange={(value) => setcctp_text4(value)}
-              value={cctp_text4}
-              label={"CCTP 4"}
-            />
-          </Grid>
-        </Grid>
-      </div>
       <br />
 
       {/* create button */}

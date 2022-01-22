@@ -15,6 +15,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -244,24 +246,48 @@ export default function NestedList(props) {
                         }}
                       >
                         <div>
-                          {openListLevel2 === category._id ? (
-                            <IconButton
-                              onClick={() => handleOpenListLevel2Click()}
+                          {props.loading && category._id === openListLevel2 ? (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                marginRight: 1.5,
+                                marginLeft: 1.8,
+                              }}
                             >
-                              <ExpandLess
-                                style={{ color: "#f1966c", fontSize: 20 }}
+                              <CircularProgress
+                                size={10}
+                                style={{
+                                  backgroundColor: "#f2a17b",
+                                  color: "#f2a17b",
+                                }}
                               />
-                            </IconButton>
+                            </Box>
                           ) : (
-                            <IconButton
-                              onClick={() =>
-                                handleOpenListLevel2Click(category._id)
-                              }
-                            >
-                              <ChevronRightIcon
-                                style={{ color: "#f1966c", fontSize: 20 }}
-                              />
-                            </IconButton>
+                            <>
+                              {openListLevel2 === category._id ? (
+                                <IconButton
+                                  onClick={() => {
+                                    handleOpenListLevel2Click();
+                                    props.setworks([]);
+                                  }}
+                                >
+                                  <ExpandLess
+                                    style={{ color: "#f1966c", fontSize: 20 }}
+                                  />
+                                </IconButton>
+                              ) : (
+                                <IconButton
+                                  onClick={() => {
+                                    handleOpenListLevel2Click(category._id);
+                                    props.getLevel3(category._id);
+                                  }}
+                                >
+                                  <ChevronRightIcon
+                                    style={{ color: "#f1966c", fontSize: 20 }}
+                                  />
+                                </IconButton>
+                              )}
+                            </>
                           )}
                         </div>
                         {/* label */}
@@ -340,7 +366,7 @@ export default function NestedList(props) {
                       </ListItem>
                       {/* level 3 */}
                       <Collapse in={openListLevel2 === category._id}>
-                        {item?.works?.map((work) => {
+                        {props?.level3?.map((work) => {
                           if (work.category === openListLevel2) {
                             return (
                               <>

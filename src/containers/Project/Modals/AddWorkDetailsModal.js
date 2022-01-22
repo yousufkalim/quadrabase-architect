@@ -3,6 +3,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
+import api from "../../../api";
+import { toast } from "react-toastify";
 
 const AddWorkDetailsModal = ({
   selectedWork,
@@ -10,7 +12,8 @@ const AddWorkDetailsModal = ({
   selectedWorkDetail,
   setSelectedWorkDetail,
   setOpenWorkDetailModal,
-  setOpenWorkModal,
+  setSelectedWork,
+  currentProject,
 }) => {
   const handleCheckbox = (e, item) => {
     if (e.target.checked) {
@@ -27,9 +30,23 @@ const AddWorkDetailsModal = ({
     }
   };
 
-  const handleValidate = () => {
+  const handleValidate = async () => {
+    let data = {
+      name: selectedWork.name,
+      cctp_text: selectedWork.cctp_text,
+      bpu_text: selectedWork.bpu_text,
+      work_details: [],
+    };
+    data.work_details = selectedWorkDetail;
+    const result = await api(
+      "post",
+      `/project/addWork/${currentProject._id}`,
+      data
+    );
+    toast.success(result.data.message);
+    setSelectedWorkDetail([]);
+    setSelectedWork();
     setOpenWorkDetailModal(false);
-    setOpenWorkModal(true);
   };
 
   return (
