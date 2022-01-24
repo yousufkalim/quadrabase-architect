@@ -5,6 +5,7 @@ import { Button, Grid } from "@mui/material";
 import { Store } from "../../../StoreContext";
 import { toast } from "react-toastify";
 import InputWithLabel from "../../../components/InputWithLabel";
+import InputDropdown from "../../../components/InputDropdown";
 import { useStyles } from "../../../css/addStakeholder";
 
 // component
@@ -22,7 +23,20 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
     address1: "",
     address2: "",
     zipcode: "",
+    type: "",
   });
+  const [options, setOptions] = useState([]);
+
+  // useEffect to get all types
+  useEffect(() => {
+    getTypes();
+  }, []);
+
+  // func to getAll Units
+  const getTypes = async () => {
+    const result = await api("get", `/StakeholderTypes/`);
+    setOptions(result.data.stakeholderTypes);
+  };
 
   // useEffect to set values
   useEffect(() => {
@@ -36,6 +50,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
       address1: stakeholder.address1,
       address2: stakeholder.address2,
       zipcode: stakeholder.zipcode,
+      type: stakeholder.type,
     });
   }, [stakeholder]);
 
@@ -76,6 +91,19 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
               />
             </Grid>
             <Grid item zeroMinWidth xs>
+              <InputDropdown
+                name="type"
+                label="Type"
+                value={values.type}
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
+                options={options}
+                required={true}
+              />
+            </Grid>
+          </Grid>
+          <br />
+          <Grid container spacing={2}>
+            <Grid item zeroMinWidth xs>
               <InputWithLabel
                 label="Email"
                 required={true}
@@ -87,16 +115,19 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
                 }
               />
             </Grid>
+            <Grid item zeroMinWidth xs>
+              <InputWithLabel
+                label="Contact Number"
+                required={true}
+                name="contact_no"
+                type="number"
+                value={values.contact_no}
+                handleChange={(e) =>
+                  handleChange(e.target.name, e.target.value)
+                }
+              />
+            </Grid>
           </Grid>
-          <br />
-          <InputWithLabel
-            label="Contact Number"
-            required={true}
-            name="contact_no"
-            type="number"
-            value={values.contact_no}
-            handleChange={(e) => handleChange(e.target.name, e.target.value)}
-          />
           <br />
           <br />
           <Grid container spacing={2}>
