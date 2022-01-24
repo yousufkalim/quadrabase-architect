@@ -64,7 +64,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
     setOptions(result?.data?.vat);
     result &&
       setValues((prev) => {
-        prev.vat = result.data.vat[0]._id;
+        prev.vat = result?.data?.vat[0]?._id;
         return { ...prev };
       });
   };

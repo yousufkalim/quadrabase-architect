@@ -90,11 +90,6 @@ export const Chap0Part2headCells = [
     label: "Title",
   },
   {
-    id: "text",
-
-    label: "Text",
-  },
-  {
     id: "actions",
 
     label: "Actions",

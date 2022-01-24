@@ -6,7 +6,7 @@ import { Store } from "../../../StoreContext";
 import { toast } from "react-toastify";
 import InputWithLabel from "../../../components/InputWithLabel";
 import { useStyles } from "../../../css/addStakeholder";
-import TextEditor from "../../../components/TextEditor";
+import RichTextEditor from "../../../components/RichTextEditor";
 
 // component
 const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
@@ -32,7 +32,10 @@ const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
   // jsx
   return (
     <>
-      <div className={classes.container}>
+      <div
+        className={classes.container}
+        style={{ maxHeight: 600, overflow: "auto" }}
+      >
         <form className={classes.form} onSubmit={handleSubmit}>
           {/* All fields */}
           <br />
@@ -46,13 +49,10 @@ const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
           />
           <br />
           <br />
-          <TextEditor
-            onChange={(value) => setText(value)}
-            value={text}
-            label={"Text"}
-          />
+          <label htmlFor="grid-first-name">Text</label>
           <br />
           <br />
+          <RichTextEditor value={text} setValue={setText} />
           <br />
 
           {/* create button */}

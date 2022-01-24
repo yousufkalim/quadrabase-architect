@@ -140,27 +140,27 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
   useEffect(() => {
     if (currentProject) {
       setValues((prev) => {
-        prev.name = currentProject.name;
-        prev.prescriber = currentProject.prescriber;
-        prev.vat = currentProject.vat._id;
-        prev.reference = currentProject.reference
-          ? currentProject.reference
+        prev.name = currentProject?.name;
+        prev.prescriber = currentProject?.prescriber;
+        prev.vat = currentProject?.vat?._id;
+        prev.reference = currentProject?.reference
+          ? currentProject?.reference
           : "";
-        prev.description = currentProject.description
-          ? currentProject.description
+        prev.description = currentProject?.description
+          ? currentProject?.description
           : "";
-        prev.chap0part2 = currentProject.chap0part2
-          ? currentProject.chap0part2.id._id
+        prev.chap0part2 = currentProject?.chap0part2
+          ? currentProject?.chap0part2?.id?._id
           : "";
         return { ...prev };
       });
       setValues2((prev) => {
-        prev.market_type = currentProject.market_type;
-        prev.structure = currentProject.structure;
+        prev.market_type = currentProject?.market_type;
+        prev.structure = currentProject?.structure;
         return { ...prev };
       });
       setValues3((prev) => {
-        prev.stakeholders = currentProject.stakeholders;
+        prev.stakeholders = currentProject?.stakeholders;
         return { ...prev };
       });
     }
