@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
-import TextEditor from "../../../components/TextEditor";
+import RichTextEditor from "../../../components/RichTextEditor";
 import { Button } from "@mui/material";
 
 const EditChap0Part2 = ({
@@ -38,7 +38,7 @@ const EditChap0Part2 = ({
   };
 
   return (
-    <div style={{ width: "45vw" }}>
+    <div style={{ width: "45vw", maxHeight: 600, overflow: "auto" }}>
       <form onSubmit={handleSubmit}>
         {/* All fields */}
         <br />
@@ -52,13 +52,10 @@ const EditChap0Part2 = ({
         />
         <br />
         <br />
-        <TextEditor
-          onChange={(value) => setText(value)}
-          value={text}
-          label={"Text"}
-        />
+        <label htmlFor="grid-first-name">Text</label>
         <br />
         <br />
+        <RichTextEditor value={editChap0Part2.id.text} setValue={setText} />
         <br />
 
         {/* create button */}

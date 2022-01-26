@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useStyles } from "../../../css/projectView";
-import { Store } from "../../../StoreContext";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import styled from "@emotion/styled";
@@ -133,6 +132,8 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
 
   const [options, setOptions] = useState([]);
   const [chapOptions, setChapOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [typeValue, setTypeValue] = useState("");
   const [stakeholderOptions, setStakeholderOptions] = useState([]);
   const [value, setValue] = useState(0);
 
@@ -140,40 +141,61 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
   useEffect(() => {
     if (currentProject) {
       setValues((prev) => {
-        prev.name = currentProject.name;
-        prev.prescriber = currentProject.prescriber;
-        prev.vat = currentProject.vat._id;
-        prev.reference = currentProject.reference
-          ? currentProject.reference
+        prev.name = currentProject?.name;
+        prev.prescriber = currentProject?.prescriber;
+        prev.vat = currentProject?.vat?._id;
+        prev.reference = currentProject?.reference
+          ? currentProject?.reference
           : "";
-        prev.description = currentProject.description
-          ? currentProject.description
+        prev.description = currentProject?.description
+          ? currentProject?.description
           : "";
-        prev.chap0part2 = currentProject.chap0part2
-          ? currentProject.chap0part2.id._id
+        prev.chap0part2 = currentProject?.chap0part2
+          ? currentProject?.chap0part2?.id?._id
           : "";
         return { ...prev };
       });
       setValues2((prev) => {
-        prev.market_type = currentProject.market_type;
-        prev.structure = currentProject.structure;
+        prev.market_type = currentProject?.market_type;
+        prev.structure = currentProject?.structure;
         return { ...prev };
       });
       setValues3((prev) => {
-        prev.stakeholders = currentProject.stakeholders;
+        prev.stakeholders = currentProject?.stakeholders;
         return { ...prev };
       });
     }
 
     getVat();
     getChap0Part2();
-    getStakeholders();
+    getTypes();
+    getCurrentType();
   }, [currentProject]);
+
+  useEffect(() => {
+    getStakeholders();
+  }, [typeValue]);
+
+  const getCurrentType = async () => {
+    const result = await api(
+      "get",
+      `/StakeholderTypes/getByStakeholder/${currentProject?.stakeholders[0]}`
+    );
+    setTypeValue(result.data.type._id);
+  };
+
+  // func to getAll Units
+  const getTypes = async () => {
+    const result = await api("get", `/StakeholderTypes/`);
+    setTypeOptions(result.data.stakeholderTypes);
+  };
 
   //   func to get stakeholders
   const getStakeholders = async () => {
-    const result = await api("get", `/Stakeholders/`);
-    setStakeholderOptions(result.data.stakeholders);
+    if (typeValue) {
+      const result = await api("get", `/Stakeholders/getByType/${typeValue}`);
+      setStakeholderOptions(result.data.stakeholder);
+    }
   };
 
   //   func to get vat
@@ -266,7 +288,7 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
         <Tabs value={value} onChange={handleTabChange}>
           <Tab label="Project References" {...a11yProps(0)} />
           <Tab label="Market Type / Structure" {...a11yProps(1)} />
-          <Tab label="Speakers" {...a11yProps(2)} />
+          <Tab label="Stakeholders" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -408,14 +430,28 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
         </form>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <InputWithOptions
-          label="Select Speaker"
-          required={true}
-          name="family"
-          value={values3.stakeholders}
-          handleChange={(e) => handleStakeholdersChange(e)}
-          options={stakeholderOptions}
-        />
+        <Grid container spacing={2}>
+          <Grid item zeroMinWidth xs>
+            <InputDropdown
+              name="type"
+              label="Type"
+              value={typeValue}
+              onChange={(e) => setTypeValue(e.target.value)}
+              options={typeOptions}
+              required={true}
+            />
+          </Grid>
+          <Grid item zeroMinWidth xs>
+            <InputWithOptions
+              label="Select Stakeholder"
+              required={true}
+              name="family"
+              value={values3.stakeholders}
+              handleChange={(e) => handleStakeholdersChange(e)}
+              options={stakeholderOptions}
+            />
+          </Grid>
+        </Grid>
         <br />
         {/* register button */}
         <div style={{ width: "100%", textAlign: "right" }}>

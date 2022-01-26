@@ -33,7 +33,9 @@ export default function index(props) {
               ? option.name
               : option.title
               ? option.title
-              : option.value}
+              : option.value
+              ? option.value
+              : option.text}
             {option.value && "%"}
           </option>
         ))}
