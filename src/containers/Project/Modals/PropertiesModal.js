@@ -169,7 +169,7 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
     getVat();
     getChap0Part2();
     getTypes();
-    getCurrentType();
+    currentProject?.stakeholders[0] && getCurrentType();
   }, [currentProject]);
 
   useEffect(() => {
