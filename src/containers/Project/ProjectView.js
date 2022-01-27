@@ -272,11 +272,6 @@ const ProjectView = () => {
       `/BookLibraries/search/getlibraries?q=${searchQuery}`
     );
     let data = result?.data?.bookLibraries;
-    data?.map((dt) => {
-      dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
-      dt.works = dt.works.sort((a, b) => a.ranking - b.ranking);
-      dt.work_details = dt.work_details.sort((a, b) => a.ranking - b.ranking);
-    });
     setGeneralLibrariesData(data);
   };
 
