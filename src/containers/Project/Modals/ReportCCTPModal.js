@@ -1,20 +1,26 @@
 // init
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 // Reports
 import { exportDOCXCCTP } from "../ReportsGen/genDocx";
+
+import { toast } from "react-toastify";
 
 function ReportCCTPModal(props){
 
   const { projectWorkData, currentProject } = props;
 
   function generateWord(){
-    exportDOCXCCTP(projectWorkData, currentProject);
+    try{
+      exportDOCXCCTP(projectWorkData, currentProject);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   return (
