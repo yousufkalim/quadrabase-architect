@@ -47,17 +47,20 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
       
       const arr = [];
 
+      console.log(`THIS IS THE data[${i}]: ${JSON.stringify(data[i])}`);
+      console.log(`THIS IS THE data[${i}].workUnit: ${JSON.stringify(data[i].workUnit)}`);
+
       arr.push(`${workIndex}.${workDetailIndex}`);
       arr.push(data[i].work.name);
-      arr.push(data[i].workUnit.name);
-      arr.push(data[i].work.quantity);
+      arr.push(data[i].workUnit?.name ?? "");
+      arr.push(data[i].work?.quantity ?? "");
 
-      if(noPrice){
+      if(noPrice || (!data[i].workUnit?.name)){
         arr.push("");
         arr.push("");
       } else {
-        arr.push(data[i].work.unit_price);
-        arr.push(data[i].work.unit_price * data[i].work.quantity);
+        arr.push(data[i].work?.unit_price ?? "0");
+        arr.push((data[i].work?.unit_price ?? "0") * (data[i].work.quantity ?? "0"));
       }
 
       pdfXLSXRows.push(arr);
@@ -140,15 +143,13 @@ function footerDataGen(data, currentProject, noPrice){
   let footerData = [];
 
   let totalHT = 0;
+
   data.map((item, index) => {
     if (!item.workDetails) {
       totalHT += item.work.unit_price * item.work.quantity;
     } else {
       if (item.work._id !== data[index - 1]?.work._id) {
-        totalHT += item.workDetails.unit_price
-          ? item.work.unit_price * item.work.quantity +
-            item.workDetails.quantity * item.workDetails.unit_price
-          : item.work.unit_price * item.work.quantity;
+        totalHT += item.workDetails.quantity * item.workDetails.unit_price;
       } else {
         totalHT += item.workDetails.quantity * item.workDetails.unit_price;
       }

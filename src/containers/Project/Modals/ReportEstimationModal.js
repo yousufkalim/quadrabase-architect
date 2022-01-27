@@ -12,20 +12,37 @@ import { exportXLSXEstimation } from "../ReportsGen/genExcel";
 import { exportPDFEstimation } from "../ReportsGen/genPDF";
 import { exportDOCXestimation } from "../ReportsGen/genDocx";
 
+import { toast } from "react-toastify";
+
 function ReportEstimationModal(props){
 
   const { projectWorkData, currentProject } = props;
 
   function generateExcel(){
-    exportXLSXEstimation(projectWorkData, currentProject);
+    try{
+      exportXLSXEstimation(projectWorkData, currentProject);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   function generatePDF(){
-    exportPDFEstimation(projectWorkData, currentProject);
+    try{
+      exportPDFEstimation(projectWorkData, currentProject);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   function generateWord(){
-    exportDOCXestimation(projectWorkData, currentProject);
+    try{
+      exportDOCXestimation(projectWorkData, currentProject);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   return (

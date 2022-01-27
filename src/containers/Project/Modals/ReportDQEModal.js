@@ -1,5 +1,5 @@
 // init
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -12,20 +12,37 @@ import { exportXLSXEstimation } from "../ReportsGen/genExcel";
 import { exportPDFEstimation } from "../ReportsGen/genPDF";
 import { exportDOCXestimation } from "../ReportsGen/genDocx";
 
+import { toast } from "react-toastify";
+
 function ReportDQEModal(props){
 
   const { projectWorkData, currentProject } = props;
 
   function generateExcel(){
-    exportXLSXEstimation(projectWorkData, currentProject, true);
+    try{
+      exportXLSXEstimation(projectWorkData, currentProject, true);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   function generatePDF(){
-    exportPDFEstimation(projectWorkData, currentProject, true);
+    try{
+      exportPDFEstimation(projectWorkData, currentProject, true);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   function generateWord(){
-    exportDOCXestimation(projectWorkData, currentProject, true);
+    try{
+      exportDOCXestimation(projectWorkData, currentProject, true);
+    }catch(e){
+      toast.error("Could not generate report successfully.");
+      console.trace(e);
+    }
   }
 
   return (
