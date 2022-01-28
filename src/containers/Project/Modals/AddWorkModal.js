@@ -17,6 +17,7 @@ const AddWorkModal = ({
   currentProject,
   setSelectedWorkDetail,
   setSelectedWork,
+  getworks,
 }) => {
   const [values, setValues] = useState({
     name: "",
@@ -72,6 +73,7 @@ const AddWorkModal = ({
     setSelectedWorkDetail([]);
     setSelectedWork();
     setOpenWorkModal(false);
+    getworks();
   };
 
   return (

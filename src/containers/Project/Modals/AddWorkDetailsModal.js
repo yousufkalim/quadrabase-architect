@@ -14,6 +14,7 @@ const AddWorkDetailsModal = ({
   setOpenWorkDetailModal,
   setSelectedWork,
   currentProject,
+  getworks,
 }) => {
   const handleCheckbox = (e, item) => {
     if (e.target.checked) {
@@ -47,6 +48,7 @@ const AddWorkDetailsModal = ({
     setSelectedWorkDetail([]);
     setSelectedWork();
     setOpenWorkDetailModal(false);
+    getworks();
   };
 
   return (

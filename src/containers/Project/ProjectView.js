@@ -81,20 +81,13 @@ const ProjectView = () => {
   const [loadingLevel, setLoadingLevel] = useState(false);
 
   useEffect(() => {
-    getProject();
-    getLibraries();
     getworks();
-  }, [
-    store.user,
-    openWorkModal,
-    openWorkDetailModal,
-    openPropertiesModal,
-    openDeleteWorkModal,
-    openDeleteWorkDetailModal,
-    openEditWorkModal,
-    openEditWorkDetailModal,
-    openEditChap0Part2Modal,
-  ]);
+    getProject();
+  }, []);
+
+  useEffect(() => {
+    getLibraries();
+  }, [store.user]);
 
   // func to get current project
   const getProject = async () => {
@@ -162,6 +155,7 @@ const ProjectView = () => {
     );
     handleOpenDeleteWorkModal();
     toast.success(response.data.message);
+    getworks();
   };
 
   // delete work Detail func
@@ -175,6 +169,7 @@ const ProjectView = () => {
     );
     handleOpenDeleteWorkDetailModal();
     toast.success(response.data.message);
+    getworks();
   };
 
   // open modal func
@@ -306,6 +301,7 @@ const ProjectView = () => {
                 setOpenWorkModal={setOpenWorkModal}
                 projectWorkData={projectWorkData}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -322,6 +318,7 @@ const ProjectView = () => {
                 setSelectedWorkDetail={setSelectedWorkDetail}
                 setOpenWorkDetailModal={setOpenWorkDetailModal}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -333,6 +330,7 @@ const ProjectView = () => {
               <PropertiesModal
                 handleOpenPropertiesModal={handleOpenPropertiesModal}
                 currentProject={currentProject}
+                getProject={getProject}
               />
             }
           />
@@ -377,6 +375,7 @@ const ProjectView = () => {
                 handleOpenEditWorkModal={handleOpenEditWorkModal}
                 selectedWork={editWork}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -389,6 +388,7 @@ const ProjectView = () => {
                 handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
                 selectedWorkDetail={editWorkDetail}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -445,6 +445,7 @@ const ProjectView = () => {
                 handleOpenEditChap0Part2Modal={handleOpenEditChap0Part2Modal}
                 editChap0Part2={editChap0Part2}
                 currentProject={currentProject}
+                getProject={getProject}
               />
             }
           />
