@@ -61,7 +61,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
   //   func to get vat
   const getVat = async () => {
     const result = await api("get", `/VAT/getAll`);
-    setOptions(result?.data?.vat);
+    setOptions(result?.data?.vat?.sort((a, b) => a.value - b.value));
     result &&
       setValues((prev) => {
         prev.vat = result?.data?.vat[0]?._id;

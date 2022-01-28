@@ -205,7 +205,7 @@ const PropertiesModal = ({
   //   func to get vat
   const getVat = async () => {
     const result = await api("get", `/VAT/getAll`);
-    setOptions(result?.data?.vat);
+    setOptions(result?.data?.vat.sort((a, b) => a.value - b.value));
   };
 
   //   func to get Chap0Part2Data
