@@ -373,7 +373,6 @@ const PropertiesModal = ({
             InputProps={{
               style: { height: 50 },
             }}
-            required={true}
           >
             <option value="" disabled></option>
 

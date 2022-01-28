@@ -63,6 +63,7 @@ const AddWorkModal = ({
     let data = values;
     data.cctp_text = selectedWork.cctp_text;
     data.bpu_text = selectedWork.bpu_text;
+    data.category = selectedWork.category;
     data.work_details = selectedWorkDetail;
     const result = await api(
       "post",
