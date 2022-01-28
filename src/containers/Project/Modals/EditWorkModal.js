@@ -13,6 +13,7 @@ const EditWorkModal = ({
   selectedWork,
   currentProject,
   handleOpenEditWorkModal,
+  getworks,
 }) => {
   const [values, setValues] = useState({
     name: "",
@@ -68,6 +69,7 @@ const EditWorkModal = ({
     );
     toast.success(result.data.message);
     handleOpenEditWorkModal();
+    getworks();
   };
 
   return (

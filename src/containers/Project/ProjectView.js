@@ -81,20 +81,13 @@ const ProjectView = () => {
   const [loadingLevel, setLoadingLevel] = useState(false);
 
   useEffect(() => {
-    getProject();
-    getLibraries();
     getworks();
-  }, [
-    store.user,
-    openWorkModal,
-    openWorkDetailModal,
-    openPropertiesModal,
-    openDeleteWorkModal,
-    openDeleteWorkDetailModal,
-    openEditWorkModal,
-    openEditWorkDetailModal,
-    openEditChap0Part2Modal,
-  ]);
+    getProject();
+  }, []);
+
+  useEffect(() => {
+    getLibraries();
+  }, [store.user]);
 
   // func to get current project
   const getProject = async () => {
@@ -107,18 +100,20 @@ const ProjectView = () => {
     const result = await api("get", `/project/works/${id}`);
     let data = result?.data?.works;
     let temp = 0;
-    data.map((item, index) => {
-      if (!item.workDetails) {
-        temp += item.work.unit_price * item.work.quantity;
-      } else {
-        if (item.work._id !== data[index - 1]?.work._id) {
-          temp += item.workDetails.quantity * item.workDetails.unit_price;
+    data.map((dat) => {
+      dat.data.map((item, index) => {
+        if (!item.workDetails) {
+          temp += item.work.unit_price * item.work.quantity;
         } else {
-          temp += item.workDetails.quantity * item.workDetails.unit_price;
+          if (item?.work?._id !== data[index - 1]?.work?._id) {
+            temp += item.workDetails.quantity * item.workDetails.unit_price;
+          } else {
+            temp += item.workDetails.quantity * item.workDetails.unit_price;
+          }
         }
-      }
+      });
     });
-    setTotalHT(temp);
+    setTotalHT(temp.toFixed(2));
     setProjectWorkData(data);
   };
 
@@ -162,6 +157,7 @@ const ProjectView = () => {
     );
     handleOpenDeleteWorkModal();
     toast.success(response.data.message);
+    getworks();
   };
 
   // delete work Detail func
@@ -175,6 +171,7 @@ const ProjectView = () => {
     );
     handleOpenDeleteWorkDetailModal();
     toast.success(response.data.message);
+    getworks();
   };
 
   // open modal func
@@ -306,6 +303,7 @@ const ProjectView = () => {
                 setOpenWorkModal={setOpenWorkModal}
                 projectWorkData={projectWorkData}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -322,6 +320,7 @@ const ProjectView = () => {
                 setSelectedWorkDetail={setSelectedWorkDetail}
                 setOpenWorkDetailModal={setOpenWorkDetailModal}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -333,6 +332,7 @@ const ProjectView = () => {
               <PropertiesModal
                 handleOpenPropertiesModal={handleOpenPropertiesModal}
                 currentProject={currentProject}
+                getProject={getProject}
               />
             }
           />
@@ -377,6 +377,7 @@ const ProjectView = () => {
                 handleOpenEditWorkModal={handleOpenEditWorkModal}
                 selectedWork={editWork}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -389,6 +390,7 @@ const ProjectView = () => {
                 handleOpenEditWorkDetailModal={handleOpenEditWorkDetailModal}
                 selectedWorkDetail={editWorkDetail}
                 currentProject={currentProject}
+                getworks={getworks}
               />
             }
           />
@@ -445,6 +447,7 @@ const ProjectView = () => {
                 handleOpenEditChap0Part2Modal={handleOpenEditChap0Part2Modal}
                 editChap0Part2={editChap0Part2}
                 currentProject={currentProject}
+                getProject={getProject}
               />
             }
           />
@@ -676,17 +679,59 @@ const ProjectView = () => {
                   }}
                 >
                   <div style={{ height: "80%", overflow: "auto" }}>
-                    <Table
-                      projectWorkData={projectWorkData}
-                      handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
-                      handleOpenDeleteWorkDetailModal={
-                        handleOpenDeleteWorkDetailModal
-                      }
-                      handleOpenEditWorkModal={handleOpenEditWorkModal}
-                      handleOpenEditWorkDetailModal={
-                        handleOpenEditWorkDetailModal
-                      }
-                    />
+                    {currentProject.market_type === "Trades" ||
+                    currentProject.market_type === "TradesAndTranches"
+                      ? projectWorkData.map((item) => {
+                          return (
+                            <>
+                              <div
+                                style={{
+                                  width: "100%",
+                                  backgroundColor: "#f1966c",
+                                  padding: "10px 15px",
+                                }}
+                              >
+                                {item._id}
+                              </div>
+                              <Table
+                                projectWorkData={item.data}
+                                handleOpenDeleteWorkModal={
+                                  handleOpenDeleteWorkModal
+                                }
+                                handleOpenDeleteWorkDetailModal={
+                                  handleOpenDeleteWorkDetailModal
+                                }
+                                handleOpenEditWorkModal={
+                                  handleOpenEditWorkModal
+                                }
+                                handleOpenEditWorkDetailModal={
+                                  handleOpenEditWorkDetailModal
+                                }
+                              />
+                            </>
+                          );
+                        })
+                      : projectWorkData.map((item) => {
+                          return (
+                            <>
+                              <Table
+                                projectWorkData={item.data}
+                                handleOpenDeleteWorkModal={
+                                  handleOpenDeleteWorkModal
+                                }
+                                handleOpenDeleteWorkDetailModal={
+                                  handleOpenDeleteWorkDetailModal
+                                }
+                                handleOpenEditWorkModal={
+                                  handleOpenEditWorkModal
+                                }
+                                handleOpenEditWorkDetailModal={
+                                  handleOpenEditWorkDetailModal
+                                }
+                              />
+                            </>
+                          );
+                        })}
                   </div>
                   <div
                     style={{
@@ -722,9 +767,10 @@ const ProjectView = () => {
                             Total Price:
                           </div>
                           <div>
-                            {Math.floor(
-                              totalHT * (1 + currentProject?.vat?.value / 100)
-                            )}
+                            {(
+                              totalHT *
+                              (1 + currentProject?.vat?.value / 100)
+                            ).toFixed(2)}
                           </div>
                         </div>
                       </div>

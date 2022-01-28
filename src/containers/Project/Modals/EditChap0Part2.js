@@ -12,6 +12,7 @@ const EditChap0Part2 = ({
   handleOpenEditChap0Part2Modal,
   editChap0Part2,
   currentProject,
+  getProject,
 }) => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -35,6 +36,7 @@ const EditChap0Part2 = ({
     );
     toast.success(result.data.message);
     handleOpenEditChap0Part2Modal();
+    getProject();
   };
 
   return (

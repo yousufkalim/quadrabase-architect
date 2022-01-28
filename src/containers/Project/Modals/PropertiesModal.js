@@ -109,7 +109,11 @@ function a11yProps(index) {
 }
 
 // component
-const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
+const PropertiesModal = ({
+  handleOpenPropertiesModal,
+  currentProject,
+  getProject,
+}) => {
   const classes = useStyles();
 
   //  States
@@ -263,6 +267,7 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
     const result = await api("put", `/project/${currentProject._id}`, data);
     toast.success(result.data.message);
     handleOpenPropertiesModal();
+    getProject();
   };
 
   //   handle submit
@@ -271,12 +276,14 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
     const result = await api("put", `/project/${currentProject._id}`, values2);
     toast.success(result.data.message);
     handleOpenPropertiesModal();
+    getProject();
   };
   //   handle submit
   const handleSubmit3 = async () => {
     const result = await api("put", `/project/${currentProject._id}`, values3);
     toast.success(result.data.message);
     handleOpenPropertiesModal();
+    getProject();
   };
 
   const handleTabChange = (event, newValue) => {
@@ -366,7 +373,6 @@ const PropertiesModal = ({ handleOpenPropertiesModal, currentProject }) => {
             InputProps={{
               style: { height: 50 },
             }}
-            required={true}
           >
             <option value="" disabled></option>
 
