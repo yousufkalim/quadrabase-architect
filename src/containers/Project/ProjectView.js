@@ -79,6 +79,7 @@ const ProjectView = () => {
   const [works, setworks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingLevel, setLoadingLevel] = useState(false);
+  const [tradeTotal, setTradeTotal] = useState([]);
 
   useEffect(() => {
     getworks();
@@ -98,10 +99,13 @@ const ProjectView = () => {
   // func to get current project
   const getworks = async () => {
     const result = await api("get", `/project/works/${id}`);
-    let data = result?.data?.works;
-    let temp = 0;
-    data.map((dat) => {
+    let data = result?.data?.works.sort((a, b) => a.ranking - b.ranking);
+    let tempAmount = 0;
+    let tempArray = [];
+    data.map((dat, index1) => {
+      let tempSum = 0;
       dat.data.map((item, index) => {
+        let temp = 0;
         if (!item.workDetails) {
           temp += item.work.unit_price * item.work.quantity;
         } else {
@@ -111,9 +115,13 @@ const ProjectView = () => {
             temp += item.workDetails.quantity * item.workDetails.unit_price;
           }
         }
+        tempSum += temp;
+        tempAmount += temp;
       });
+      tempArray[index1] = tempSum;
     });
-    setTotalHT(temp.toFixed(2));
+    setTradeTotal(tempArray);
+    setTotalHT(tempAmount.toFixed(2));
     setProjectWorkData(data);
   };
 
@@ -122,7 +130,9 @@ const ProjectView = () => {
     try {
       const result = await api("get", `/BookLibraries/getTwoLevels`);
 
-      let data = result?.data?.bookLibraries;
+      let data = result?.data?.bookLibraries.sort(
+        (a, b) => a.ranking - b.ranking
+      );
       data?.map((dt) => {
         dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
       });
@@ -134,7 +144,9 @@ const ProjectView = () => {
           "get",
           `/BookLibraries/getTwoLevelsByArchitectId/${store.user._id}`
         ));
-      let temp = response?.data?.bookLibrary;
+      let temp = response?.data?.bookLibrary.sort(
+        (a, b) => a.ranking - b.ranking
+      );
       temp?.map((dt) => {
         dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
       });
@@ -681,7 +693,7 @@ const ProjectView = () => {
                   <div style={{ height: "80%", overflow: "auto" }}>
                     {currentProject.market_type === "Trades" ||
                     currentProject.market_type === "TradesAndTranches"
-                      ? projectWorkData.map((item) => {
+                      ? projectWorkData.map((item, index) => {
                           return (
                             <>
                               <div
@@ -689,9 +701,10 @@ const ProjectView = () => {
                                   width: "100%",
                                   backgroundColor: "#f1966c",
                                   padding: "10px 15px",
+                                  fontWeight: 600,
                                 }}
                               >
-                                {item._id}
+                                Trade n°{index + 1} - {item._id}
                               </div>
                               <Table
                                 projectWorkData={item.data}
@@ -708,6 +721,20 @@ const ProjectView = () => {
                                   handleOpenEditWorkDetailModal
                                 }
                               />
+                              <div
+                                style={{
+                                  width: "100%",
+                                  padding: "10px 15px",
+                                  display: "flex",
+                                  justifyContent: "flex-end",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Total Trade n°{index + 1} - {item._id}{" "}
+                                &nbsp;&nbsp;&nbsp;
+                                {tradeTotal[index]}
+                              </div>
+                              <br />
                             </>
                           );
                         })
