@@ -176,7 +176,6 @@ export default function Home() {
             <i>My Subscription</i>
           </span>
           <div className={classes.my_sub}>
-            {console.log("mySubscription", mySubscription)}
             {!mySubscription?.assigned_to ? (
               <span className={classes.my_sub_info}>
                 No Subscription Assigned

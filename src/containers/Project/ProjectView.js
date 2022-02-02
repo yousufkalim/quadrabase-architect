@@ -85,9 +85,12 @@ const ProjectView = () => {
   const [openTranchesModal, setOpenTranchesModal] = useState(false);
 
   useEffect(() => {
-    getworks();
     getProject();
   }, []);
+
+  useEffect(() => {
+    currentProject.name && getworks();
+  }, [currentProject]);
 
   useEffect(() => {
     getLibraries();
@@ -101,31 +104,53 @@ const ProjectView = () => {
 
   // func to get current project
   const getworks = async () => {
-    const result = await api("get", `/project/works/${id}`);
-    let data = result?.data?.works.sort((a, b) => a.ranking - b.ranking);
-    let tempAmount = 0;
-    let tempArray = [];
-    data.map((dat, index1) => {
-      let tempSum = 0;
-      dat.data.map((item, index) => {
-        let temp = 0;
+    if (
+      currentProject.market_type === "Trades" ||
+      currentProject.market_type === "TradesAndTranches"
+    ) {
+      const result = await api("get", `/project/worksByTrades/${id}`);
+      let data = result?.data?.works.sort((a, b) => a.ranking - b.ranking);
+      let tempAmount = 0;
+      let tempArray = [];
+      data.map((dat, index1) => {
+        let tempSum = 0;
+        dat.data.map((item, index) => {
+          let temp = 0;
+          if (!item.workDetails) {
+            temp += item.work.unit_price * item.work.quantity;
+          } else {
+            if (item?.work?._id !== data[index - 1]?.work?._id) {
+              temp += item.workDetails.quantity * item.workDetails.unit_price;
+            } else {
+              temp += item.workDetails.quantity * item.workDetails.unit_price;
+            }
+          }
+          tempSum += temp;
+          tempAmount += temp;
+        });
+        tempArray[index1] = tempSum;
+      });
+      setTradeTotal(tempArray);
+      setTotalHT(tempAmount.toFixed(2));
+      setProjectWorkData(data);
+    } else {
+      const result = await api("get", `/project/works/${id}`);
+      let data = result?.data?.works;
+      let temp = 0;
+      data.map((item, index) => {
         if (!item.workDetails) {
           temp += item.work.unit_price * item.work.quantity;
         } else {
-          if (item?.work?._id !== data[index - 1]?.work?._id) {
+          if (item.work._id !== data[index - 1]?.work._id) {
             temp += item.workDetails.quantity * item.workDetails.unit_price;
           } else {
             temp += item.workDetails.quantity * item.workDetails.unit_price;
           }
         }
-        tempSum += temp;
-        tempAmount += temp;
       });
-      tempArray[index1] = tempSum;
-    });
-    setTradeTotal(tempArray);
-    setTotalHT(tempAmount.toFixed(2));
-    setProjectWorkData(data);
+      setTotalHT(temp);
+      setProjectWorkData(data);
+    }
   };
 
   // func to get all general libraries
@@ -716,73 +741,63 @@ const ProjectView = () => {
                 >
                   <div style={{ height: "80%", overflow: "auto" }}>
                     {currentProject.market_type === "Trades" ||
-                    currentProject.market_type === "TradesAndTranches"
-                      ? projectWorkData.map((item, index) => {
-                          return (
-                            <>
-                              <div
-                                style={{
-                                  width: "100%",
-                                  backgroundColor: "#f1966c",
-                                  padding: "10px 15px",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Trade n°{index + 1} - {item._id}
-                              </div>
-                              <Table
-                                projectWorkData={item.data}
-                                handleOpenDeleteWorkModal={
-                                  handleOpenDeleteWorkModal
-                                }
-                                handleOpenDeleteWorkDetailModal={
-                                  handleOpenDeleteWorkDetailModal
-                                }
-                                handleOpenEditWorkModal={
-                                  handleOpenEditWorkModal
-                                }
-                                handleOpenEditWorkDetailModal={
-                                  handleOpenEditWorkDetailModal
-                                }
-                              />
-                              <div
-                                style={{
-                                  width: "100%",
-                                  padding: "10px 15px",
-                                  display: "flex",
-                                  justifyContent: "flex-end",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Total Trade n°{index + 1} - {item._id}{" "}
-                                &nbsp;&nbsp;&nbsp;
-                                {tradeTotal[index]}
-                              </div>
-                              <br />
-                            </>
-                          );
-                        })
-                      : projectWorkData.map((item) => {
-                          return (
-                            <>
-                              <Table
-                                projectWorkData={item.data}
-                                handleOpenDeleteWorkModal={
-                                  handleOpenDeleteWorkModal
-                                }
-                                handleOpenDeleteWorkDetailModal={
-                                  handleOpenDeleteWorkDetailModal
-                                }
-                                handleOpenEditWorkModal={
-                                  handleOpenEditWorkModal
-                                }
-                                handleOpenEditWorkDetailModal={
-                                  handleOpenEditWorkDetailModal
-                                }
-                              />
-                            </>
-                          );
-                        })}
+                    currentProject.market_type === "TradesAndTranches" ? (
+                      projectWorkData.map((item, index) => {
+                        return (
+                          <>
+                            <div
+                              style={{
+                                width: "100%",
+                                backgroundColor: "#f1966c",
+                                padding: "10px 15px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Trade n°{index + 1} - {item._id}
+                            </div>
+                            <Table
+                              projectWorkData={item.data}
+                              handleOpenDeleteWorkModal={
+                                handleOpenDeleteWorkModal
+                              }
+                              handleOpenDeleteWorkDetailModal={
+                                handleOpenDeleteWorkDetailModal
+                              }
+                              handleOpenEditWorkModal={handleOpenEditWorkModal}
+                              handleOpenEditWorkDetailModal={
+                                handleOpenEditWorkDetailModal
+                              }
+                            />
+                            <div
+                              style={{
+                                width: "100%",
+                                padding: "10px 15px",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Total Trade n°{index + 1} - {item._id}{" "}
+                              &nbsp;&nbsp;&nbsp;
+                              {tradeTotal[index]}
+                            </div>
+                            <br />
+                          </>
+                        );
+                      })
+                    ) : (
+                      <Table
+                        projectWorkData={projectWorkData}
+                        handleOpenDeleteWorkModal={handleOpenDeleteWorkModal}
+                        handleOpenDeleteWorkDetailModal={
+                          handleOpenDeleteWorkDetailModal
+                        }
+                        handleOpenEditWorkModal={handleOpenEditWorkModal}
+                        handleOpenEditWorkDetailModal={
+                          handleOpenEditWorkDetailModal
+                        }
+                      />
+                    )}
                   </div>
                   <div
                     style={{
