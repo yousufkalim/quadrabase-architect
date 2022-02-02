@@ -27,6 +27,8 @@ const AddWorkModal = ({
     work_details: [],
   });
   const [options, setOptions] = useState([]);
+  const [tranchOptions, setTranchOptions] = useState([]);
+  const [tranch, setTranch] = useState("");
 
   useEffect(() => {
     selectedWork &&
@@ -41,7 +43,13 @@ const AddWorkModal = ({
   // useEffect to get all units
   useEffect(() => {
     getUnits();
+    currentProject.market_type === "TradesAndTranches" && getTranches();
   }, []);
+
+  const getTranches = async () => {
+    const result = await api("get", `/Tranches/`);
+    setTranchOptions(result.data.tranches);
+  };
 
   // func to getAll Units
   const getUnits = async () => {
@@ -65,6 +73,9 @@ const AddWorkModal = ({
     data.bpu_text = selectedWork.bpu_text;
     data.category = selectedWork.category;
     data.work_details = selectedWorkDetail;
+    if (currentProject.market_type === "TradesAndTranches") {
+      data.tranch = tranch;
+    }
     const result = await api(
       "post",
       `/project/addWork/${currentProject._id}`,
@@ -122,6 +133,19 @@ const AddWorkModal = ({
           handleChange={(e) => handleChange(e.target.name, e.target.value)}
         />
         <br />
+        {currentProject.market_type === "TradesAndTranches" && (
+          <>
+            <br />
+            <InputDropdown
+              name="tranch"
+              label="Tranch"
+              value={tranch}
+              onChange={(e) => setTranch(e.target.value)}
+              options={tranchOptions}
+            />
+            <br />
+          </>
+        )}
         {/* register button */}
         <div
           style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}

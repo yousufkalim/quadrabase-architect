@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import InputDropdown from "../../../components/InputDropdown";
 
 const AddWorkDetailsModal = ({
   selectedWork,
@@ -16,6 +17,20 @@ const AddWorkDetailsModal = ({
   currentProject,
   getworks,
 }) => {
+  // states
+  const [tranchOptions, setTranchOptions] = useState([]);
+  const [tranch, setTranch] = useState("");
+
+  // useEffect to get all tranches
+  useEffect(() => {
+    currentProject.market_type === "TradesAndTranches" && getTranches();
+  }, []);
+
+  const getTranches = async () => {
+    const result = await api("get", `/Tranches/`);
+    setTranchOptions(result.data.tranches);
+  };
+
   const handleCheckbox = (e, item) => {
     if (e.target.checked) {
       let temp = selectedWorkDetail;
@@ -40,6 +55,9 @@ const AddWorkDetailsModal = ({
       work_details: [],
     };
     data.work_details = selectedWorkDetail;
+    if (currentProject.market_type === "TradesAndTranches") {
+      data.tranch = tranch;
+    }
     const result = await api(
       "post",
       `/project/addWork/${currentProject._id}`,
@@ -65,6 +83,21 @@ const AddWorkDetailsModal = ({
           />
         ))}
       </FormGroup>
+      {currentProject.market_type === "TradesAndTranches" && (
+        <>
+          <br />
+          <h2>Select Tranch</h2>
+          <br />
+          <InputDropdown
+            name="tranch"
+            label="Tranch"
+            value={tranch}
+            onChange={(e) => setTranch(e.target.value)}
+            options={tranchOptions}
+          />
+          <br />
+        </>
+      )}
       <div
         style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}
       >

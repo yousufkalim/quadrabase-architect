@@ -12,6 +12,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
+import LayersIcon from "@mui/icons-material/Layers";
 
 // components
 import Header from "../../components/Header";
@@ -26,6 +27,7 @@ import ReportEstimationModal from "./Modals/ReportEstimationModal";
 import ReportDQEModal from "./Modals/ReportDQEModal";
 import ReportBPUModal from "./Modals/ReportBPUModal";
 import ReportCCTPModal from "./Modals/ReportCCTPModal";
+import TracnhesModal from "./Modals/TranchesModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
@@ -80,6 +82,7 @@ const ProjectView = () => {
   const [loading, setLoading] = useState(true);
   const [loadingLevel, setLoadingLevel] = useState(false);
   const [tradeTotal, setTradeTotal] = useState([]);
+  const [openTranchesModal, setOpenTranchesModal] = useState(false);
 
   useEffect(() => {
     getworks();
@@ -248,6 +251,8 @@ const ProjectView = () => {
       alert("Please select a chap. 0 part 2 from properties");
     }
   };
+
+  const handleTranchesModal = () => setOpenTranchesModal(!openTranchesModal);
 
   // for dropdown menu
 
@@ -463,6 +468,12 @@ const ProjectView = () => {
               />
             }
           />
+          <Modal
+            title="Manage Tranches"
+            open={openTranchesModal}
+            onClose={handleTranchesModal}
+            component={<TracnhesModal />}
+          />
           <div className={classes.container}>
             <div className={classes.flex_container}>
               <div>
@@ -565,6 +576,19 @@ const ProjectView = () => {
                     marginLeft: -20,
                   }}
                 >
+                  {currentProject.market_type === "TradesAndTranches" && (
+                    <LayersIcon
+                      sx={{
+                        fontSize: 18,
+                        cursor: "pointer",
+                        "&:hover": {
+                          color: "#f1966c",
+                        },
+                      }}
+                      onClick={handleTranchesModal}
+                    />
+                  )}
+
                   <div
                     style={{
                       marginRight: 10,
