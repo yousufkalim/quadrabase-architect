@@ -46,7 +46,10 @@ const TranchesModal = () => {
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await api("post", `/Tranches/create`, { name });
+    const result = await api("post", `/Tranches/create`, {
+      name,
+      ranking: tracnhesData[tracnhesData.length - 1].ranking + 1,
+    });
     toast.success(result.data.message);
     setName();
     getTranches();

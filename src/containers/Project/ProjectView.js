@@ -104,10 +104,79 @@ const ProjectView = () => {
 
   // func to get current project
   const getworks = async () => {
-    if (
-      currentProject.market_type === "Trades" ||
-      currentProject.market_type === "TradesAndTranches"
-    ) {
+    if (currentProject.market_type === "TradesAndTranches") {
+      const result = await api("get", `/project/worksByTranches/${id}`);
+      let data = result?.data?.works.sort((a, b) => a.ranking - b.ranking);
+      let tempAmount = 0;
+      let tempArray = [];
+      data.map((dat, index1) => {
+        let tempSum = 0;
+        dat.data.map((item, index) => {
+          let temp = 0;
+          if (!item.workDetails) {
+            temp += item.work.unit_price * item.work.quantity;
+          } else {
+            if (item?.work?._id !== data[index - 1]?.work?._id) {
+              temp += item.workDetails.quantity * item.workDetails.unit_price;
+            } else {
+              temp += item.workDetails.quantity * item.workDetails.unit_price;
+            }
+          }
+          tempSum += temp;
+          tempAmount += temp;
+        });
+        tempArray[index1] = tempSum;
+      });
+      setTradeTotal(tempArray);
+      setTotalHT(tempAmount.toFixed(2));
+
+      if (currentProject.market_type === "TradesAndTranches") {
+        data.map((item) => {
+          let tempArray2 = [];
+          item.data.map((item2) => {
+            let tempObject = {};
+            tempObject.tranch = item2.tranch.name;
+            tempObject.ranking = item2.tranch.ranking;
+            tempObject.tranchData = [];
+            let existingTranch = "";
+            if (tempArray2.length > 0) {
+              existingTranch = tempArray2.find(
+                ({ tranch }) => tranch === tempObject.tranch
+              );
+            }
+            if (!existingTranch) {
+              let amountTranch = 0;
+              item.data.map((item3, index) => {
+                if (item3.tranch.name === tempObject.tranch) {
+                  let temp = 0;
+                  if (!item3.workDetails) {
+                    temp += item3.work.unit_price * item3.work.quantity;
+                  } else {
+                    if (item3?.work?._id !== data[index - 1]?.work?._id) {
+                      temp +=
+                        item3.workDetails.quantity *
+                        item3.workDetails.unit_price;
+                    } else {
+                      temp +=
+                        item3.workDetails.quantity *
+                        item3.workDetails.unit_price;
+                    }
+                  }
+                  amountTranch += temp;
+
+                  tempObject.tranchData.push(item3);
+                }
+              });
+              tempObject.tranchAmount = amountTranch;
+              tempArray2.push(tempObject);
+            }
+          });
+          item.data = tempArray2.sort((a, b) => a.ranking - b.ranking);
+        });
+      }
+
+      setProjectWorkData(data);
+    } else if (currentProject.market_type === "Trades") {
       const result = await api("get", `/project/worksByTrades/${id}`);
       let data = result?.data?.works.sort((a, b) => a.ranking - b.ranking);
       let tempAmount = 0;
@@ -740,8 +809,7 @@ const ProjectView = () => {
                   }}
                 >
                   <div style={{ height: "80%", overflow: "auto" }}>
-                    {currentProject.market_type === "Trades" ||
-                    currentProject.market_type === "TradesAndTranches" ? (
+                    {currentProject.market_type === "Trades" ? (
                       projectWorkData.map((item, index) => {
                         return (
                           <>
@@ -768,6 +836,83 @@ const ProjectView = () => {
                                 handleOpenEditWorkDetailModal
                               }
                             />
+                            <div
+                              style={{
+                                width: "100%",
+                                padding: "10px 15px",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Total Trade n°{index + 1} - {item._id}{" "}
+                              &nbsp;&nbsp;&nbsp;
+                              {tradeTotal[index]}
+                            </div>
+                            <br />
+                          </>
+                        );
+                      })
+                    ) : currentProject.market_type === "TradesAndTranches" ? (
+                      projectWorkData.map((item, index) => {
+                        return (
+                          <>
+                            <div
+                              style={{
+                                width: "100%",
+                                backgroundColor: "#f1966c",
+                                padding: "10px 15px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Trade n°{index + 1} - {item._id}
+                            </div>
+                            {item.data.map((item2, index2) => {
+                              return (
+                                <>
+                                  <div
+                                    style={{
+                                      width: "100%",
+                                      padding: "10px 15px",
+                                      fontWeight: 600,
+                                      borderBottom: "3px solid lightgray",
+                                    }}
+                                  >
+                                    Tranche {item2.tranch}
+                                  </div>
+                                  <Table
+                                    projectWorkData={item2.tranchData}
+                                    handleOpenDeleteWorkModal={
+                                      handleOpenDeleteWorkModal
+                                    }
+                                    handleOpenDeleteWorkDetailModal={
+                                      handleOpenDeleteWorkDetailModal
+                                    }
+                                    handleOpenEditWorkModal={
+                                      handleOpenEditWorkModal
+                                    }
+                                    handleOpenEditWorkDetailModal={
+                                      handleOpenEditWorkDetailModal
+                                    }
+                                  />
+                                  <div
+                                    style={{
+                                      width: "100%",
+                                      padding: "10px 15px",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                      fontWeight: 600,
+                                      borderBottom: "3px solid lightgray",
+                                    }}
+                                  >
+                                    Total Tranche {item2.tranch}
+                                    &nbsp;&nbsp;&nbsp;
+                                    {item2.tranchAmount}
+                                  </div>
+                                </>
+                              );
+                            })}
+
                             <div
                               style={{
                                 width: "100%",
