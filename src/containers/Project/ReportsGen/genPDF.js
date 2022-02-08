@@ -2,22 +2,22 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import {
-  pdfXLSXHeadGen,
-  pdfXLSXRowsGenEstimation,
-  pdfXLSXRowsGenBPU,
+  headGen,
+  rowsGenSimpleEstimation,
+  rowsGenBPU,
   footerDataGen,
-  pdfXLSXColumns,
-  pdfXLSXFooterColumns,
-  pdfXLSXColumnsBPU
+  dataColumnsEstimation,
+  footerColumnsSimpleEstimation,
+  dataColumnsBPU
 } from "./data.js";
 
 function exportPDFEstimation(data, currentProject, noPrice){
 
-  const pdfXLSXHead = pdfXLSXHeadGen(
+  const pdfXLSXHead = headGen(
     `${noPrice ? "DQE" : "Estimation"}`,
     `${currentProject?.name ?? "N/A"}`
   );
-  const realDataPDF = pdfXLSXRowsGenEstimation(data, noPrice); // It's the same thing in case of pdf plugin.
+  const realDataPDF = rowsGenSimpleEstimation(data, noPrice); // It's the same thing in case of pdf plugin.
   const footerData = footerDataGen(data, currentProject, noPrice);
 
   const unit = "pt";
@@ -61,7 +61,7 @@ function exportPDFEstimation(data, currentProject, noPrice){
   const contentMainTable = {
     startY: doc.lastAutoTable.settings.startY + 32,
     pageBreak: 'avoid',
-    head: [pdfXLSXColumns], // Lib requirement is that it is [][]
+    head: [dataColumnsEstimation], // Lib requirement is that it is [][]
     body: realDataPDF,
     theme: 'plain',
     didParseCell: (data) => {
@@ -98,7 +98,7 @@ function exportPDFEstimation(data, currentProject, noPrice){
     startY: (doc.lastAutoTable.settings.startY + (32 * realDataPDF.length )) - (2 * realDataPDF.length),
     theme: 'plain',
     head: [[
-      pdfXLSXFooterColumns[0],
+      footerColumnsSimpleEstimation[0],
       footerData[0],
     ]],
     body: [
@@ -107,15 +107,15 @@ function exportPDFEstimation(data, currentProject, noPrice){
         ""
       ],
       [
-        pdfXLSXFooterColumns[1],
+        footerColumnsSimpleEstimation[1],
         footerData[1],
       ],
       [
-        pdfXLSXFooterColumns[2],
+        footerColumnsSimpleEstimation[2],
         footerData[2],
       ],
       [
-        pdfXLSXFooterColumns[3],
+        footerColumnsSimpleEstimation[3],
         footerData[3],
       ],
     ],
@@ -146,12 +146,12 @@ function exportPDFEstimation(data, currentProject, noPrice){
 
 function exportPDFBPU(data, currentProject){
 
-  const pdfXLSXHead = pdfXLSXHeadGen(
+  const pdfXLSXHead = headGen(
     "BPU",
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const realDataPDF = pdfXLSXRowsGenBPU(data);
+  const realDataPDF = rowsGenBPU(data);
 
   const unit = "pt";
   const size = "A4"; // Use A1, A2, A3 or A4
@@ -191,7 +191,7 @@ function exportPDFBPU(data, currentProject){
   const contentMainTable = {
     startY: doc.lastAutoTable.settings.startY + 32,
     pageBreak: 'avoid',
-    head: [pdfXLSXColumnsBPU], // Lib requirement is that it is [][]
+    head: [dataColumnsBPU], // Lib requirement is that it is [][]
     body: realDataPDF,
     theme: 'plain',
     didParseCell: (data) => {

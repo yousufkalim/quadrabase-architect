@@ -8,7 +8,10 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 // Reports
-import { exportXLSXEstimation } from "../ReportsGen/genExcel";
+import {
+  exportXLSXSimpleEstimation,
+  exportXLSXTradesEstimation
+} from "../ReportsGen/genExcel";
 import { exportPDFEstimation } from "../ReportsGen/genPDF";
 import { exportDOCXestimation } from "../ReportsGen/genDocx";
 
@@ -20,7 +23,15 @@ function ReportDQEModal(props){
 
   function generateExcel(){
     try{
-      exportXLSXEstimation(projectWorkData, currentProject, true);
+
+      if(currentProject.market_type == "Simple"){
+        exportXLSXSimpleEstimation(projectWorkData, currentProject, true);
+      } else if(currentProject.market_type == "Trades"){
+        exportXLSXTradesEstimation(projectWorkData, currentProject, true);
+      } else {
+        console.trace("Show me");
+      }
+      
     }catch(e){
       toast.error("Could not generate report successfully.");
       console.trace(e);

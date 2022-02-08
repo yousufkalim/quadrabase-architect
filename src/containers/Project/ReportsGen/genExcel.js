@@ -2,166 +2,306 @@
 import XLSX from "xlsx-js-style";
 
 import {
-  pdfXLSXRowsGenEstimation,
-  realDataXLSXGenEstimation,
+  rowsGenSimpleEstimation,
+  rowsGenTradesEstimation,
+  rowsGenTradesAndTranchesEstimation,
+  xlsxParsedDataGenSimpleAndTradesEstimation,
+  xlsxParsedDataGenTradesAndTranchesEstimation,
+  xlsxParsedFooterDataGenEstimation,
   footerDataGen,
-  pdfXLSXColumns,
-  pdfXLSXFooterColumns
+  dataColumnsEstimation,
+  footerColumnsSimpleEstimation,
+  footerColumnsTradesEstimation
 } from "./data.js";
 
 const ABC = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 
-const exportXLSXEstimation = (data, currentProject, noPrice) => {
+// Spaces
+const wscols = [
+  {wch:10},
+  {wch:35},
+  {wch:10},
+  {wch:10},
+  {wch:10},
+  {wch:10}
+];
 
-  const pdfXLSXRows = pdfXLSXRowsGenEstimation(data, noPrice);
-  const realDataXLSX = realDataXLSXGenEstimation(pdfXLSXRows, pdfXLSXColumns);
-  const footerData = footerDataGen(data, currentProject, noPrice);
-  
-  const bodyDataXLSX = realDataXLSX;
+// Styles
+const Fill1 = {
+  fill: {
+    fgColor: { rgb: "FFBFBFBF" },
+  },
+  font: {
+    bold: true
+  }
+};
 
-  const ws = XLSX.utils.json_to_sheet(bodyDataXLSX);
+const Fill2 = {
+  fill: {
+    fgColor: { rgb: "FFD3D3D3" },
+  },
+  font: {
+    bold: true
+  }
+};
+
+const BorderFirst2 = {
+  border: {
+    top: {
+      style: "thin"
+    },
+    bottom: {
+      style: "thin",
+    },
+    left: {
+      style: "thin"
+    },
+    right: {
+      style: "thin"
+    }
+  }
+};
+
+const BorderRestAll = {
+  border: {
+    top: {
+      style: "dotted"
+    },
+    bottom: {
+      style: "dotted",
+    },
+    left: {
+      style: "thin"
+    },
+    right: {
+      style: "thin"
+    }
+  }
+};
+
+const exportXLSXSimpleEstimation = (data, currentProject, noPrice) => {
+
+  const rows = rowsGenSimpleEstimation(data, noPrice);
+
+  let xlsxParsedData = [];
+  const xlsxParsedBodyData = xlsxParsedDataGenSimpleAndTradesEstimation(rows, dataColumnsEstimation);
+  const footerDataFloatsArr = footerDataGen(data, currentProject, noPrice, true);
+  const xlsxParsedFooterData = xlsxParsedFooterDataGenEstimation(
+    footerDataFloatsArr,
+    footerColumnsSimpleEstimation,
+    dataColumnsEstimation,
+  );
+
+  xlsxParsedData = xlsxParsedData.concat(xlsxParsedBodyData);
+  xlsxParsedData = xlsxParsedData.concat(xlsxParsedFooterData);
+
+  const ws = XLSX.utils.json_to_sheet(xlsxParsedData);
 
   // Set column widths
-  var wscols = [
-    {wch:10},
-    {wch:35},
-    {wch:10},
-    {wch:10},
-    {wch:10},
-    {wch:10}
-  ];
   ws['!cols'] = wscols;
 
-  const Fill1 = {
-    fill: {
-      fgColor: { rgb: "FFBFBFBF" },
-    },
-    font: {
-      bold: true
-    }
-  };
+  let cursor = 1;
+  let stopAt;
 
-  const Fill2 = {
-    fill: {
-      fgColor: { rgb: "FFD3D3D3" },
-    },
-    font: {
-      bold: true
-    }
-  };
+  // Header row style
+  applyRowStyle(ws, cursor, {...Fill1, ...BorderFirst2} ); 
+  cursor = cursor + 1;
 
-  const BorderFirst2 = {
-    border: {
-      top: {
-        style: "thin"
-      },
-      bottom: {
-        style: "thin",
-      },
-      left: {
-        style: "thin"
-      },
-      right: {
-        style: "thin"
-      }
-    }
-  };
+  // Project title row style 
+  applyRowStyle(ws, cursor, {...Fill2, ...BorderFirst2} ); 
+  cursor = cursor + 1;
 
-  const BorderRestAll = {
-    border: {
-      top: {
-        style: "dotted"
-      },
-      bottom: {
-        style: "dotted",
-      },
-      left: {
-        style: "thin"
-      },
-      right: {
-        style: "thin"
-      }
-    }
-  };
-
-  // Apply styling to header rows
-  applyRowStyle(ws, 1, {...Fill1, ...BorderFirst2} );
-  applyRowStyle(ws, 2, {...Fill2, ...BorderFirst2} );
-
-  // Apply styling to rows
-  for( let i = 3; i < (pdfXLSXRows.length + 2); i++ ){
+  // Apply styling to body
+  stopAt = rows.length + cursor;
+  for( let i = (cursor + 1); i < stopAt; i++ ){
     applyRowStyle(ws, i, BorderRestAll);
+    cursor = cursor + 1;
   }
 
-  // Do everything related to footer rows here
-  handleFooter(ws, BorderFirst2, bodyDataXLSX, footerData);
+  // Apply styling to footer
+  stopAt = footerDataFloatsArr.length + cursor;
+  for( let i = (cursor + 1); i < stopAt; i++ ){
+    applyRowStyle(ws, i, BorderFirst2);
+  }
+
+  // Make merger object
+  const merge = [];
+  stopAt = cursor - 1;
+  for( let i = 0; i < footerDataFloatsArr.length; i++ ){
+    const obj = {
+      s: { r: stopAt + i, c: 1 },
+      e: { r: stopAt + i, c: 4 }
+    }
+    merge.push(obj);
+  }
+
+  // Merge footer cells - Merge must be done after styling
+  ws["!merges"] = merge;
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
   XLSX.writeFile(wb, `${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}.xlsx`);
 };
 
-function handleFooter(ws, style, bodyDataXLSX, footerData){
+const exportXLSXTradesEstimation = (data, currentProject, noPrice) => {
 
-  let footerIndex = bodyDataXLSX.length + 2;
+  const rows = rowsGenTradesEstimation(data, noPrice);
 
-  // Populate footer cells
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `A${footerIndex}`});
-  XLSX.utils.sheet_add_aoa(ws, [[pdfXLSXFooterColumns[0]]], {origin: `B${footerIndex}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `C${footerIndex}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `D${footerIndex}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `E${footerIndex}`});
-  XLSX.utils.sheet_add_aoa(ws, [[footerData[0]]], {origin: `F${footerIndex}`});
+  let xlsxParsedData = [];
 
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `A${footerIndex + 2}`});
-  XLSX.utils.sheet_add_aoa(ws, [[pdfXLSXFooterColumns[1]]], {origin: `B${footerIndex + 2}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `C${footerIndex + 2}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `D${footerIndex + 2}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `E${footerIndex + 2}`});
-  XLSX.utils.sheet_add_aoa(ws, [[footerData[1]]], {origin: `F${footerIndex + 2}`});
+  for(let i = 0; i < rows.length; i++){
+    const rawData = data[i].data; // As rows are calculated based on length of data, it should be safe.
 
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `A${footerIndex + 3}`});
-  XLSX.utils.sheet_add_aoa(ws, [[pdfXLSXFooterColumns[2]]], {origin: `B${footerIndex + 3}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `C${footerIndex + 3}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `D${footerIndex + 3}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `E${footerIndex + 3}`});
-  XLSX.utils.sheet_add_aoa(ws, [[footerData[2]]], {origin: `F${footerIndex + 3}`});
+    const currentRow = rows[i];
+    const currentRowXLSXParsedData = xlsxParsedDataGenSimpleAndTradesEstimation(currentRow, dataColumnsEstimation);
+    const footerDataFloatsArr = footerDataGen(rawData, currentProject, noPrice, false);
+    const currentRowXLSXParsedFooterData = xlsxParsedFooterDataGenEstimation(
+      footerDataFloatsArr,
+      footerColumnsTradesEstimation,
+      dataColumnsEstimation,
+    );
 
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `A${footerIndex + 4}`});
-  XLSX.utils.sheet_add_aoa(ws, [[pdfXLSXFooterColumns[3]]], {origin: `B${footerIndex + 4}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `C${footerIndex + 4}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `D${footerIndex + 4}`});
-  XLSX.utils.sheet_add_aoa(ws, [[""]], {origin: `E${footerIndex + 4}`});
-  XLSX.utils.sheet_add_aoa(ws, [[footerData[3]]], {origin: `F${footerIndex + 4}`});
-  // Populate footer cells
+    xlsxParsedData = xlsxParsedData.concat(currentRowXLSXParsedData);
+    xlsxParsedData = xlsxParsedData.concat(currentRowXLSXParsedFooterData);
+  }
 
-  // Style footer cells
-  applyRowStyle(ws, footerIndex, style);
-  applyRowStyle(ws, (footerIndex + 2), style);
-  applyRowStyle(ws, (footerIndex + 3), style);
-  applyRowStyle(ws, (footerIndex + 4), style);
-  // Style footer cells
+  const ws = XLSX.utils.json_to_sheet(xlsxParsedData);
 
-  let footerIndexForMerging = footerIndex - 1;
+  // Set column widths
+  ws['!cols'] = wscols;
+
+  let cursor = 1;
+  let stopAt;
+  const merge = [];
+
+  // Header row style
+  applyRowStyle(ws, cursor, {...Fill1, ...BorderFirst2} ); 
+  cursor = cursor + 1;
+
+  for(let i = 0; i < rows.length; i++){
+
+    const currentRow = rows[i];
+
+    // Project title row style 
+    applyRowStyle(ws, cursor, {...Fill2, ...BorderFirst2} );
+
+    // Apply styling to body
+    stopAt = currentRow.length + cursor;
+    for( let j = cursor; j < stopAt; j++ ){
+      if(j == cursor){
+        cursor = cursor + 1;
+        continue; // Coz project title style is applied already
+      }
+      applyRowStyle(ws, j, BorderRestAll);
+      cursor = cursor + 1;
+    }
+
+    // Make merger object before moving cursor any further.
+    stopAt = cursor - 1;
+    for( let j = 0; j < footerColumnsTradesEstimation.length; j++ ){
+      const obj = {
+        s: { r: stopAt + j, c: 1 },
+        e: { r: stopAt + j, c: footerColumnsTradesEstimation.length }
+      }
+      merge.push(obj);
+    }
+
+    // Apply styling to footer
+    stopAt = footerColumnsTradesEstimation.length + cursor;
+    for( let j = cursor; j < stopAt; j++ ){
+      applyRowStyle(ws, j, BorderFirst2);
+      cursor = cursor + 1;
+    }
+
+  }
+
   // Merge footer cells - Merge must be done after styling
-  const merge = [
-    { s: { r: footerIndexForMerging, c: 1 }, e: { r: footerIndexForMerging, c: 4 } },
-    { s: { r: (footerIndexForMerging + 2), c: 1 }, e: { r: (footerIndexForMerging + 2), c: 4 } },
-    { s: { r: (footerIndexForMerging + 3), c: 1 }, e: { r: (footerIndexForMerging + 3), c: 4 } },
-    { s: { r: (footerIndexForMerging + 4), c: 1 }, e: { r: (footerIndexForMerging + 4), c: 4 } },
-  ];
   ws["!merges"] = merge;
-  // Merge footer cells
 
-}
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, `Sheet_1`);
+  XLSX.writeFile(wb, `${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}.xlsx`);
+};
+
+const exportXLSXTradesAndTranchesEstimation = (data, currentProject, noPrice) => {
+
+  const rows = rowsGenTradesAndTranchesEstimation(data, noPrice);
+
+  let xlsxParsedData = [];
+
+  for(let i = 0; i < rows.length; i++){
+    const currentRow = rows[i];
+    const currentRowXLSXParsedData = xlsxParsedDataGenTradesAndTranchesEstimation(currentRow, dataColumnsEstimation, (i+1));
+    xlsxParsedData = xlsxParsedData.concat(currentRowXLSXParsedData);
+  }
+
+  const ws = XLSX.utils.json_to_sheet(xlsxParsedData);
+
+  // Set column widths
+  ws['!cols'] = wscols;
+
+  let cursor = 1;
+  let stopAt;
+  const merge = [];
+
+  // Header row style
+  applyRowStyle(ws, cursor, {...Fill1, ...BorderFirst2} ); 
+  cursor = cursor + 1;
+
+  // for(let i = 0; i < rows.length; i++){
+
+  //   const currentRow = rows[i];
+
+  //   // Project title row style 
+  //   applyRowStyle(ws, cursor, {...Fill2, ...BorderFirst2} );
+
+  //   // Apply styling to body
+  //   stopAt = currentRow.length + cursor;
+  //   for( let j = cursor; j < stopAt; j++ ){
+  //     if(j == cursor){
+  //       cursor = cursor + 1;
+  //       continue; // Coz project title style is applied already
+  //     }
+  //     applyRowStyle(ws, j, BorderRestAll);
+  //     cursor = cursor + 1;
+  //   }
+
+  //   // Make merger object before moving cursor any further.
+  //   stopAt = cursor - 1;
+  //   for( let j = 0; j < footerColumnsTradesEstimation.length; j++ ){
+  //     const obj = {
+  //       s: { r: stopAt + j, c: 1 },
+  //       e: { r: stopAt + j, c: footerColumnsTradesEstimation.length }
+  //     }
+  //     merge.push(obj);
+  //   }
+
+  //   // Apply styling to footer
+  //   stopAt = footerColumnsTradesEstimation.length + cursor;
+  //   for( let j = cursor; j < stopAt; j++ ){
+  //     applyRowStyle(ws, j, BorderFirst2);
+  //     cursor = cursor + 1;
+  //   }
+
+  // }
+
+  // Merge footer cells - Merge must be done after styling
+  ws["!merges"] = merge;
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, `Sheet_1`);
+  XLSX.writeFile(wb, `${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}.xlsx`);
+};
 
 function applyRowStyle(ws, RowNum, style){
-  for( let i = 0; i < pdfXLSXColumns.length; i++ ){
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
     let char = ABC[i];
     ws[`${char}${RowNum}`].s = style;
   }
 }
 
 export {
-  exportXLSXEstimation
+  exportXLSXSimpleEstimation,
+  exportXLSXTradesEstimation,
+  exportXLSXTradesAndTranchesEstimation
 }

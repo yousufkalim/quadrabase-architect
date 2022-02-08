@@ -15,15 +15,15 @@ import {
 } from "docx";
 
 import {
-  pdfXLSXHeadGen,
-  pdfXLSXRowsGenEstimation,
-  pdfXLSXRowsGenBPU,
-  pdfXLSXRowsGenCCTP,
+  headGen,
+  rowsGenSimpleEstimation,
+  rowsGenBPU,
+  rowsGenCCTP,
   footerDataGen,
   textRunsSplitGen,
-  pdfXLSXColumns,
-  pdfXLSXFooterColumns,
-  pdfXLSXColumnsBPU,
+  dataColumnsEstimation,
+  footerColumnsSimpleEstimation,
+  dataColumnsBPU,
 } from "./data.js";
 
 const Spacer = new Paragraph({
@@ -32,12 +32,12 @@ const Spacer = new Paragraph({
 
 function exportDOCXestimation(data, currentProject, noPrice){
 
-  const pdfXLSXHead = pdfXLSXHeadGen(
+  const pdfXLSXHead = headGen(
     `${noPrice ? "DQE" : "Estimation"}`,
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = pdfXLSXRowsGenEstimation(data, noPrice);
+  const pdfXLSXRows = rowsGenSimpleEstimation(data, noPrice);
   const footerData = footerDataGen(data, currentProject, noPrice);
 
   const tableHeader = [
@@ -114,7 +114,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const tableBodyColumns = [];
 
-  for( let i = 0; i < pdfXLSXColumns.length; i++ ){
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
 
     const tableCell = new TableCell({
       children: [
@@ -122,7 +122,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
           alignment: AlignmentType.CENTER,
           children: [
             new TextRun({
-              text: pdfXLSXColumns[i],
+              text: dataColumnsEstimation[i],
               size: 26,
             })
           ]
@@ -183,7 +183,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const tableFooterRows = [];
 
-  for( let i = 0; i < pdfXLSXFooterColumns.length; i++ ){
+  for( let i = 0; i < footerColumnsSimpleEstimation.length; i++ ){
     const tableRowCells = [];
     const tableCell1 = new TableCell({
       children: [
@@ -191,7 +191,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
           alignment: AlignmentType.END,
           children: [
             new TextRun({
-              text: pdfXLSXFooterColumns[i],
+              text: footerColumnsSimpleEstimation[i],
               bold: true
             })
           ]
@@ -258,12 +258,12 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
 function exportDOCXBPU(data, currentProject){
 
-  const pdfXLSXHead = pdfXLSXHeadGen(
+  const pdfXLSXHead = headGen(
     "BPU",
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = pdfXLSXRowsGenBPU(data);
+  const pdfXLSXRows = rowsGenBPU(data);
 
   const tableHeader = [
     new Table({
@@ -325,12 +325,12 @@ function exportDOCXBPU(data, currentProject){
 
   const tableBodyColumns = [];
 
-  for( let i = 0; i < pdfXLSXColumnsBPU.length; i++ ){
+  for( let i = 0; i < dataColumnsBPU.length; i++ ){
 
     const tableCell = new TableCell({
       children: [
         new Paragraph({
-          text: pdfXLSXColumns[i],
+          text: dataColumnsEstimation[i],
           alignment: AlignmentType.START,
         })
       ],
@@ -357,7 +357,6 @@ function exportDOCXBPU(data, currentProject){
     const tableRowCells = [];
     for( let j = 0; j < currentRow.length; j++ ){
       let docxObjs = textRunsSplitGen(currentRow[j]);
-      console.log(docxObjs);
       const tableCell = new TableCell({
         children: docxObjs,
         verticalAlign: VerticalAlign.CENTER,
@@ -403,12 +402,12 @@ function exportDOCXBPU(data, currentProject){
 
 function exportDOCXCCTP(data, currentProject){
 
-  const pdfXLSXHead = pdfXLSXHeadGen(
+  const pdfXLSXHead = headGen(
     "CCTP",
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = pdfXLSXRowsGenCCTP(data);
+  const pdfXLSXRows = rowsGenCCTP(data);
 
   const tableHeader = [
     new Table({
