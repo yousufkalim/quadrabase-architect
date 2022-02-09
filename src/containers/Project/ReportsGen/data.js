@@ -9,7 +9,7 @@ function dateNowFormatted() {
   return "01/1/2022"
 }
 
-function pdfXLSXHeadGen(headingName, projectName){
+function headGen(headingName, projectName){
 
   const pdfXLSXHead = [];
 
@@ -21,7 +21,7 @@ function pdfXLSXHeadGen(headingName, projectName){
 
 }
 
-function pdfXLSXRowsGenEstimation(data, noPrice){
+function rowsGenSimpleEstimation(data, noPrice){
 
   const pdfXLSXRows = [];
 
@@ -36,21 +36,83 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
     ],
   );
 
+  rowsGenEstimationHandleWorksAndWorkDetails(
+    pdfXLSXRows,
+    data,
+    `${1}`,
+    noPrice
+  );
+
+  return pdfXLSXRows;
+
+}
+
+function rowsGenTradesEstimation(data, noPrice){
+
+  const rows = [];
+
+  for( let i = 0; i < data.length; i++){ // Trade for loop
+    const tradeTitle = data[i]._id;
+    const tradeData = data[i].data;
+    const workAndDetailsRows = [];
+    const tradeObj = {};
+    rowsGenEstimationHandleWorksAndWorkDetails(
+      workAndDetailsRows,
+      tradeData,
+      `${i+1}`,
+      noPrice
+    );
+    tradeObj.trade = tradeTitle;
+    tradeObj.rows = workAndDetailsRows;
+    rows.push(tradeObj);
+  }
+
+  return rows;
+
+}
+
+function rowsGenTradesAndTranchesEstimation(data, noPrice){
+  const rows = [];
+
+  for( let i = 0; i < data.length; i++){ // Trade for loop
+    const tradeTitle = data[i]._id;
+    const tradeData = data[i].data;
+    const tranchesRows = [];
+    const tradeObj = {};
+    for(let j = 0; j < tradeData.length; j++){ // Tranch for loop
+      const tranchTitle = tradeData[j].tranch;
+      const tranchDataArr = tradeData[j].tranchData;
+      const workAndDetailsRows = [];
+      const tranchObj = {};
+      rowsGenEstimationHandleWorksAndWorkDetails(
+        workAndDetailsRows,
+        tranchDataArr,
+        `${i+1}.${j+1}`,
+        noPrice
+      );
+      tranchObj.tranch = tranchTitle;
+      tranchObj.rows = workAndDetailsRows;
+      tranchesRows.push(tranchObj);
+    }
+    tradeObj.trade = tradeTitle;
+    tradeObj.rows = tranchesRows;
+    rows.push(tradeObj);
+  }
+
+  return rows;
+}
+
+function rowsGenEstimationHandleWorksAndWorkDetails(toBeModifiedArr, data, prefix, noPrice){
+
   let _id;
-  let workIndex = 1;
-  let workDetailIndex = 1;
+
   for( let i = 0; i < data.length; i++ ){
 
     if(_id != data[i].work._id){
 
-      workDetailIndex = 1; // We know that for sure.
-      
       const arr = [];
 
-      console.log(`THIS IS THE data[${i}]: ${JSON.stringify(data[i])}`);
-      console.log(`THIS IS THE data[${i}].workUnit: ${JSON.stringify(data[i].workUnit)}`);
-
-      arr.push(`${workIndex}.${workDetailIndex}`);
+      arr.push(`${prefix}.${i+1}`);
       arr.push(data[i].work.name);
       arr.push(data[i].workUnit?.name ?? "");
       arr.push(data[i].work?.quantity ?? "");
@@ -63,15 +125,13 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
         arr.push((data[i].work?.unit_price ?? "0") * (data[i].work.quantity ?? "0"));
       }
 
-      pdfXLSXRows.push(arr);
+      toBeModifiedArr.push(arr);
 
       if(data[i].workDetails){
 
-        workDetailIndex = workDetailIndex + 1; // Start adding WorkDetails
-
         const arrD = [];
   
-        arrD.push(`${workIndex}.${workDetailIndex}`);
+        arrD.push(`${prefix}.${i+1}`);
         arrD.push(data[i].workDetails.name);
         arrD.push(data[i].workDetailsUnit.name);
         arrD.push(data[i].workDetails.quantity);
@@ -84,19 +144,15 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
           arrD.push(data[i].workDetails.unit_price * data[i].workDetails.quantity);
         }
   
-        pdfXLSXRows.push(arrD);
+        toBeModifiedArr.push(arrD);
 
       }
 
-      workIndex = workIndex + 1;
     } else {
-      // Just add WorkDetail here.
-
-      workDetailIndex = workDetailIndex + 1; // Well it immediately becomes sub task.
 
       const arrD = [];
 
-      arrD.push(`${workIndex}.${workDetailIndex}`);
+      arrD.push(`${prefix}.${i+1}`);
       arrD.push(data[i].workDetails.name);
       arrD.push(data[i].workDetailsUnit.name);
       arrD.push(data[i].workDetails.quantity);
@@ -109,36 +165,188 @@ function pdfXLSXRowsGenEstimation(data, noPrice){
         arrD.push(data[i].workDetails.unit_price * data[i].workDetails.quantity);
       }
 
-      pdfXLSXRows.push(arrD);
-
+      toBeModifiedArr.push(arrD);
       
     }
 
     _id = data[i].work._id;
   }
 
-  return pdfXLSXRows;
-
 }
 
-function realDataXLSXGenEstimation(pdfXLSXRows, pdfXLSXColumns){
+function xlsxParsedDataGenSimpleEstimation(rows){
 
-  const realDataXLSX = [];
+  const xlsxParsedData = [];
 
-  // Populate data in realDataXLSX
-  for( let i = 0; i < pdfXLSXRows.length; i++ ){
+  // Populate body data in xlsxParsedData
+  for( let i = 0; i < rows.length; i++ ){
     let obj = {};
-    for( let j = 0; j < pdfXLSXColumns.length; j++ ){
-      obj[pdfXLSXColumns[j]] = pdfXLSXRows[i][j];
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      obj[dataColumnsEstimation[j]] = rows[i][j];
     }
-    realDataXLSX.push(obj);
+    xlsxParsedData.push(obj);
   }
 
-  return realDataXLSX;
+  return xlsxParsedData;
 
 }
 
-function footerDataGen(data, currentProject, noPrice){
+function xlsxParsedDataGenTradesEstimation(trade, index){
+
+  const xlsxParsedData = [];
+
+  // Populate trade title in xlsxParsedData
+  const tradeObj = {};
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeObj[dataColumnsEstimation[i]] = `${index}`;
+    } else if (i == 1){
+      tradeObj[dataColumnsEstimation[i]] = trade.trade;
+    } else {
+      tradeObj[dataColumnsEstimation[i]] = "";
+    }
+  }
+  xlsxParsedData.push(tradeObj);
+
+  const workAndWorkDetailsRows = trade.rows;
+  
+  // Populate body data in xlsxParsedData
+  for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+    let obj = {};
+    for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+      obj[dataColumnsEstimation[k]] = workAndWorkDetailsRows[j][k];
+    }
+    xlsxParsedData.push(obj);
+  }
+
+  const tradeTotal = calculateTotalHT(workAndWorkDetailsRows);
+
+  // Populate trade total in xlsxParsedData
+  const tradeTotalHTObj = {};
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTObj[dataColumnsEstimation[j]] = `Trade Total: `;
+    } else if (j == 5){
+      tradeTotalHTObj[dataColumnsEstimation[j]] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTObj[dataColumnsEstimation[j]] = "";
+    }
+  }
+  xlsxParsedData.push(tradeTotalHTObj);
+
+  return xlsxParsedData;
+
+}
+
+function xlsxParsedDataGenTradesAndTranchesEstimation(trade, index){
+
+  const xlsxParsedData = [];
+
+  // Populate trade title in xlsxParsedData
+  const tradeObj = {};
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeObj[dataColumnsEstimation[i]] = `${index}`;
+    } else if (i == 1){
+      tradeObj[dataColumnsEstimation[i]] = trade.trade;
+    } else {
+      tradeObj[dataColumnsEstimation[i]] = "";
+    }
+  }
+  xlsxParsedData.push(tradeObj);
+
+  const trachesRows = trade.rows;
+  let tradeTotal = null; // null is okay, undefined is not.
+  for( let i = 0; i < trachesRows.length; i++ ){
+
+    const currentObj = trachesRows[i];
+
+    // Populate tranch title in xlsxParsedData
+    const tranchObj = {};
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      if(j == 0){
+        tranchObj[dataColumnsEstimation[j]] = `${index}.${i+1}`;
+      } else if (j == 1){
+        tranchObj[dataColumnsEstimation[j]] = currentObj.tranch;
+      } else {
+        tranchObj[dataColumnsEstimation[j]] = "";
+      }
+    }
+    xlsxParsedData.push(tranchObj);
+
+    const workAndWorkDetailsRows = currentObj.rows;
+
+    // Populate body data in xlsxParsedData
+    for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+      let obj = {};
+      for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+        obj[dataColumnsEstimation[k]] = workAndWorkDetailsRows[j][k];
+      }
+      xlsxParsedData.push(obj);
+    }
+
+    const trancheTotalHT = calculateTotalHT(workAndWorkDetailsRows);
+
+    // Populate tranch total in xlsxParsedData
+    const trancheTotalHTObj = {};
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      if(j == 1){
+        trancheTotalHTObj[dataColumnsEstimation[j]] = `Tranche Total`;
+      } else if (j == 5){
+        trancheTotalHTObj[dataColumnsEstimation[j]] = trancheTotalHT ?? "";
+      } else {
+        trancheTotalHTObj[dataColumnsEstimation[j]] = "";
+      }
+    }
+    xlsxParsedData.push(trancheTotalHTObj);
+
+    if(trancheTotalHT){
+      tradeTotal = tradeTotal + trancheTotalHT;
+    }
+
+  }
+
+  // Populate trade total in xlsxParsedData
+  const tradeTotalHTObj = {};
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTObj[dataColumnsEstimation[j]] = `Trade Total`;
+    } else if (j == 5){
+      tradeTotalHTObj[dataColumnsEstimation[j]] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTObj[dataColumnsEstimation[j]] = "";
+    }
+  }
+  xlsxParsedData.push(tradeTotalHTObj);
+
+  return xlsxParsedData;
+
+}
+
+function calculateTotalHT(data, noPrice){
+
+  if(noPrice){
+    return;
+  }
+
+  let totalHT = 0;
+
+  for(let i = 0; i < data.length; i++){
+    const currentArr = data[i];
+
+    if(!currentArr[5]){
+      continue;
+    }
+
+    const ht = parseInt(currentArr[5]);
+    totalHT = totalHT + ht;
+  }
+
+  return totalHT;
+
+}
+
+function footerDataGenSimpleEstimation(data, currentProject, noPrice, addSpace){
 
   let footerData = [];
 
@@ -174,11 +382,66 @@ function footerDataGen(data, currentProject, noPrice){
     ];
   }
 
+  if(addSpace){
+    footerData.splice(1, 0, "");
+  }
+
   return footerData;
 
 }
 
-function pdfXLSXRowsGenBPU(data){
+function xlsxParsedFooterDataGenEstimation(
+  floatsRow,
+  footerColumns
+){
+
+  const xlsxParsedData = [];
+
+  for(let i = 0; i < footerColumns.length; i++){
+    const obj = {};
+    for(let j = 0; j < dataColumnsEstimation.length; j++){
+      if(j == 1){
+        obj[dataColumnsEstimation[j]] = footerColumns[i];
+      } else if( j == 5 ) {
+        obj[dataColumnsEstimation[j]] = floatsRow[i];
+      } else {
+        obj[dataColumnsEstimation[j]] = "";
+      }
+    }
+    xlsxParsedData.push(obj);
+  }
+  
+  return xlsxParsedData;
+
+}
+
+const calculateWSCols = (arr) => {
+  let nameL = null;
+  let unitL = null;
+  for(let i = 0; i < arr.length; i++){
+    const currentObj = arr[i];
+    const values = Object.values(currentObj);
+    if(values[1].length > nameL){
+      nameL = values[1].length
+    }
+    if(values[2].length > unitL){
+      unitL = values[2].length
+    }
+  }
+
+  const wscols = [
+    {wch:10},
+    {wch:nameL},
+    {wch:unitL},
+    {wch:10},
+    {wch:10},
+    {wch:10}
+  ];
+
+  return wscols;
+}
+
+function rowsGenBPU(data){
 
   const pdfXLSXRows = [];
 
@@ -199,7 +462,7 @@ function pdfXLSXRowsGenBPU(data){
 
 }
 
-function pdfXLSXRowsGenCCTP(data){
+function rowsGenCCTP(data){
 
   const pdfXLSXRows = [];
 
@@ -462,7 +725,7 @@ const tagsToDocxMap = {
   },
 };
 
-const pdfXLSXColumns = [
+const dataColumnsEstimation = [
   "No #",
   "Name",
   "Unity",
@@ -471,28 +734,35 @@ const pdfXLSXColumns = [
   "Total HT"
 ];
 
-const pdfXLSXFooterColumns = [
+const footerColumnsSimpleEstimation = [
   "Total Lot n°1 :",
+  "",
   "Total HT :",
   "Total VAT (%) :",
   "Total Price :",
 ];
 
-const pdfXLSXColumnsBPU = [
+const dataColumnsBPU = [
   "'1",
   "Lot n°1",
   "",
 ];
 
 export {
-  pdfXLSXHeadGen,
-  pdfXLSXRowsGenEstimation,
-  realDataXLSXGenEstimation,
-  pdfXLSXRowsGenBPU,
-  pdfXLSXRowsGenCCTP,
-  footerDataGen,
+  headGen,
+  rowsGenSimpleEstimation,
+  rowsGenTradesEstimation,
+  rowsGenTradesAndTranchesEstimation,
+  xlsxParsedDataGenSimpleEstimation,
+  xlsxParsedDataGenTradesEstimation,
+  xlsxParsedDataGenTradesAndTranchesEstimation,
+  xlsxParsedFooterDataGenEstimation,
+  calculateWSCols,
+  rowsGenBPU,
+  rowsGenCCTP,
+  footerDataGenSimpleEstimation,
   textRunsSplitGen,
-  pdfXLSXColumns,
-  pdfXLSXFooterColumns,
-  pdfXLSXColumnsBPU,
+  dataColumnsEstimation,
+  footerColumnsSimpleEstimation,
+  dataColumnsBPU,
 }
