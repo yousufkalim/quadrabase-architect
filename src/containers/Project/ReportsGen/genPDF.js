@@ -4,16 +4,32 @@ import "jspdf-autotable";
 import {
   headGen,
   rowsGenSimpleEstimation,
-  rowsGenBPU,
+  rowsGenTradesEstimation,
+  rowsGenTradesAndTranchesEstimation,
+  pdfParsedDataGenTradesEstimation,
+  pdfParsedDataGenTradesAndTranchesEstimation,
   footerDataGenSimpleEstimation,
+  rowsGenSimpleBPU,
+  rowsGenTradesBPU,
+  rowsGenTradesAndTranchesBPU,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,
   dataColumnsBPU
 } from "./data.js";
 
-function exportPDFEstimation(data, currentProject, noPrice){
+function applyGlobalStyling(s){
+  s.overflow = 'linebreak';
+  s.columnWidth = 'wrap';
+  s.font = 'helvetica';
+  s.cellPadding = 3;
+  s.overflowColumns = 'linebreak';
+  s.lineColor = [0, 0, 0];
+  s.borders = "t";
+}
 
-  const pdfXLSXHead = headGen(
+function exportPDFSimpleEstimation(data, currentProject, noPrice){
+
+  const headArr = headGen(
     `${noPrice ? "DQE" : "Estimation"}`,
     `${currentProject?.name ?? "N/A"}`
   );
@@ -28,30 +44,22 @@ function exportPDFEstimation(data, currentProject, noPrice){
 
   doc.setFontSize(12);
 
-  // Not used
-  // doc.text(title, 40, 40);
-
   // It is important to draw tables one by one so that value of
   // doc.lastAutoTable.settings.startY is updated and synced.
   const contentHeadTable = {
     startY: 50,
     theme: 'plain',
-    head: [pdfXLSXHead],
+    head: [headArr],
     theme: "plain",
     didParseCell: (data) => {
       const s = data.cell.styles;
 
       //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      applyGlobalStyling(s);
+
       s.fontSize = 12;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
-      s.lineWidth = 0.1;
       s.fillColor = [191, 191, 191];
+      s.lineWidth = 0.1;
 
     },
   };
@@ -68,20 +76,15 @@ function exportPDFEstimation(data, currentProject, noPrice){
       const s = data.cell.styles;
 
       //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      applyGlobalStyling(s);
+
       s.fontSize = 10;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
 
       if (data.row.section === 'head') {
         s.fontSize = 12;
         s.fillColor = [191, 191, 191];
-      } if (data.row.index === 0) {
+      } else if (data.row.index === 0) {
         s.fontSize = 11;
         s.fillColor = [211, 211, 211];
       } else {
@@ -124,17 +127,12 @@ function exportPDFEstimation(data, currentProject, noPrice){
       const s = data.cell.styles;
 
       //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
-      s.fontSize = 9;
-      s.halign = 'right';
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
+      applyGlobalStyling(s);
+
       s.lineWidth = 0.1;
+      s.fontSize = 9;
       s.fillColor = [255, 255, 255];
+      s.halign = 'right';
 
     },
   };
@@ -144,14 +142,164 @@ function exportPDFEstimation(data, currentProject, noPrice){
   doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}`);
 }
 
-function exportPDFBPU(data, currentProject){
+function exportPDFTradesEstimation(data, currentProject, noPrice){
 
-  const pdfXLSXHead = headGen(
-    "BPU",
+  const headArr = headGen(
+    `${noPrice ? "DQE" : "Estimation"}`,
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const realDataPDF = rowsGenBPU(data);
+  const unit = "pt";
+  const size = "A4"; // Use A1, A2, A3 or A4
+  const orientation = "portrait"; // portrait or landscape
+
+  const doc = new jsPDF(orientation, unit, size);
+
+  doc.setFontSize(12);
+
+  // Draw head table
+  const contentHeadTable = {
+    startY: 50,
+    theme: 'plain',
+    head: [headArr],
+    theme: "plain",
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      applyGlobalStyling(s);
+
+      s.fontSize = 12;
+      s.fillColor = [191, 191, 191];
+      s.lineWidth = 0.1;
+
+    },
+  };
+  doc.autoTable(contentHeadTable);
+
+  const rows = rowsGenTradesEstimation(data, noPrice);
+
+  let pdfParsedData = [];
+
+  for(let i = 0; i < rows.length; i++){
+    const currentRow = rows[i];
+    const currentRowXLSXParsedData = pdfParsedDataGenTradesEstimation(currentRow, (i+1));
+    pdfParsedData = pdfParsedData.concat(currentRowXLSXParsedData);
+  }
+
+  const contentMainTable = {
+    startY: doc.lastAutoTable.settings.startY + 32,
+    pageBreak: 'avoid',
+    head: [dataColumnsEstimation], // Lib requirement is that it is [][]
+    body: pdfParsedData,
+    theme: 'plain',
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      applyGlobalStyling(s);
+
+      s.fontSize = 10;
+      s.lineWidth = 0.1;
+
+      if (data.row.section === 'head') {
+        s.fontSize = 12;
+        s.fillColor = [191, 191, 191];
+      } else {
+        s.fontSize = 10;
+        s.fillColor = [255, 255, 255];
+      }
+
+    },
+  };
+
+  doc.autoTable(contentMainTable);
+
+  doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}`);
+}
+
+function exportPDFTradesAndTranchesEstimation(data, currentProject, noPrice){
+
+  const headArr = headGen(
+    `${noPrice ? "DQE" : "Estimation"}`,
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const unit = "pt";
+  const size = "A4"; // Use A1, A2, A3 or A4
+  const orientation = "portrait"; // portrait or landscape
+
+  const doc = new jsPDF(orientation, unit, size);
+
+  doc.setFontSize(12);
+
+  // Draw head table
+  const contentHeadTable = {
+    startY: 50,
+    theme: 'plain',
+    head: [headArr],
+    theme: "plain",
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      applyGlobalStyling(s);
+
+      s.fontSize = 12;
+      s.fillColor = [191, 191, 191];
+      s.lineWidth = 0.1;
+
+    },
+  };
+  doc.autoTable(contentHeadTable);
+
+  const rows = rowsGenTradesAndTranchesEstimation(data, noPrice);
+
+  let pdfparsedData = [];
+
+  for(let i = 0; i < rows.length; i++){
+    const currentRow = rows[i];
+    const currentRowXLSXParsedData = pdfParsedDataGenTradesAndTranchesEstimation(currentRow, (i+1));
+    pdfparsedData = pdfparsedData.concat(currentRowXLSXParsedData);
+  }
+
+  const contentMainTable = {
+    startY: doc.lastAutoTable.settings.startY + 32,
+    pageBreak: 'avoid',
+    head: [dataColumnsEstimation], // Lib requirement is that it is [][]
+    body: pdfparsedData,
+    theme: 'plain',
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      applyGlobalStyling(s);
+
+      s.fontSize = 10;
+      s.lineWidth = 0.1;
+
+      if (data.row.section === 'head') {
+        s.fontSize = 12;
+        s.fillColor = [191, 191, 191];
+      } else {
+        s.fontSize = 10;
+        s.fillColor = [255, 255, 255];
+      }
+
+    },
+  };
+
+  doc.autoTable(contentMainTable);
+
+  doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}`);
+}
+
+function exportPDFSimpleBPU(data, currentProject){
+
+  const headArr = headGen(
+    "BPU",
+    `${currentProject?.name ?? "N/A"}`
+  );
 
   const unit = "pt";
   const size = "A4"; // Use A1, A2, A3 or A4
@@ -166,7 +314,7 @@ function exportPDFBPU(data, currentProject){
   const contentHeadTable = {
     startY: 50,
     theme: 'plain',
-    head: [pdfXLSXHead],
+    head: [headArr],
     theme: "plain",
     didParseCell: (data) => {
       const s = data.cell.styles;
@@ -188,11 +336,153 @@ function exportPDFBPU(data, currentProject){
 
   doc.autoTable(contentHeadTable);
 
+  const pdfParsedPDF = rowsGenSimpleBPU(data);
+
   const contentMainTable = {
     startY: doc.lastAutoTable.settings.startY + 32,
     pageBreak: 'avoid',
     head: [dataColumnsBPU], // Lib requirement is that it is [][]
-    body: realDataPDF,
+    body: pdfParsedPDF,
+    theme: 'plain',
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      s.overflow = 'linebreak';
+      s.columnWidth = 'wrap';
+      s.font = 'helvetica';
+      s.fontSize = 10;
+      s.cellPadding = 3;
+      s.overflowColumns = 'linebreak';
+      s.lineColor = [0, 0, 0];
+      s.borders = "t";
+      s.lineWidth = 0.1;
+
+    },
+  };
+
+  doc.autoTable(contentMainTable);
+
+  doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - BPU`);
+}
+
+function exportPDFTradesBPU(data, currentProject){
+
+  const headArr = headGen(
+    "BPU",
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const unit = "pt";
+  const size = "A4"; // Use A1, A2, A3 or A4
+  const orientation = "portrait"; // portrait or landscape
+
+  const doc = new jsPDF(orientation, unit, size);
+
+  doc.setFontSize(12);
+
+  // Draw head table
+  const contentHeadTable = {
+    startY: 50,
+    theme: 'plain',
+    head: [headArr],
+    theme: "plain",
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      s.overflow = 'linebreak';
+      s.columnWidth = 'wrap';
+      s.font = 'helvetica';
+      s.fontSize = 12;
+      s.cellPadding = 3;
+      s.overflowColumns = 'linebreak';
+      s.lineColor = [0, 0, 0];
+      s.borders = "t";
+      s.lineWidth = 0.1;
+      s.fillColor = [191, 191, 191];
+
+    },
+  };
+  doc.autoTable(contentHeadTable);
+
+  const pdfParsedData = rowsGenTradesBPU(data);
+
+  const contentMainTable = {
+    startY: doc.lastAutoTable.settings.startY + 32,
+    pageBreak: 'avoid',
+    head: [dataColumnsBPU], // Lib requirement is that it is [][]
+    body: pdfParsedData,
+    theme: 'plain',
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      s.overflow = 'linebreak';
+      s.columnWidth = 'wrap';
+      s.font = 'helvetica';
+      s.fontSize = 10;
+      s.cellPadding = 3;
+      s.overflowColumns = 'linebreak';
+      s.lineColor = [0, 0, 0];
+      s.borders = "t";
+      s.lineWidth = 0.1;
+
+    },
+  };
+
+  doc.autoTable(contentMainTable);
+
+  doc.save(`${currentProject?.name ?? "N/A"} - ${Date.now()} - BPU`);
+}
+
+function exportPDFTradesAndTranchesBPU(data, currentProject){
+
+  const headArr = headGen(
+    "BPU",
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const pdfParsedData = rowsGenTradesAndTranchesBPU(data);
+
+  const unit = "pt";
+  const size = "A4"; // Use A1, A2, A3 or A4
+  const orientation = "portrait"; // portrait or landscape
+
+  const doc = new jsPDF(orientation, unit, size);
+
+  doc.setFontSize(12);
+
+  // Draw head table
+  const contentHeadTable = {
+    startY: 50,
+    theme: 'plain',
+    head: [headArr],
+    theme: "plain",
+    didParseCell: (data) => {
+      const s = data.cell.styles;
+
+      //global styling
+      s.overflow = 'linebreak';
+      s.columnWidth = 'wrap';
+      s.font = 'helvetica';
+      s.fontSize = 12;
+      s.cellPadding = 3;
+      s.overflowColumns = 'linebreak';
+      s.lineColor = [0, 0, 0];
+      s.borders = "t";
+      s.lineWidth = 0.1;
+      s.fillColor = [191, 191, 191];
+
+    },
+  };
+  doc.autoTable(contentHeadTable);
+
+  const contentMainTable = {
+    startY: doc.lastAutoTable.settings.startY + 32,
+    pageBreak: 'avoid',
+    head: [dataColumnsBPU], // Lib requirement is that it is [][]
+    body: pdfParsedData,
     theme: 'plain',
     didParseCell: (data) => {
       const s = data.cell.styles;
@@ -217,6 +507,10 @@ function exportPDFBPU(data, currentProject){
 }
 
 export {
-  exportPDFEstimation,
-  exportPDFBPU,
+  exportPDFSimpleEstimation,
+  exportPDFTradesEstimation,
+  exportPDFTradesAndTranchesEstimation,
+  exportPDFSimpleBPU,
+  exportPDFTradesBPU,
+  exportPDFTradesAndTranchesBPU
 }

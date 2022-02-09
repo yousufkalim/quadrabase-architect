@@ -17,7 +17,7 @@ import {
 import {
   headGen,
   rowsGenSimpleEstimation,
-  rowsGenBPU,
+  rowsGenSimpleBPU,
   rowsGenCCTP,
   footerDataGenSimpleEstimation,
   textRunsSplitGen,
@@ -263,7 +263,7 @@ function exportDOCXBPU(data, currentProject){
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = rowsGenBPU(data);
+  const pdfXLSXRows = rowsGenSimpleBPU(data);
 
   const tableHeader = [
     new Table({
