@@ -13,7 +13,11 @@ import {
   exportXLSXTradesEstimation,
   exportXLSXTradesAndTranchesEstimation
 } from "../ReportsGen/genExcel";
-import { exportPDFEstimation } from "../ReportsGen/genPDF";
+import {
+  exportPDFSimpleEstimation,
+  exportPDFTradesEstimation,
+  exportPDFTradesAndTranchesEstimation
+} from "../ReportsGen/genPDF";
 import { exportDOCXestimation } from "../ReportsGen/genDocx";
 
 import { toast } from "react-toastify";
@@ -43,7 +47,17 @@ function ReportEstimationModal(props){
 
   function generatePDF(){
     try{
-      exportPDFEstimation(projectWorkData, currentProject);
+
+      if(currentProject.market_type == "Simple"){
+        exportPDFSimpleEstimation(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "Trades"){
+        exportPDFTradesEstimation(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "TradesAndTranches"){
+        exportPDFTradesAndTranchesEstimation(projectWorkData, currentProject);
+      } else {
+        console.trace("Show me");
+      }
+
     }catch(e){
       toast.error("Could not generate report successfully.");
       console.trace(e);

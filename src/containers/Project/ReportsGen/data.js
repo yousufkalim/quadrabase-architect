@@ -11,21 +11,21 @@ function dateNowFormatted() {
 
 function headGen(headingName, projectName){
 
-  const pdfXLSXHead = [];
+  const headArr = [];
 
-  pdfXLSXHead.push(headingName);
-  pdfXLSXHead.push(projectName);
-  pdfXLSXHead.push(`${dateNowFormatted()}`);
+  headArr.push(headingName);
+  headArr.push(projectName);
+  headArr.push(`${dateNowFormatted()}`);
 
-  return pdfXLSXHead;
+  return headArr;
 
 }
 
 function rowsGenSimpleEstimation(data, noPrice){
 
-  const pdfXLSXRows = [];
+  const rows = [];
 
-  pdfXLSXRows.push(
+  rows.push(
     [
       "'1",
       "Lot n°1",
@@ -37,13 +37,13 @@ function rowsGenSimpleEstimation(data, noPrice){
   );
 
   rowsGenEstimationHandleWorksAndWorkDetails(
-    pdfXLSXRows,
+    rows,
     data,
     `${1}`,
     noPrice
   );
 
-  return pdfXLSXRows;
+  return rows;
 
 }
 
@@ -291,7 +291,7 @@ function xlsxParsedDataGenTradesAndTranchesEstimation(trade, index){
     const trancheTotalHTObj = {};
     for( let j = 0; j < dataColumnsEstimation.length; j++ ){
       if(j == 1){
-        trancheTotalHTObj[dataColumnsEstimation[j]] = `Tranche Total`;
+        trancheTotalHTObj[dataColumnsEstimation[j]] = `Tranche Total:`;
       } else if (j == 5){
         trancheTotalHTObj[dataColumnsEstimation[j]] = trancheTotalHT ?? "";
       } else {
@@ -310,7 +310,7 @@ function xlsxParsedDataGenTradesAndTranchesEstimation(trade, index){
   const tradeTotalHTObj = {};
   for( let j = 0; j < dataColumnsEstimation.length; j++ ){
     if(j == 1){
-      tradeTotalHTObj[dataColumnsEstimation[j]] = `Trade Total`;
+      tradeTotalHTObj[dataColumnsEstimation[j]] = `Trade Total:`;
     } else if (j == 5){
       tradeTotalHTObj[dataColumnsEstimation[j]] = tradeTotal ?? "";
     } else {
@@ -320,6 +320,138 @@ function xlsxParsedDataGenTradesAndTranchesEstimation(trade, index){
   xlsxParsedData.push(tradeTotalHTObj);
 
   return xlsxParsedData;
+
+}
+
+function pdfParsedDataGenTradesEstimation(trade, index){
+
+  const pdfParsedData = [];
+
+  // Populate trade title in xlsxParsedData
+  const tradeArr = [];
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeArr[i] = `${index}`;
+    } else if (i == 1){
+      tradeArr[i] = trade.trade;
+    } else {
+      tradeArr[i] = "";
+    }
+  }
+  pdfParsedData.push(tradeArr);
+
+  const workAndWorkDetailsRows = trade.rows;
+  
+  // Populate body data in xlsxParsedData
+  for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+    let arr = [];
+    for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+      arr[k] = workAndWorkDetailsRows[j][k];
+    }
+    pdfParsedData.push(arr);
+  }
+
+  const tradeTotal = calculateTotalHT(workAndWorkDetailsRows);
+
+  // Populate trade total in xlsxParsedData
+  const tradeTotalHTArr = [];
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTArr[j] = `Trade Total:`;
+    } else if (j == 5){
+      tradeTotalHTArr[j] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTArr[j] = "";
+    }
+  }
+  pdfParsedData.push(tradeTotalHTArr);
+
+  return pdfParsedData;
+
+}
+
+function pdfParsedDataGenTradesAndTranchesEstimation(trade, index){
+
+  const pdfParsedData = [];
+
+  // Populate trade title in pdfParsedData
+  const tradeArr = [];
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeArr[i] = `${index}`;
+    } else if (i == 1){
+      tradeArr[i] = trade.trade;
+    } else {
+      tradeArr[i] = "";
+    }
+  }
+  pdfParsedData.push(tradeArr);
+
+  const trachesRows = trade.rows;
+  let tradeTotal = null; // null is okay, undefined is not.
+  for( let i = 0; i < trachesRows.length; i++ ){
+
+    const currentObj = trachesRows[i];
+
+    // Populate tranch title in pdfParsedData
+    const tranchArr = [];
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      if(j == 0){
+        tranchArr[j] = `${index}.${i+1}`;
+      } else if (j == 1){
+        tranchArr[j] = currentObj.tranch;
+      } else {
+        tranchArr[j] = "";
+      }
+    }
+    pdfParsedData.push(tranchArr);
+
+    const workAndWorkDetailsRows = currentObj.rows;
+
+    // Populate body data in pdfParsedData
+    for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+      let arr = [];
+      for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+        arr[k] = workAndWorkDetailsRows[j][k];
+      }
+      pdfParsedData.push(arr);
+    }
+
+    const trancheTotalHT = calculateTotalHT(workAndWorkDetailsRows);
+
+    // Populate tranch total in pdfParsedData
+    const trancheTotalHTObj = [];
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      if(j == 1){
+        trancheTotalHTObj[j] = `Tranche Total:`;
+      } else if (j == 5){
+        trancheTotalHTObj[j] = trancheTotalHT ?? "";
+      } else {
+        trancheTotalHTObj[j] = "";
+      }
+    }
+    pdfParsedData.push(trancheTotalHTObj);
+
+    if(trancheTotalHT){
+      tradeTotal = tradeTotal + trancheTotalHT;
+    }
+
+  }
+
+  // Populate trade total in pdfParsedData
+  const tradeTotalHTObj = [];
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTObj[j] = `Trade Total:`;
+    } else if (j == 5){
+      tradeTotalHTObj[j] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTObj[j] = "";
+    }
+  }
+  pdfParsedData.push(tradeTotalHTObj);
+
+  return pdfParsedData;
 
 }
 
@@ -441,9 +573,9 @@ const calculateWSCols = (arr) => {
   return wscols;
 }
 
-function rowsGenBPU(data){
+function rowsGenSimpleBPU(data){
 
-  const pdfXLSXRows = [];
+  const rows = [];
 
   let workIndex = 1;
   for( let i = 0; i < data.length; i++ ){
@@ -454,17 +586,70 @@ function rowsGenBPU(data){
     arr.push(`${workIndex}.1`);
     arr.push(`${data[i].work.name}\n${data[i].work.bpu_text}`);
     arr.push(data[i].work.unit_price ? "PU HT \n(en chiffres)" : "");
-    pdfXLSXRows.push(arr);
+    rows.push(arr);
     workIndex = workIndex + 1;
   }
 
-  return pdfXLSXRows;
+  return rows;
+
+}
+
+function rowsGenTradesBPU(data){
+
+  const rows = [];
+
+  let workIndex = 1;
+  for( let i = 0; i < data.length; i++ ){
+    const worksAndWorkDetailsArr = data[i].data;
+    for( let j = 0; j < worksAndWorkDetailsArr.length; j++ ){
+      const currentObj = worksAndWorkDetailsArr[j];
+      if(currentObj.work.bpu_text.length == 0){
+        continue;
+      }
+      const arr = [];
+      arr.push(`${workIndex}.1`);
+      arr.push(`${currentObj.work.name}\n${currentObj.work.bpu_text}`);
+      arr.push(currentObj.work.unit_price ? "PU HT \n(en chiffres)" : "");
+      rows.push(arr);
+      workIndex = workIndex + 1;
+    }
+  }
+
+  return rows;
+
+}
+
+function rowsGenTradesAndTranchesBPU(data){
+
+  const rows = [];
+
+  let workIndex = 1;
+  for( let i = 0; i < data.length; i++ ){
+    const tradesArr = data[i].data;
+    for( let j = 0; j < tradesArr.length; j++ ){
+      const worksAndWorkDetailsArr = tradesArr[j].tranchData;
+      for( let k = 0; k < worksAndWorkDetailsArr.length; k++ ){
+        const currentObj = worksAndWorkDetailsArr[k];
+        if(currentObj.work.bpu_text.length == 0){
+          continue;
+        }
+        const arr = [];
+        arr.push(`${workIndex}.1`);
+        arr.push(`${currentObj.work.name}\n${currentObj.work.bpu_text}`);
+        arr.push(currentObj.work.unit_price ? "PU HT \n(en chiffres)" : "");
+        rows.push(arr);
+        workIndex = workIndex + 1;
+      }
+    } 
+  }
+
+  return rows;
 
 }
 
 function rowsGenCCTP(data){
 
-  const pdfXLSXRows = [];
+  const rows = [];
 
   for( let i = 0; i < data.length; i++ ){
     const CCTPArr = data[i].work.cctp_text;
@@ -475,10 +660,10 @@ function rowsGenCCTP(data){
       "title": `${i+1}. ${data[i].work.name}`,
       "cctp_arr": CCTPArr
     };
-    pdfXLSXRows.push(obj);
+    rows.push(obj);
   }
 
-  return pdfXLSXRows;
+  return rows;
 
 }
 
@@ -757,8 +942,12 @@ export {
   xlsxParsedDataGenTradesEstimation,
   xlsxParsedDataGenTradesAndTranchesEstimation,
   xlsxParsedFooterDataGenEstimation,
+  pdfParsedDataGenTradesEstimation,
+  pdfParsedDataGenTradesAndTranchesEstimation,
   calculateWSCols,
-  rowsGenBPU,
+  rowsGenSimpleBPU,
+  rowsGenTradesBPU,
+  rowsGenTradesAndTranchesBPU,
   rowsGenCCTP,
   footerDataGenSimpleEstimation,
   textRunsSplitGen,

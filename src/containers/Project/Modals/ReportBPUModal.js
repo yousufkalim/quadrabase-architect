@@ -7,7 +7,11 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 // Reports
-import { exportPDFBPU } from "../ReportsGen/genPDF";
+import {
+  exportPDFSimpleBPU,
+  exportPDFTradesBPU,
+  exportPDFTradesAndTranchesBPU
+} from "../ReportsGen/genPDF";
 import { exportDOCXBPU } from "../ReportsGen/genDocx";
 
 import { toast } from "react-toastify";
@@ -18,7 +22,17 @@ function ReportBPUModal(props){
 
   function generatePDF(){
     try{
-      exportPDFBPU(projectWorkData, currentProject);
+
+      if(currentProject.market_type == "Simple"){
+        exportPDFSimpleBPU(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "Trades"){
+        exportPDFTradesBPU(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "TradesAndTranches"){
+        exportPDFTradesAndTranchesBPU(projectWorkData, currentProject);
+      } else {
+        console.trace("Show me");
+      }
+
     }catch(e){
       toast.error("Could not generate report successfully.");
       console.trace(e);
