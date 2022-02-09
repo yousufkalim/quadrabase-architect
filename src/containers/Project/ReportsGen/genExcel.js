@@ -5,27 +5,17 @@ import {
   rowsGenSimpleEstimation,
   rowsGenTradesEstimation,
   rowsGenTradesAndTranchesEstimation,
-  xlsxParsedDataGenSimpleAndTradesEstimation,
+  xlsxParsedDataGenSimpleEstimation,
+  xlsxParsedDataGenTradesEstimation,
   xlsxParsedDataGenTradesAndTranchesEstimation,
   xlsxParsedFooterDataGenEstimation,
+  calculateWSCols,
   footerDataGenSimpleEstimation,
-  footerDataGenTradesEstimation,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,
-  footerColumnsTradesEstimation
 } from "./data.js";
 
 const ABC = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
-
-// Spaces
-const wscols = [
-  {wch:10},
-  {wch:35},
-  {wch:10},
-  {wch:10},
-  {wch:10},
-  {wch:10}
-];
 
 // Styles
 const Fill1 = {
@@ -116,12 +106,11 @@ const exportXLSXSimpleEstimation = (data, currentProject, noPrice) => {
   const rows = rowsGenSimpleEstimation(data, noPrice);
 
   let xlsxParsedData = [];
-  const xlsxParsedBodyData = xlsxParsedDataGenSimpleAndTradesEstimation(rows, dataColumnsEstimation);
+  const xlsxParsedBodyData = xlsxParsedDataGenSimpleEstimation(rows);
   const footerDataFloatsArr = footerDataGenSimpleEstimation(data, currentProject, noPrice, true);
   const xlsxParsedFooterData = xlsxParsedFooterDataGenEstimation(
     footerDataFloatsArr,
-    footerColumnsSimpleEstimation,
-    dataColumnsEstimation,
+    footerColumnsSimpleEstimation
   );
 
   xlsxParsedData = xlsxParsedData.concat(xlsxParsedBodyData);
@@ -130,7 +119,8 @@ const exportXLSXSimpleEstimation = (data, currentProject, noPrice) => {
   const ws = XLSX.utils.json_to_sheet(xlsxParsedData);
 
   // Set column widths
-  ws['!cols'] = wscols;
+  const wscols = calculateWSCols(xlsxParsedData);
+  ws['!cols'] = wscols
 
   let cursor = 1;
   let stopAt;
@@ -182,70 +172,43 @@ const exportXLSXTradesEstimation = (data, currentProject, noPrice) => {
   let xlsxParsedData = [];
 
   for(let i = 0; i < rows.length; i++){
-    const rawData = data[i].data; // As rows are calculated based on length of data, it should be safe.
-
     const currentRow = rows[i];
-    const currentRowXLSXParsedData = xlsxParsedDataGenSimpleAndTradesEstimation(currentRow, dataColumnsEstimation);
-    const footerDataFloatsArr = footerDataGenTradesEstimation(rawData, noPrice);
-    const currentRowXLSXParsedFooterData = xlsxParsedFooterDataGenEstimation(
-      footerDataFloatsArr,
-      footerColumnsTradesEstimation,
-      dataColumnsEstimation,
-    );
-
+    const currentRowXLSXParsedData = xlsxParsedDataGenTradesEstimation(currentRow, (i+1));
     xlsxParsedData = xlsxParsedData.concat(currentRowXLSXParsedData);
-    xlsxParsedData = xlsxParsedData.concat(currentRowXLSXParsedFooterData);
   }
 
   const ws = XLSX.utils.json_to_sheet(xlsxParsedData);
 
   // Set column widths
+  const wscols = calculateWSCols(xlsxParsedData);
   ws['!cols'] = wscols;
 
   let cursor = 1;
-  let stopAt;
   const merge = [];
 
   // Header row style
   applyRowStyle(ws, cursor, {...Fill1, ...BorderFirst2} ); 
   cursor = cursor + 1;
 
+  // Trades styling
   for(let i = 0; i < rows.length; i++){
-
-    const currentRow = rows[i];
-
-    // Trade row style 
+    const tradeRow = rows[i];
+    // Trade label row style 
     applyRowStyle(ws, cursor, {...Fill3, ...BorderFirst2} );
-
-    // Apply styling to body
-    stopAt = currentRow.length + cursor;
-    const oldCursor = cursor;
-    for( let j = cursor; j < stopAt; j++ ){
-      if(j == oldCursor){
-        cursor = cursor + 1;
-        continue; // Coz trade style is applied already
-      }
-      applyRowStyle(ws, j, BorderRestAll);
+    cursor = cursor + 1;
+    const workAndWorkDetailsRows = tradeRow.rows;
+    for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+      // WorkAndWorkDetail row style 
+      applyRowStyle(ws, cursor, BorderRestAll);
       cursor = cursor + 1;
     }
-
-    // Make merger object before moving cursor any further.
-    stopAt = cursor - 1;
-    for( let j = 0; j < footerColumnsTradesEstimation.length; j++ ){
-      const obj = {
-        s: { r: stopAt + j, c: 1 },
-        e: { r: stopAt + j, c: 4 }
-      }
-      merge.push(obj);
-    }
-
-    // Apply styling to footer
-    stopAt = footerColumnsTradesEstimation.length + cursor;
-    for( let j = cursor; j < stopAt; j++ ){
-      applyRowStyle(ws, j, BorderFirst2);
-      cursor = cursor + 1;
-    }
-
+    // Trade total row style 
+    applyRowStyle(ws, cursor, {...Fill6, ...BorderFirst2} );
+    merge.push({
+      s: { r: cursor-1, c: 1 },
+      e: { r: cursor-1, c: 4 }
+    });
+    cursor = cursor + 1;
   }
 
   // Merge footer cells - Merge must be done after styling
@@ -264,13 +227,14 @@ const exportXLSXTradesAndTranchesEstimation = (data, currentProject, noPrice) =>
 
   for(let i = 0; i < rows.length; i++){
     const currentRow = rows[i];
-    const currentRowXLSXParsedData = xlsxParsedDataGenTradesAndTranchesEstimation(currentRow, dataColumnsEstimation, (i+1));
+    const currentRowXLSXParsedData = xlsxParsedDataGenTradesAndTranchesEstimation(currentRow, (i+1));
     xlsxParsedData = xlsxParsedData.concat(currentRowXLSXParsedData);
   }
 
   const ws = XLSX.utils.json_to_sheet(xlsxParsedData);
 
   // Set column widths
+  const wscols = calculateWSCols(xlsxParsedData);
   ws['!cols'] = wscols;
 
   let cursor = 1;
@@ -306,7 +270,7 @@ const exportXLSXTradesAndTranchesEstimation = (data, currentProject, noPrice) =>
       });
       cursor = cursor + 1;
     }
-    // Tade total row style 
+    // Trde total row style 
     applyRowStyle(ws, cursor, {...Fill6, ...BorderFirst2} );
     merge.push({
       s: { r: cursor-1, c: 1 },
@@ -324,7 +288,6 @@ const exportXLSXTradesAndTranchesEstimation = (data, currentProject, noPrice) =>
 };
 
 function applyRowStyle(ws, RowNum, style){
-  // console.log(`THIS THE RowNum: ${RowNum}`);
   for( let i = 0; i < dataColumnsEstimation.length; i++ ){
     let char = ABC[i];
     ws[`${char}${RowNum}`].s = style;

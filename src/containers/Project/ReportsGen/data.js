@@ -51,33 +51,20 @@ function rowsGenTradesEstimation(data, noPrice){
 
   const rows = [];
 
-  for( let i = 0; i < data.length; i++){
-
-    const dataRows = [];
-
-    const title = data[i]._id;
+  for( let i = 0; i < data.length; i++){ // Trade for loop
+    const tradeTitle = data[i]._id;
     const tradeData = data[i].data;
-
-    dataRows.push(
-      [
-        `${i+1}`,
-        title,
-        "",
-        "",
-        "",
-        ""
-      ],
-    );
-
+    const workAndDetailsRows = [];
+    const tradeObj = {};
     rowsGenEstimationHandleWorksAndWorkDetails(
-      dataRows,
+      workAndDetailsRows,
       tradeData,
       `${i+1}`,
       noPrice
     );
-
-    rows.push(dataRows);
-
+    tradeObj.trade = tradeTitle;
+    tradeObj.rows = workAndDetailsRows;
+    rows.push(tradeObj);
   }
 
   return rows;
@@ -187,15 +174,15 @@ function rowsGenEstimationHandleWorksAndWorkDetails(toBeModifiedArr, data, prefi
 
 }
 
-function xlsxParsedDataGenSimpleAndTradesEstimation(rows, dataColumns){
+function xlsxParsedDataGenSimpleEstimation(rows){
 
   const xlsxParsedData = [];
 
-  // Populate data in xlsxParsedData
+  // Populate body data in xlsxParsedData
   for( let i = 0; i < rows.length; i++ ){
     let obj = {};
-    for( let j = 0; j < dataColumns.length; j++ ){
-      obj[dataColumns[j]] = rows[i][j];
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      obj[dataColumnsEstimation[j]] = rows[i][j];
     }
     xlsxParsedData.push(obj);
   }
@@ -204,18 +191,66 @@ function xlsxParsedDataGenSimpleAndTradesEstimation(rows, dataColumns){
 
 }
 
-function xlsxParsedDataGenTradesAndTranchesEstimation(trade, dataColumns, index){
+function xlsxParsedDataGenTradesEstimation(trade, index){
 
   const xlsxParsedData = [];
 
+  // Populate trade title in xlsxParsedData
   const tradeObj = {};
-  for( let i = 0; i < dataColumns.length; i++ ){
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
     if(i == 0){
-      tradeObj[dataColumns[i]] = `${index}`;
+      tradeObj[dataColumnsEstimation[i]] = `${index}`;
     } else if (i == 1){
-      tradeObj[dataColumns[i]] = trade.trade;
+      tradeObj[dataColumnsEstimation[i]] = trade.trade;
     } else {
-      tradeObj[dataColumns[i]] = "";
+      tradeObj[dataColumnsEstimation[i]] = "";
+    }
+  }
+  xlsxParsedData.push(tradeObj);
+
+  const workAndWorkDetailsRows = trade.rows;
+  
+  // Populate body data in xlsxParsedData
+  for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+    let obj = {};
+    for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+      obj[dataColumnsEstimation[k]] = workAndWorkDetailsRows[j][k];
+    }
+    xlsxParsedData.push(obj);
+  }
+
+  const tradeTotal = calculateTotalHT(workAndWorkDetailsRows);
+
+  // Populate trade total in xlsxParsedData
+  const tradeTotalHTObj = {};
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTObj[dataColumnsEstimation[j]] = `Trade Total: `;
+    } else if (j == 5){
+      tradeTotalHTObj[dataColumnsEstimation[j]] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTObj[dataColumnsEstimation[j]] = "";
+    }
+  }
+  xlsxParsedData.push(tradeTotalHTObj);
+
+  return xlsxParsedData;
+
+}
+
+function xlsxParsedDataGenTradesAndTranchesEstimation(trade, index){
+
+  const xlsxParsedData = [];
+
+  // Populate trade title in xlsxParsedData
+  const tradeObj = {};
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeObj[dataColumnsEstimation[i]] = `${index}`;
+    } else if (i == 1){
+      tradeObj[dataColumnsEstimation[i]] = trade.trade;
+    } else {
+      tradeObj[dataColumnsEstimation[i]] = "";
     }
   }
   xlsxParsedData.push(tradeObj);
@@ -226,39 +261,41 @@ function xlsxParsedDataGenTradesAndTranchesEstimation(trade, dataColumns, index)
 
     const currentObj = trachesRows[i];
 
+    // Populate tranch title in xlsxParsedData
     const tranchObj = {};
-    for( let j = 0; j < dataColumns.length; j++ ){
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
       if(j == 0){
-        tranchObj[dataColumns[j]] = `${index}.${i+1}`;
+        tranchObj[dataColumnsEstimation[j]] = `${index}.${i+1}`;
       } else if (j == 1){
-        tranchObj[dataColumns[j]] = currentObj.tranch;
+        tranchObj[dataColumnsEstimation[j]] = currentObj.tranch;
       } else {
-        tranchObj[dataColumns[j]] = "";
+        tranchObj[dataColumnsEstimation[j]] = "";
       }
     }
     xlsxParsedData.push(tranchObj);
 
     const workAndWorkDetailsRows = currentObj.rows;
 
-    // Populate data in xlsxParsedData
+    // Populate body data in xlsxParsedData
     for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
       let obj = {};
-      for( let k = 0; k < dataColumns.length; k++ ){
-        obj[dataColumns[k]] = workAndWorkDetailsRows[j][k];
+      for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+        obj[dataColumnsEstimation[k]] = workAndWorkDetailsRows[j][k];
       }
       xlsxParsedData.push(obj);
     }
 
-    const trancheTotalHT = calculateTrancheTotalHT(workAndWorkDetailsRows);
+    const trancheTotalHT = calculateTotalHT(workAndWorkDetailsRows);
 
+    // Populate tranch total in xlsxParsedData
     const trancheTotalHTObj = {};
-    for( let j = 0; j < dataColumns.length; j++ ){
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
       if(j == 1){
-        trancheTotalHTObj[dataColumns[j]] = `Tranche Total`;
+        trancheTotalHTObj[dataColumnsEstimation[j]] = `Tranche Total`;
       } else if (j == 5){
-        trancheTotalHTObj[dataColumns[j]] = trancheTotalHT ?? "";
+        trancheTotalHTObj[dataColumnsEstimation[j]] = trancheTotalHT ?? "";
       } else {
-        trancheTotalHTObj[dataColumns[j]] = "";
+        trancheTotalHTObj[dataColumnsEstimation[j]] = "";
       }
     }
     xlsxParsedData.push(trancheTotalHTObj);
@@ -269,14 +306,15 @@ function xlsxParsedDataGenTradesAndTranchesEstimation(trade, dataColumns, index)
 
   }
 
+  // Populate trade total in xlsxParsedData
   const tradeTotalHTObj = {};
-  for( let j = 0; j < dataColumns.length; j++ ){
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
     if(j == 1){
-      tradeTotalHTObj[dataColumns[j]] = `Trade Total`;
+      tradeTotalHTObj[dataColumnsEstimation[j]] = `Trade Total`;
     } else if (j == 5){
-      tradeTotalHTObj[dataColumns[j]] = tradeTotal ?? "";
+      tradeTotalHTObj[dataColumnsEstimation[j]] = tradeTotal ?? "";
     } else {
-      tradeTotalHTObj[dataColumns[j]] = "";
+      tradeTotalHTObj[dataColumnsEstimation[j]] = "";
     }
   }
   xlsxParsedData.push(tradeTotalHTObj);
@@ -285,7 +323,7 @@ function xlsxParsedDataGenTradesAndTranchesEstimation(trade, dataColumns, index)
 
 }
 
-function calculateTrancheTotalHT(data, noPrice){
+function calculateTotalHT(data, noPrice){
 
   if(noPrice){
     return;
@@ -352,55 +390,22 @@ function footerDataGenSimpleEstimation(data, currentProject, noPrice, addSpace){
 
 }
 
-function footerDataGenTradesEstimation(data, noPrice){
-
-  let footerData = [];
-
-  let totalHT = 0;
-
-  data.map((item, index) => {
-    if (!item.workDetails) {
-      totalHT += item.work.unit_price * item.work.quantity;
-    } else {
-      if (item.work._id !== data[index - 1]?.work._id) {
-        totalHT += item.workDetails.quantity * item.workDetails.unit_price;
-      } else {
-        totalHT += item.workDetails.quantity * item.workDetails.unit_price;
-      }
-    }
-  });
-
-  if(!noPrice){
-    footerData = [
-      totalHT,
-    ];
-  } else {
-    footerData = [
-      "",
-    ];
-  }
-
-  return footerData;
-
-}
-
 function xlsxParsedFooterDataGenEstimation(
   floatsRow,
-  footerColumns,
-  dataColumns
+  footerColumns
 ){
 
   const xlsxParsedData = [];
 
   for(let i = 0; i < footerColumns.length; i++){
     const obj = {};
-    for(let j = 0; j < dataColumns.length; j++){
+    for(let j = 0; j < dataColumnsEstimation.length; j++){
       if(j == 1){
-        obj[dataColumns[j]] = footerColumns[i];
+        obj[dataColumnsEstimation[j]] = footerColumns[i];
       } else if( j == 5 ) {
-        obj[dataColumns[j]] = floatsRow[i];
+        obj[dataColumnsEstimation[j]] = floatsRow[i];
       } else {
-        obj[dataColumns[j]] = "";
+        obj[dataColumnsEstimation[j]] = "";
       }
     }
     xlsxParsedData.push(obj);
@@ -408,6 +413,32 @@ function xlsxParsedFooterDataGenEstimation(
   
   return xlsxParsedData;
 
+}
+
+const calculateWSCols = (arr) => {
+  let nameL = null;
+  let unitL = null;
+  for(let i = 0; i < arr.length; i++){
+    const currentObj = arr[i];
+    const values = Object.values(currentObj);
+    if(values[1].length > nameL){
+      nameL = values[1].length
+    }
+    if(values[2].length > unitL){
+      unitL = values[2].length
+    }
+  }
+
+  const wscols = [
+    {wch:10},
+    {wch:nameL},
+    {wch:unitL},
+    {wch:10},
+    {wch:10},
+    {wch:10}
+  ];
+
+  return wscols;
 }
 
 function rowsGenBPU(data){
@@ -711,10 +742,6 @@ const footerColumnsSimpleEstimation = [
   "Total Price :",
 ];
 
-const footerColumnsTradesEstimation = [
-  "Trade Total :",
-];
-
 const dataColumnsBPU = [
   "'1",
   "Lot n°1",
@@ -726,16 +753,16 @@ export {
   rowsGenSimpleEstimation,
   rowsGenTradesEstimation,
   rowsGenTradesAndTranchesEstimation,
-  xlsxParsedDataGenSimpleAndTradesEstimation,
+  xlsxParsedDataGenSimpleEstimation,
+  xlsxParsedDataGenTradesEstimation,
   xlsxParsedDataGenTradesAndTranchesEstimation,
   xlsxParsedFooterDataGenEstimation,
+  calculateWSCols,
   rowsGenBPU,
   rowsGenCCTP,
   footerDataGenSimpleEstimation,
-  footerDataGenTradesEstimation,
   textRunsSplitGen,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,
-  footerColumnsTradesEstimation,
   dataColumnsBPU,
 }

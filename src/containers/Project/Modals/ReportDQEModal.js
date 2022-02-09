@@ -10,7 +10,8 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 // Reports
 import {
   exportXLSXSimpleEstimation,
-  exportXLSXTradesEstimation
+  exportXLSXTradesEstimation,
+  exportXLSXTradesAndTranchesEstimation
 } from "../ReportsGen/genExcel";
 import { exportPDFEstimation } from "../ReportsGen/genPDF";
 import { exportDOCXestimation } from "../ReportsGen/genDocx";
@@ -28,6 +29,8 @@ function ReportDQEModal(props){
         exportXLSXSimpleEstimation(projectWorkData, currentProject, true);
       } else if(currentProject.market_type == "Trades"){
         exportXLSXTradesEstimation(projectWorkData, currentProject, true);
+      } else if(currentProject.market_type == "TradesAndTranches"){
+        exportXLSXTradesAndTranchesEstimation(projectWorkData, currentProject, true);
       } else {
         console.trace("Show me");
       }
