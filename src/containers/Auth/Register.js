@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useStyles } from "../../css/register";
 import api from "../../api";
 import { toast } from "react-toastify";
+import validate from "validate.js";
 
 // component
 import Box from "@mui/material/Box";
@@ -21,6 +22,79 @@ const steps = [
   "Subscription package",
 ];
 
+const schema1 = {
+  establishment: {
+    presence: { allowEmpty: false, message: "is required" },
+    length: {
+      maximum: 32,
+    },
+  },
+  service: {
+    presence: { allowEmpty: false, message: "is required" },
+    length: {
+      maximum: 32,
+    },
+  },
+  address_1: {
+    presence: { allowEmpty: false, message: "is required" },
+  },
+  po_box: {
+    presence: { allowEmpty: false, message: "is required" },
+  },
+  postal_code: {
+    presence: { allowEmpty: false, message: "is required" },
+    length: {
+      minimum: 5,
+      maximum: 5,
+    },
+  },
+  city: {
+    presence: { allowEmpty: false, message: "is required" },
+    length: {
+      maximum: 32,
+    },
+  },
+  phone: {
+    length: {
+      minimum: 10,
+      maximum: 10,
+    },
+  },
+};
+
+const schema2 = {
+  first_name: {
+    presence: { allowEmpty: false, message: "is required" },
+    length: {
+      maximum: 32,
+    },
+  },
+  last_name: {
+    presence: { allowEmpty: false, message: "is required" },
+    length: {
+      maximum: 32,
+    },
+  },
+  email: {
+    email: true,
+    length: {
+      maximum: 64,
+    },
+  },
+  password: {
+    length: {
+      maximum: 128,
+      minimum: 6, //// minimum requirement 6 characters
+    },
+  },
+  confirm_password: {
+    length: {
+      maximum: 128,
+      minimum: 6, //// minimum requirement 6 characters
+    },
+  },
+};
+
 // Register Component
 const Register = ({ setCurrentPage }) => {
   const classes = useStyles();
@@ -28,21 +102,33 @@ const Register = ({ setCurrentPage }) => {
   // states
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
-  const [values, setValues] = useState({
-    establishment: "",
-    service: "",
-    address_1: "",
-    address_2: "",
-    po_box: "",
-    postal_code: "",
-    city: "",
-    phone: "",
-    last_name: "",
-    first_name: "",
-    email: "",
-    password: "",
-    confirm_password: "",
+  const [form1, setForm1] = useState({
+    values: {
+      establishment: "",
+      service: "",
+      address_1: "",
+      address_2: "",
+      po_box: "",
+      postal_code: "",
+      city: "",
+      phone: "",
+    },
+    error: {},
+    touched: {},
   });
+
+  const [form2, setForm2] = useState({
+    values: {
+      last_name: "",
+      first_name: "",
+      email: "",
+      password: "",
+      confirm_password: "",
+    },
+    error: {},
+    touched: {},
+  });
+
   const [subscriptions, setSubscriptions] = useState();
   const [selected, setSelected] = useState(""); ///state for selected subscription
 
@@ -50,6 +136,22 @@ const Register = ({ setCurrentPage }) => {
   useEffect(() => {
     getAllSubscriptions();
   }, []);
+
+  useEffect(() => {
+    const errors = validate(form1.values, schema1);
+    setForm1((formState) => ({
+      ...formState,
+      errors: errors || {},
+    }));
+  }, [form1.values]);
+
+  useEffect(() => {
+    const errors = validate(form2.values, schema2);
+    setForm2((formState) => ({
+      ...formState,
+      errors: errors || {},
+    }));
+  }, [form2.values]);
 
   // function to get all subs
   const getAllSubscriptions = async () => {
@@ -59,17 +161,52 @@ const Register = ({ setCurrentPage }) => {
 
   // handle change function
   const handleChange = (name, value) => {
-    setValues((prev) => {
-      prev[name] = value;
-      return { ...prev };
-    });
+    if (activeStep === 0) {
+      setForm1((formState) => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          [name]: value,
+        },
+        touched: {
+          ...formState.touched,
+          [name]: true,
+        },
+      }));
+    } else if (activeStep === 1) {
+      setForm2((formState) => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          [name]: value,
+        },
+        touched: {
+          ...formState.touched,
+          [name]: true,
+        },
+      }));
+    }
   };
 
   // handle Finish function
   const handleFinish = async (e) => {
     e.preventDefault();
-    let data = values;
-    data.subscription = selected;
+    let data = {
+      establishment: form1.values.establishment,
+      service: form1.values.service,
+      address_1: form1.values.address_1,
+      address_2: form1.values.address_2,
+      po_box: form1.values.po_box,
+      postal_code: form1.values.postal_code,
+      city: form1.values.city,
+      phone: form1.values.phone,
+      last_name: form1.values.last_name,
+      first_name: form1.values.first_name,
+      email: form1.values.email,
+      password: form1.values.password,
+      confirm_password: form1.values.confirm_password,
+      subscription: selected,
+    };
     const result = await api("post", `/Architects/signup`, data);
     toast.success(result.data.message);
     setCurrentPage("login");
@@ -108,10 +245,21 @@ const Register = ({ setCurrentPage }) => {
 
   const handleComplete = (e) => {
     e.preventDefault();
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
+    if (activeStep === 0) {
+      const newCompleted = completed;
+      newCompleted[activeStep] = true;
+      setCompleted(newCompleted);
+      handleNext();
+    } else if (activeStep === 1) {
+      if (form2.values.password !== form2.values.confirm_password) {
+        toast.error("Password and confirm password does not match!");
+      } else {
+        const newCompleted = completed;
+        newCompleted[activeStep] = true;
+        setCompleted(newCompleted);
+        handleNext();
+      }
+    }
   };
 
   const handleReset = () => {
@@ -168,9 +316,17 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="establishment"
                             type="text"
-                            value={values.establishment}
+                            value={form1.values.establishment}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form1.touched.establishment &&
+                              form1.errors.establishment
+                            }
+                            errorMessage={
+                              form1.touched.establishment &&
+                              form1.errors.establishment
                             }
                           />
                         </Grid>
@@ -180,9 +336,15 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="service"
                             type="text"
-                            value={values.service}
+                            value={form1.values.service}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form1.touched.service && form1.errors.service
+                            }
+                            errorMessage={
+                              form1.touched.service && form1.errors.service
                             }
                           />
                         </Grid>
@@ -195,19 +357,24 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="address_1"
                             type="text"
-                            value={values.address_1}
+                            value={form1.values.address_1}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form1.touched.address_1 && form1.errors.address_1
+                            }
+                            errorMessage={
+                              form1.touched.address_1 && form1.errors.address_1
                             }
                           />
                         </Grid>
                         <Grid item zeroMinWidth xs>
                           <InputWithLabel
                             label="Address 2"
-                            required={true}
                             name="address_2"
                             type="text"
-                            value={values.address_2}
+                            value={form1.values.address_2}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
                             }
@@ -222,9 +389,13 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="po_box"
                             type="text"
-                            value={values.po_box}
+                            value={form1.values.po_box}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={form1.touched.po_box && form1.errors.po_box}
+                            errorMessage={
+                              form1.touched.po_box && form1.errors.po_box
                             }
                           />
                         </Grid>
@@ -233,10 +404,18 @@ const Register = ({ setCurrentPage }) => {
                             label="Postal Code"
                             required={true}
                             name="postal_code"
-                            type="text"
-                            value={values.postal_code}
+                            type="number"
+                            value={form1.values.postal_code}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form1.touched.postal_code &&
+                              form1.errors.postal_code
+                            }
+                            errorMessage={
+                              form1.touched.postal_code &&
+                              form1.errors.postal_code
                             }
                           />
                         </Grid>
@@ -249,9 +428,13 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="city"
                             type="text"
-                            value={values.city}
+                            value={form1.values.city}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={form1.touched.city && form1.errors.city}
+                            errorMessage={
+                              form1.touched.city && form1.errors.city
                             }
                           />
                         </Grid>
@@ -260,10 +443,14 @@ const Register = ({ setCurrentPage }) => {
                             label="Phone Number"
                             required={true}
                             name="phone"
-                            type="text"
-                            value={values.phone}
+                            type="number"
+                            value={form1.values.phone}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={form1.touched.phone && form1.errors.phone}
+                            errorMessage={
+                              form1.touched.phone && form1.errors.phone
                             }
                           />
                         </Grid>
@@ -276,7 +463,18 @@ const Register = ({ setCurrentPage }) => {
                           justifyContent: "center",
                         }}
                       >
-                        <button type="submit" className={classes.btn}>
+                        <button
+                          type="submit"
+                          className={classes.btn}
+                          disabled={
+                            form1?.errors?.establishment ||
+                            form1?.errors?.service ||
+                            form1?.errors?.address_1 ||
+                            form1?.errors?.po_box ||
+                            form1?.errors?.postal_code ||
+                            form1?.errors?.phone
+                          }
+                        >
                           Complete Step
                         </button>
                       </Box>
@@ -293,9 +491,17 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="first_name"
                             type="text"
-                            value={values.first_name}
+                            value={form2.values.first_name}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form2.touched.first_name &&
+                              form2.errors.first_name
+                            }
+                            errorMessage={
+                              form2.touched.first_name &&
+                              form2.errors.first_name
                             }
                           />
                         </Grid>
@@ -305,9 +511,15 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="last_name"
                             type="text"
-                            value={values.last_name}
+                            value={form2.values.last_name}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form2.touched.last_name && form2.errors.last_name
+                            }
+                            errorMessage={
+                              form2.touched.last_name && form2.errors.last_name
                             }
                           />
                         </Grid>
@@ -318,10 +530,12 @@ const Register = ({ setCurrentPage }) => {
                         required={true}
                         name="email"
                         type="email"
-                        value={values.email}
+                        value={form2.values.email}
                         handleChange={(e) =>
                           handleChange(e.target.name, e.target.value)
                         }
+                        error={form2.touched.email && form2.errors.email}
+                        errorMessage={form2.touched.email && form2.errors.email}
                       />
                       <br />
                       <br />
@@ -332,9 +546,15 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="password"
                             type="password"
-                            value={values.password}
+                            value={form2.values.password}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form2.touched.password && form2.errors.password
+                            }
+                            errorMessage={
+                              form2.touched.password && form2.errors.password
                             }
                           />
                         </Grid>
@@ -344,9 +564,17 @@ const Register = ({ setCurrentPage }) => {
                             required={true}
                             name="confirm_password"
                             type="password"
-                            value={values.confirm_password}
+                            value={form2.values.confirm_password}
                             handleChange={(e) =>
                               handleChange(e.target.name, e.target.value)
+                            }
+                            error={
+                              form2.touched.confirm_password &&
+                              form2.errors.confirm_password
+                            }
+                            errorMessage={
+                              form2.touched.confirm_password &&
+                              form2.errors.confirm_password
                             }
                           />
                         </Grid>
@@ -360,7 +588,17 @@ const Register = ({ setCurrentPage }) => {
                           justifyContent: "center",
                         }}
                       >
-                        <button type="submit" className={classes.btn}>
+                        <button
+                          type="submit"
+                          className={classes.btn}
+                          disabled={
+                            form2?.errors?.first_name ||
+                            form2?.errors?.last_name ||
+                            form2?.errors?.email ||
+                            form2?.errors?.password ||
+                            form2?.errors?.confirm_password
+                          }
+                        >
                           Complete Step
                         </button>
                       </Box>
