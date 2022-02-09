@@ -36,82 +36,12 @@ function rowsGenSimpleEstimation(data, noPrice){
     ],
   );
 
-  let _id;
-  let workIndex = 1;
-  let workDetailIndex = 1;
-  for( let i = 0; i < data.length; i++ ){
-
-    if(_id != data[i].work._id){
-
-      workDetailIndex = 1; // We know that for sure.
-      
-      const arr = [];
-
-      arr.push(`${workIndex}.${workDetailIndex}`);
-      arr.push(data[i].work.name);
-      arr.push(data[i].workUnit?.name ?? "");
-      arr.push(data[i].work?.quantity ?? "");
-
-      if(noPrice || (!data[i].workUnit?.name)){
-        arr.push("");
-        arr.push("");
-      } else {
-        arr.push(data[i].work?.unit_price ?? "0");
-        arr.push((data[i].work?.unit_price ?? "0") * (data[i].work.quantity ?? "0"));
-      }
-
-      pdfXLSXRows.push(arr);
-
-      if(data[i].workDetails){
-
-        workDetailIndex = workDetailIndex + 1; // Start adding WorkDetails
-
-        const arrD = [];
-  
-        arrD.push(`${workIndex}.${workDetailIndex}`);
-        arrD.push(data[i].workDetails.name);
-        arrD.push(data[i].workDetailsUnit.name);
-        arrD.push(data[i].workDetails.quantity);
-
-        if(noPrice){
-          arrD.push("");
-          arrD.push("");
-        } else {
-          arrD.push(data[i].workDetails.unit_price);
-          arrD.push(data[i].workDetails.unit_price * data[i].workDetails.quantity);
-        }
-  
-        pdfXLSXRows.push(arrD);
-
-      }
-
-      workIndex = workIndex + 1;
-    } else {
-      // Just add WorkDetail here.
-
-      workDetailIndex = workDetailIndex + 1; // Well it immediately becomes sub task.
-
-      const arrD = [];
-
-      arrD.push(`${workIndex}.${workDetailIndex}`);
-      arrD.push(data[i].workDetails.name);
-      arrD.push(data[i].workDetailsUnit.name);
-      arrD.push(data[i].workDetails.quantity);
-
-      if(noPrice){
-        arrD.push("");
-        arrD.push("");
-      } else {
-        arrD.push(data[i].workDetails.unit_price);
-        arrD.push(data[i].workDetails.unit_price * data[i].workDetails.quantity);
-      }
-
-      pdfXLSXRows.push(arrD);
-
-    }
-
-    _id = data[i].work._id;
-  }
+  rowsGenEstimationHandleWorksAndWorkDetails(
+    pdfXLSXRows,
+    data,
+    `${1}`,
+    noPrice
+  );
 
   return pdfXLSXRows;
 
@@ -378,7 +308,7 @@ function calculateTrancheTotalHT(data, noPrice){
 
 }
 
-function footerDataGen(data, currentProject, noPrice, addSpace){
+function footerDataGenSimpleEstimation(data, currentProject, noPrice, addSpace){
 
   let footerData = [];
 
@@ -416,6 +346,38 @@ function footerDataGen(data, currentProject, noPrice, addSpace){
 
   if(addSpace){
     footerData.splice(1, 0, "");
+  }
+
+  return footerData;
+
+}
+
+function footerDataGenTradesEstimation(data, noPrice){
+
+  let footerData = [];
+
+  let totalHT = 0;
+
+  data.map((item, index) => {
+    if (!item.workDetails) {
+      totalHT += item.work.unit_price * item.work.quantity;
+    } else {
+      if (item.work._id !== data[index - 1]?.work._id) {
+        totalHT += item.workDetails.quantity * item.workDetails.unit_price;
+      } else {
+        totalHT += item.workDetails.quantity * item.workDetails.unit_price;
+      }
+    }
+  });
+
+  if(!noPrice){
+    footerData = [
+      totalHT,
+    ];
+  } else {
+    footerData = [
+      "",
+    ];
   }
 
   return footerData;
@@ -750,10 +712,7 @@ const footerColumnsSimpleEstimation = [
 ];
 
 const footerColumnsTradesEstimation = [
-  "Lot n°1 :",
-  "HT :",
-  "VAT (%) :",
-  "Price :",
+  "Trade Total :",
 ];
 
 const dataColumnsBPU = [
@@ -772,7 +731,8 @@ export {
   xlsxParsedFooterDataGenEstimation,
   rowsGenBPU,
   rowsGenCCTP,
-  footerDataGen,
+  footerDataGenSimpleEstimation,
+  footerDataGenTradesEstimation,
   textRunsSplitGen,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,

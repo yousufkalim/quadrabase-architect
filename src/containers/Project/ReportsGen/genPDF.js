@@ -5,7 +5,7 @@ import {
   headGen,
   rowsGenSimpleEstimation,
   rowsGenBPU,
-  footerDataGen,
+  footerDataGenSimpleEstimation,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,
   dataColumnsBPU
@@ -18,7 +18,7 @@ function exportPDFEstimation(data, currentProject, noPrice){
     `${currentProject?.name ?? "N/A"}`
   );
   const realDataPDF = rowsGenSimpleEstimation(data, noPrice); // It's the same thing in case of pdf plugin.
-  const footerData = footerDataGen(data, currentProject, noPrice);
+  const footerData = footerDataGenSimpleEstimation(data, currentProject, noPrice);
 
   const unit = "pt";
   const size = "A4"; // Use A1, A2, A3 or A4

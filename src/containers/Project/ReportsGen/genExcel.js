@@ -8,7 +8,8 @@ import {
   xlsxParsedDataGenSimpleAndTradesEstimation,
   xlsxParsedDataGenTradesAndTranchesEstimation,
   xlsxParsedFooterDataGenEstimation,
-  footerDataGen,
+  footerDataGenSimpleEstimation,
+  footerDataGenTradesEstimation,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,
   footerColumnsTradesEstimation
@@ -43,6 +44,37 @@ const Fill2 = {
   font: {
     bold: true
   }
+};
+
+// For trades
+const Fill3 = {
+  fill: {
+    fgColor: { rgb: "FFF1966C" },
+  },
+  font: {
+    bold: true
+  }
+};
+
+// For trades and tranches
+const Fill4 = {
+  fill: {
+    fgColor: { rgb: "FFEBECF0" },
+  },
+};
+
+// For trades total
+const Fill5 = {
+  fill: {
+    fgColor: { rgb: "FFB1F2FF" },
+  },
+};
+
+// For tranch total
+const Fill6 = {
+  fill: {
+    fgColor: { rgb: "FF63E5FF" },
+  },
 };
 
 const BorderFirst2 = {
@@ -85,7 +117,7 @@ const exportXLSXSimpleEstimation = (data, currentProject, noPrice) => {
 
   let xlsxParsedData = [];
   const xlsxParsedBodyData = xlsxParsedDataGenSimpleAndTradesEstimation(rows, dataColumnsEstimation);
-  const footerDataFloatsArr = footerDataGen(data, currentProject, noPrice, true);
+  const footerDataFloatsArr = footerDataGenSimpleEstimation(data, currentProject, noPrice, true);
   const xlsxParsedFooterData = xlsxParsedFooterDataGenEstimation(
     footerDataFloatsArr,
     footerColumnsSimpleEstimation,
@@ -154,7 +186,7 @@ const exportXLSXTradesEstimation = (data, currentProject, noPrice) => {
 
     const currentRow = rows[i];
     const currentRowXLSXParsedData = xlsxParsedDataGenSimpleAndTradesEstimation(currentRow, dataColumnsEstimation);
-    const footerDataFloatsArr = footerDataGen(rawData, currentProject, noPrice, false);
+    const footerDataFloatsArr = footerDataGenTradesEstimation(rawData, noPrice);
     const currentRowXLSXParsedFooterData = xlsxParsedFooterDataGenEstimation(
       footerDataFloatsArr,
       footerColumnsTradesEstimation,
@@ -182,15 +214,16 @@ const exportXLSXTradesEstimation = (data, currentProject, noPrice) => {
 
     const currentRow = rows[i];
 
-    // Project title row style 
-    applyRowStyle(ws, cursor, {...Fill2, ...BorderFirst2} );
+    // Trade row style 
+    applyRowStyle(ws, cursor, {...Fill3, ...BorderFirst2} );
 
     // Apply styling to body
     stopAt = currentRow.length + cursor;
+    const oldCursor = cursor;
     for( let j = cursor; j < stopAt; j++ ){
-      if(j == cursor){
+      if(j == oldCursor){
         cursor = cursor + 1;
-        continue; // Coz project title style is applied already
+        continue; // Coz trade style is applied already
       }
       applyRowStyle(ws, j, BorderRestAll);
       cursor = cursor + 1;
@@ -201,7 +234,7 @@ const exportXLSXTradesEstimation = (data, currentProject, noPrice) => {
     for( let j = 0; j < footerColumnsTradesEstimation.length; j++ ){
       const obj = {
         s: { r: stopAt + j, c: 1 },
-        e: { r: stopAt + j, c: footerColumnsTradesEstimation.length }
+        e: { r: stopAt + j, c: 4 }
       }
       merge.push(obj);
     }
@@ -241,49 +274,46 @@ const exportXLSXTradesAndTranchesEstimation = (data, currentProject, noPrice) =>
   ws['!cols'] = wscols;
 
   let cursor = 1;
-  let stopAt;
   const merge = [];
 
   // Header row style
   applyRowStyle(ws, cursor, {...Fill1, ...BorderFirst2} ); 
   cursor = cursor + 1;
 
-  // for(let i = 0; i < rows.length; i++){
-
-  //   const currentRow = rows[i];
-
-  //   // Project title row style 
-  //   applyRowStyle(ws, cursor, {...Fill2, ...BorderFirst2} );
-
-  //   // Apply styling to body
-  //   stopAt = currentRow.length + cursor;
-  //   for( let j = cursor; j < stopAt; j++ ){
-  //     if(j == cursor){
-  //       cursor = cursor + 1;
-  //       continue; // Coz project title style is applied already
-  //     }
-  //     applyRowStyle(ws, j, BorderRestAll);
-  //     cursor = cursor + 1;
-  //   }
-
-  //   // Make merger object before moving cursor any further.
-  //   stopAt = cursor - 1;
-  //   for( let j = 0; j < footerColumnsTradesEstimation.length; j++ ){
-  //     const obj = {
-  //       s: { r: stopAt + j, c: 1 },
-  //       e: { r: stopAt + j, c: footerColumnsTradesEstimation.length }
-  //     }
-  //     merge.push(obj);
-  //   }
-
-  //   // Apply styling to footer
-  //   stopAt = footerColumnsTradesEstimation.length + cursor;
-  //   for( let j = cursor; j < stopAt; j++ ){
-  //     applyRowStyle(ws, j, BorderFirst2);
-  //     cursor = cursor + 1;
-  //   }
-
-  // }
+  // Trades styling
+  for(let i = 0; i < rows.length; i++){
+    const tradeRow = rows[i];
+    // Trade label row style 
+    applyRowStyle(ws, cursor, {...Fill3, ...BorderFirst2} );
+    cursor = cursor + 1;
+    const trancheRows = tradeRow.rows;
+    for(let j = 0; j < trancheRows.length; j++){
+      const tranchRow = trancheRows[j];
+      // Tranch label row style 
+      applyRowStyle(ws, cursor, {...Fill4, ...BorderFirst2} );
+      cursor = cursor + 1;
+      const workAndWorkDetailsRows = tranchRow.rows;
+      for( let k = 0; k < workAndWorkDetailsRows.length; k++ ){
+        // WorkAndWorkDetail row style 
+        applyRowStyle(ws, cursor, BorderRestAll);
+        cursor = cursor + 1;
+      }
+      // Tranch total row style 
+      applyRowStyle(ws, cursor, {...Fill5, ...BorderFirst2} );
+      merge.push({
+        s: { r: cursor-1, c: 1 },
+        e: { r: cursor-1, c: 4 }
+      });
+      cursor = cursor + 1;
+    }
+    // Tade total row style 
+    applyRowStyle(ws, cursor, {...Fill6, ...BorderFirst2} );
+    merge.push({
+      s: { r: cursor-1, c: 1 },
+      e: { r: cursor-1, c: 4 }
+    });
+    cursor = cursor + 1;
+  }
 
   // Merge footer cells - Merge must be done after styling
   ws["!merges"] = merge;
@@ -294,6 +324,7 @@ const exportXLSXTradesAndTranchesEstimation = (data, currentProject, noPrice) =>
 };
 
 function applyRowStyle(ws, RowNum, style){
+  // console.log(`THIS THE RowNum: ${RowNum}`);
   for( let i = 0; i < dataColumnsEstimation.length; i++ ){
     let char = ABC[i];
     ws[`${char}${RowNum}`].s = style;

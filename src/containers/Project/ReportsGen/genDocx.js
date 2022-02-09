@@ -19,7 +19,7 @@ import {
   rowsGenSimpleEstimation,
   rowsGenBPU,
   rowsGenCCTP,
-  footerDataGen,
+  footerDataGenSimpleEstimation,
   textRunsSplitGen,
   dataColumnsEstimation,
   footerColumnsSimpleEstimation,
@@ -38,7 +38,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
   );
 
   const pdfXLSXRows = rowsGenSimpleEstimation(data, noPrice);
-  const footerData = footerDataGen(data, currentProject, noPrice);
+  const footerData = footerDataGenSimpleEstimation(data, currentProject, noPrice);
 
   const tableHeader = [
     new Table({
