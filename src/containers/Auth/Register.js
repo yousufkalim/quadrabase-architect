@@ -14,12 +14,17 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import InputWithLabel from "../../components/InputWithLabel";
-import SubscriptionCard from "../Subscription/SubscriptionCard";
+import InputDropdown from "../../components/InputDropdown";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 
 const steps = [
   "General information",
   "Login information",
   "Subscription package",
+  "Payment",
 ];
 
 const schema1 = {
@@ -95,6 +100,14 @@ const schema2 = {
   },
 };
 
+const options = [
+  { _id: 1, title: 1 },
+  { _id: 2, title: 2 },
+  { _id: 3, title: 3 },
+  { _id: 4, title: 4 },
+  { _id: 5, title: 5 },
+];
+
 // Register Component
 const Register = ({ setCurrentPage }) => {
   const classes = useStyles();
@@ -131,6 +144,21 @@ const Register = ({ setCurrentPage }) => {
 
   const [subscriptions, setSubscriptions] = useState();
   const [selected, setSelected] = useState(""); ///state for selected subscription
+
+  const [subAmounts, setSubAmount] = useState({
+    initial: {
+      count: 1,
+      price: 1190,
+    },
+    extended: {
+      count: 0,
+      price: 1190,
+    },
+    pack: {
+      count: 1,
+      price: 500,
+    },
+  });
 
   // useEffetct
   useEffect(() => {
@@ -245,12 +273,7 @@ const Register = ({ setCurrentPage }) => {
 
   const handleComplete = (e) => {
     e.preventDefault();
-    if (activeStep === 0) {
-      const newCompleted = completed;
-      newCompleted[activeStep] = true;
-      setCompleted(newCompleted);
-      handleNext();
-    } else if (activeStep === 1) {
+    if (activeStep === 1) {
       if (form2.values.password !== form2.values.confirm_password) {
         toast.error("Password and confirm password does not match!");
       } else {
@@ -259,6 +282,11 @@ const Register = ({ setCurrentPage }) => {
         setCompleted(newCompleted);
         handleNext();
       }
+    } else {
+      const newCompleted = completed;
+      newCompleted[activeStep] = true;
+      setCompleted(newCompleted);
+      handleNext();
     }
   };
 
@@ -604,21 +632,606 @@ const Register = ({ setCurrentPage }) => {
                       </Box>
                     </form>
                   </>
+                ) : activeStep === 2 ? (
+                  <>
+                    <br />
+                    <form onSubmit={handleComplete}>
+                      <div style={{ width: "100%" }}>
+                        {/* Top section */}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 5,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "55%",
+                            }}
+                          >
+                            <span className={classes.borderText}>
+                              Subscription
+                            </span>
+                            <div className={classes.borderBox}>
+                              <div className={classes.textContainer}>
+                                <div>Initial subscription for 1 year</div>
+                                <div>
+                                  {subAmounts.initial.price.toFixed(2)} € HT
+                                </div>
+                              </div>
+                              <span style={{ fontSize: 12 }}>
+                                (1 year, 5 projects)
+                              </span>
+                              <div className={classes.textContainer}>
+                                <div>Extend subscription for 1 year</div>
+                                <div>
+                                  {subAmounts.extended.price.toFixed(2)} € HT
+                                </div>
+                              </div>
+                              <span style={{ fontSize: 12 }}>
+                                (extend date of subscription)
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              width: "10%",
+                              height: 100,
+                              border: "1px solid lightgray",
+                              borderRadius: 5,
+                              marginTop: 12,
+                              padding: 10,
+                            }}
+                          >
+                            <div style={{ marginBottom: 5 }}>
+                              <InputDropdown
+                                options={options}
+                                height={38}
+                                disabled={true}
+                                value={subAmounts.initial.count}
+                                component="register"
+                              />
+                            </div>
+                            <InputDropdown
+                              options={options}
+                              height={38}
+                              value={subAmounts.extended.count}
+                              onChange={(e) => {
+                                setSubAmount((prev) => {
+                                  prev.extended.count = e.target.value;
+                                  return { ...prev };
+                                });
+                              }}
+                              component="register"
+                              first="notDisable"
+                            />
+                          </div>
+                          <div
+                            style={{
+                              width: "30%",
+                            }}
+                          >
+                            <span className={classes.borderText}>Total HT</span>
+                            <div className={classes.borderBox}>
+                              <div
+                                style={{
+                                  position: "relative",
+                                  zIndex: 1,
+                                  width: "100%",
+                                  textAlign: "right",
+                                  backgroundColor: "white",
+                                  padding: 7,
+                                  marginBottom: 5,
+                                }}
+                              >
+                                {subAmounts.initial.price.toFixed(2)} €
+                              </div>
+                              <div
+                                style={{
+                                  width: "100%",
+                                  textAlign: "right",
+                                  backgroundColor: "white",
+                                  padding: 7,
+                                }}
+                              >
+                                {(
+                                  subAmounts.extended.count *
+                                  subAmounts.extended.price
+                                ).toFixed(2)}{" "}
+                                €
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* middle Section */}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 5,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "55%",
+                            }}
+                          >
+                            <span className={classes.borderText}>
+                              Projects Pack
+                            </span>
+                            <div className={classes.middleBorderBox}>
+                              <div className={classes.middleTextContainer}>
+                                <div>Pack of 5 projects</div>
+                                <div>
+                                  {subAmounts.pack.price.toFixed(2)} € HT
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              width: "10%",
+                              height: 50,
+                              border: "1px solid lightgray",
+                              borderRadius: 5,
+                              marginTop: 12,
+                              padding: "5px 10px",
+                            }}
+                          >
+                            <InputDropdown
+                              options={options}
+                              height={38}
+                              value={subAmounts.pack.count}
+                              onChange={(e) => {
+                                setSubAmount((prev) => {
+                                  prev.pack.count = e.target.value;
+                                  return { ...prev };
+                                });
+                              }}
+                              component="register"
+                            />
+                          </div>
+                          <div
+                            style={{
+                              width: "30%",
+                            }}
+                          >
+                            <span className={classes.borderText}>Total HT</span>
+                            <div className={classes.middleBorderBox}>
+                              <div
+                                style={{
+                                  position: "relative",
+                                  zIndex: 1,
+                                  width: "100%",
+                                  textAlign: "right",
+                                  backgroundColor: "white",
+                                  padding: 3,
+                                  marginBottom: 5,
+                                }}
+                              >
+                                {(
+                                  subAmounts.pack.count * subAmounts.pack.price
+                                ).toFixed(2)}{" "}
+                                €
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* bottom  section */}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 5,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "100%",
+                            }}
+                          >
+                            <span className={classes.borderText}>Total</span>
+                            <div className={classes.borderBox}>
+                              <div
+                                style={{
+                                  height: "100%",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <div>
+                                  <div>
+                                    Total duration:{" "}
+                                    {parseInt(subAmounts.initial.count) +
+                                      parseInt(subAmounts.extended.count)}{" "}
+                                    year
+                                  </div>
+                                  <div>
+                                    Number of projects:{" "}
+                                    {parseInt(subAmounts.pack.count) * 5}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                    }}
+                                  >
+                                    <div style={{ width: 120 }}>Total HT:</div>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div
+                                      style={{
+                                        position: "relative",
+                                        zIndex: 1,
+                                        width: "80%",
+                                        textAlign: "right",
+                                        backgroundColor: "white",
+                                        padding: 1,
+                                        marginBottom: 3,
+                                      }}
+                                    >
+                                      {(
+                                        subAmounts.initial.price *
+                                          subAmounts.initial.count +
+                                        subAmounts.extended.price *
+                                          subAmounts.extended.count +
+                                        subAmounts.pack.price *
+                                          subAmounts.pack.count
+                                      ).toFixed(2)}{" "}
+                                      €
+                                    </div>
+                                  </div>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                    }}
+                                  >
+                                    <div style={{ width: 120 }}>VAT 20%:</div>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div
+                                      style={{
+                                        position: "relative",
+                                        zIndex: 1,
+                                        width: "80%",
+                                        textAlign: "right",
+                                        backgroundColor: "white",
+                                        padding: 1,
+                                        marginBottom: 3,
+                                      }}
+                                    >
+                                      {(
+                                        ((subAmounts.initial.price *
+                                          subAmounts.initial.count +
+                                          subAmounts.extended.price *
+                                            subAmounts.extended.count +
+                                          subAmounts.pack.price *
+                                            subAmounts.pack.count) *
+                                          20) /
+                                        100
+                                      ).toFixed(2)}{" "}
+                                      €
+                                    </div>
+                                  </div>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                    }}
+                                  >
+                                    <div style={{ width: 120 }}>
+                                      Total cost:
+                                    </div>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div
+                                      style={{
+                                        position: "relative",
+                                        zIndex: 1,
+                                        width: "80%",
+                                        textAlign: "right",
+                                        backgroundColor: "white",
+                                        padding: 1,
+                                        marginBottom: 3,
+                                      }}
+                                    >
+                                      {(
+                                        ((subAmounts.initial.price *
+                                          subAmounts.initial.count +
+                                          subAmounts.extended.price *
+                                            subAmounts.extended.count +
+                                          subAmounts.pack.price *
+                                            subAmounts.pack.count) *
+                                          20) /
+                                          100 +
+                                        subAmounts.initial.price *
+                                          subAmounts.initial.count +
+                                        subAmounts.extended.price *
+                                          subAmounts.extended.count +
+                                        subAmounts.pack.price *
+                                          subAmounts.pack.count
+                                      ).toFixed(2)}{" "}
+                                      €
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            pt: 2,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <button type="submit" className={classes.btn}>
+                            Complete Step
+                          </button>
+                        </Box>
+                      </div>
+                    </form>
+                  </>
                 ) : (
                   <>
                     <br />
                     <form onSubmit={handleFinish}>
                       <div
-                        style={{ display: "flex", justifyContent: "center" }}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: 5,
+                        }}
                       >
-                        {subscriptions?.map((item) => (
-                          <SubscriptionCard
-                            subscription={item}
-                            selected={selected}
-                            setSelected={setSelected}
-                          />
-                        ))}
+                        <div
+                          style={{
+                            width: "100%",
+                          }}
+                        >
+                          <span className={classes.borderText}>Review</span>
+                          <div className={classes.page4BorderBox}>
+                            <div style={{ marginBottom: 20 }}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <div>Initial subscription for 1 year</div>
+                                <div
+                                  style={{
+                                    backgroundColor: "white",
+                                    padding: "1px 10px",
+                                    marginBottom: 5,
+                                    width: 200,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>{subAmounts.initial.price} €</div>
+                                  <div>{subAmounts.initial.count}</div>
+                                  <div>
+                                    {subAmounts.initial.price *
+                                      subAmounts.initial.count}{" "}
+                                    €
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <div>Extend subscription for 1 year</div>
+                                <div
+                                  style={{
+                                    backgroundColor: "white",
+                                    padding: "1px 10px",
+                                    marginBottom: 5,
+                                    width: 200,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>{subAmounts.extended.price} €</div>
+                                  <div>{subAmounts.extended.count}</div>
+                                  <div>
+                                    {subAmounts.extended.price *
+                                      subAmounts.extended.count}{" "}
+                                    €
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <div>Pack of 5 projects</div>
+                                <div
+                                  style={{
+                                    backgroundColor: "white",
+                                    padding: "1px 10px",
+                                    marginBottom: 7,
+                                    width: 200,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>{subAmounts.pack.price} €</div>
+                                  <div>{subAmounts.pack.count}</div>
+                                  <div>
+                                    {subAmounts.pack.price *
+                                      subAmounts.pack.count}{" "}
+                                    €
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  width: "100%",
+                                  height: 2,
+                                  backgroundColor: "lightgray",
+                                }}
+                              ></div>
+                            </div>
+
+                            <div
+                              style={{
+                                height: "35%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                              }}
+                            >
+                              <div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                  }}
+                                >
+                                  <div style={{ width: 120 }}>Total HT:</div>
+                                  &nbsp;&nbsp;&nbsp;&nbsp;
+                                  <div
+                                    style={{
+                                      position: "relative",
+                                      zIndex: 1,
+                                      width: "80%",
+                                      textAlign: "right",
+                                      backgroundColor: "white",
+                                      padding: 1,
+                                      marginBottom: 3,
+                                    }}
+                                  >
+                                    {(
+                                      subAmounts.initial.price *
+                                        subAmounts.initial.count +
+                                      subAmounts.extended.price *
+                                        subAmounts.extended.count +
+                                      subAmounts.pack.price *
+                                        subAmounts.pack.count
+                                    ).toFixed(2)}{" "}
+                                    €
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                  }}
+                                >
+                                  <div style={{ width: 120 }}>VAT 20%:</div>
+                                  &nbsp;&nbsp;&nbsp;&nbsp;
+                                  <div
+                                    style={{
+                                      position: "relative",
+                                      zIndex: 1,
+                                      width: "80%",
+                                      textAlign: "right",
+                                      backgroundColor: "white",
+                                      padding: 1,
+                                      marginBottom: 3,
+                                    }}
+                                  >
+                                    {(
+                                      ((subAmounts.initial.price *
+                                        subAmounts.initial.count +
+                                        subAmounts.extended.price *
+                                          subAmounts.extended.count +
+                                        subAmounts.pack.price *
+                                          subAmounts.pack.count) *
+                                        20) /
+                                      100
+                                    ).toFixed(2)}{" "}
+                                    €
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                  }}
+                                >
+                                  <div style={{ width: 120 }}>Total cost:</div>
+                                  &nbsp;&nbsp;&nbsp;&nbsp;
+                                  <div
+                                    style={{
+                                      position: "relative",
+                                      zIndex: 1,
+                                      width: "80%",
+                                      textAlign: "right",
+                                      backgroundColor: "white",
+                                      padding: 1,
+                                      marginBottom: 3,
+                                    }}
+                                  >
+                                    {(
+                                      ((subAmounts.initial.price *
+                                        subAmounts.initial.count +
+                                        subAmounts.extended.price *
+                                          subAmounts.extended.count +
+                                        subAmounts.pack.price *
+                                          subAmounts.pack.count) *
+                                        20) /
+                                        100 +
+                                      subAmounts.initial.price *
+                                        subAmounts.initial.count +
+                                      subAmounts.extended.price *
+                                        subAmounts.extended.count +
+                                      subAmounts.pack.price *
+                                        subAmounts.pack.count
+                                    ).toFixed(2)}{" "}
+                                    €
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: 5,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "100%",
+                          }}
+                        >
+                          <span className={classes.borderText}>
+                            Payment Method
+                          </span>
+                          <div className={classes.page4BottomBorderBox}>
+                            <FormControl>
+                              <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                              >
+                                <FormControlLabel
+                                  value="card"
+                                  control={<Radio />}
+                                  label="Card"
+                                />
+                                <FormControlLabel
+                                  value="sepa"
+                                  control={<Radio />}
+                                  label="SEPA"
+                                />
+                              </RadioGroup>
+                            </FormControl>
+                          </div>
+                        </div>
+                      </div>
+
                       <Box
                         sx={{
                           display: "flex",
@@ -629,7 +1242,9 @@ const Register = ({ setCurrentPage }) => {
                       >
                         <button
                           type="submit"
-                          disabled={!completed[0] || !completed[1] || !selected}
+                          disabled={
+                            !completed[0] || !completed[1] || !completed[2]
+                          }
                           className={classes.btn}
                         >
                           Finish

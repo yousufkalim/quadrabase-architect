@@ -28,4 +28,58 @@ export const useStyles = makeStyles({
     },
     // add more classes here
   },
+  borderText: {
+    position: "relative",
+    marginLeft: 10,
+    backgroundColor: "#eeeeee",
+    color: "gray",
+    padding: 5,
+    zIndex: 0,
+  },
+  borderBox: {
+    width: "100%",
+    height: 100,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: -12,
+    padding: "10px 10px",
+  },
+  textContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: -10,
+  },
+
+  middleBorderBox: {
+    width: "100%",
+    height: 50,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: -12,
+    padding: "10px 10px",
+  },
+  middleTextContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: -10,
+    padding: 5,
+  },
+  page4BorderBox: {
+    width: "100%",
+    height: 210,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: -12,
+    padding: "10px 10px",
+  },
+  page4BottomBorderBox: {
+    width: "100%",
+    height: 60,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: -12,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
