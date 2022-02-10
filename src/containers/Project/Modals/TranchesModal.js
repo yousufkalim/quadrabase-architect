@@ -48,7 +48,10 @@ const TranchesModal = () => {
     e.preventDefault();
     const result = await api("post", `/Tranches/create`, {
       name,
-      ranking: tracnhesData[tracnhesData.length - 1].ranking + 1,
+      ranking:
+        tracnhesData.length > 0
+          ? tracnhesData[tracnhesData.length - 1].ranking + 1
+          : 0,
     });
     toast.success(result.data.message);
     setName();
