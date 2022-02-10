@@ -19,7 +19,10 @@ export default function index(props) {
           style: { color: "#3b373c" },
         }}
         InputProps={{
-          style: { height: props.height ? props.height : 50 },
+          style: {
+            height: props.height ? props.height : 50,
+            backgroundColor: props.backgroundColor && props.backgroundColor,
+          },
         }}
         required={props.required}
       >

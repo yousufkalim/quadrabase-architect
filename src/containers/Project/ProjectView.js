@@ -18,6 +18,7 @@ import LayersIcon from "@mui/icons-material/Layers";
 import Header from "../../components/Header";
 import { Button, Box, Divider } from "@mui/material";
 import InputWithLabel from "../../components/InputWithLabel";
+import InputDropdown from "../../components/InputDropdown";
 import NestedList from "./component/NestedList";
 import Table from "./component/Table";
 import Modal from "../../components/Modal";
@@ -83,6 +84,9 @@ const ProjectView = () => {
   const [loadingLevel, setLoadingLevel] = useState(false);
   const [tradeTotal, setTradeTotal] = useState([]);
   const [openTranchesModal, setOpenTranchesModal] = useState(false);
+  const [options, setOptions] = useState();
+  const [selectedFamily, setSelectedFamily] = useState();
+  const [generalCategories, setGeneralCategories] = useState();
 
   useEffect(() => {
     getProject();
@@ -93,8 +97,23 @@ const ProjectView = () => {
   }, [currentProject]);
 
   useEffect(() => {
-    getLibraries();
+    getProjectLibraries();
   }, [store.user]);
+
+  useEffect(() => {
+    selectedFamily && getGeneralLib();
+  }, [selectedFamily]);
+
+  // useEffect to get all families
+  useEffect(() => {
+    getFamilies();
+  }, []);
+
+  const getFamilies = async () => {
+    const result = await api("get", `/Families/architect/getAll`);
+    setSelectedFamily(result.data.families[0]._id);
+    setOptions(result.data.families);
+  };
 
   // func to get current project
   const getProject = async () => {
@@ -223,36 +242,47 @@ const ProjectView = () => {
   };
 
   // func to get all general libraries
-  const getLibraries = async () => {
+  const getProjectLibraries = async () => {
+    const response =
+      store?.user?._id &&
+      (await api(
+        "get",
+        `/BookLibraries/getTwoLevelsByArchitectId/${store.user._id}`
+      ));
+    let temp = response?.data?.bookLibrary.sort(
+      (a, b) => a.ranking - b.ranking
+    );
+    temp?.map((dt) => {
+      dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
+    });
+
+    setProjectGeneralLibrariesData(temp);
+  };
+
+  // func to get all general libraries
+  const getGeneralLib = async () => {
     try {
-      const result = await api("get", `/BookLibraries/getTwoLevels`);
+      setGeneralLibrariesData([]);
+      const result = await api(
+        "get",
+        `/BookLibraries/getByFamily/${selectedFamily}`
+      );
 
       let data = result?.data?.bookLibraries.sort(
         (a, b) => a.ranking - b.ranking
       );
-      data?.map((dt) => {
-        dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
-      });
       setGeneralLibrariesData(data);
-
-      const response =
-        store?.user?._id &&
-        (await api(
-          "get",
-          `/BookLibraries/getTwoLevelsByArchitectId/${store.user._id}`
-        ));
-      let temp = response?.data?.bookLibrary.sort(
-        (a, b) => a.ranking - b.ranking
-      );
-      temp?.map((dt) => {
-        dt.categories = dt.categories.sort((a, b) => a.ranking - b.ranking);
-      });
-
-      setProjectGeneralLibrariesData(temp);
       setLoading(false);
     } catch (err) {
       setLoading(false);
     }
+  };
+
+  // func to get all general libraries
+  const getGeneralCategories = async (id) => {
+    const result = await api("get", `/BookLibraries/getLevel2/${id}`);
+    let data = result.data.categories.sort((a, b) => a.ranking - b.ranking);
+    setGeneralCategories(data);
   };
 
   // delete work func
@@ -284,17 +314,14 @@ const ProjectView = () => {
   };
 
   // open modal func
-  const openModal = (work, library) => {
+  const openModal = async (work, library) => {
     if (work.work_details.length === 0) {
       setSelectedWork(work);
       setOpenWorkModal(true);
     } else {
-      let temp = [];
-      work.work_details.map((item2) => {
-        temp.push(item2);
-      });
+      const result = await api("get", `/BookLibraries/getLevel4/${work._id}`);
       setSelectedWork(work);
-      setWorkDetails(temp);
+      setWorkDetails(result.data.workDetails);
       setOpenWorkDetailModal(true);
     }
   };
@@ -605,7 +632,7 @@ const ProjectView = () => {
               }}
             >
               <div className={classes.left_container}>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", marginBottom: 15 }}>
                   <InputWithLabel
                     placeholder="To Look For"
                     required={true}
@@ -626,6 +653,14 @@ const ProjectView = () => {
                     <SearchIcon style={{ color: "black" }} />
                   </Button>
                 </div>
+                <InputDropdown
+                  options={options}
+                  value={selectedFamily}
+                  onChange={(e) => setSelectedFamily(e.target.value)}
+                  height={40}
+                  backgroundColor="white"
+                />
+
                 <div>
                   <div
                     style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}
@@ -638,6 +673,9 @@ const ProjectView = () => {
                     maxHeight="50vh"
                     openModal={openModal}
                     handleOpenCctpModal={handleOpenCctpModal}
+                    getLevel2={getGeneralCategories}
+                    setLevel2={setGeneralCategories}
+                    level2={generalCategories}
                     getLevel3={getLevel3}
                     level3={works}
                     setworks={setworks}
@@ -654,6 +692,9 @@ const ProjectView = () => {
                     maxHeight="20vh"
                     openModal={openModal}
                     handleOpenCctpModal={handleOpenCctpModal}
+                    getLevel2={getGeneralCategories}
+                    setLevel2={setGeneralCategories}
+                    level2={generalCategories}
                     getLevel3={getLevel3}
                     level3={works}
                     setworks={setworks}
