@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UpdateStore } from "./StoreContext";
-import api from "./api";
+import axios from "axios";
 
 // Files
 import Index from "./routes/index";
@@ -20,10 +20,18 @@ function App() {
   }, []);
 
   const fetch = async () => {
-    const result = await api("get", "/Architects/current/loggedIn");
-    // settin user value in store if logged in
-    if (result.data.user) {
-      updateStore({ loggedIn: true, user: result.data.user });
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.defaults.headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const result = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/Architects/current/loggedIn`
+      );
+      // settin user value in store if logged in
+      if (result.data.user) {
+        updateStore({ loggedIn: true, user: result.data.user });
+      }
     }
   };
 

@@ -19,12 +19,15 @@ export default function index(props) {
           style: { color: "#3b373c" },
         }}
         InputProps={{
-          style: { height: 50 },
+          style: { height: props.height ? props.height : 50 },
         }}
         required={props.required}
       >
-        <option value="" disabled>
-          Select An Option
+        <option
+          value={props.component === "register" ? 0 : ""}
+          disabled={props.first === "notDisable" ? false : true}
+        >
+          {props.component === "register" ? "0" : "Select An Option"}
         </option>
 
         {props?.options?.map((option) => (
