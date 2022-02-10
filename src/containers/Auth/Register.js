@@ -228,12 +228,18 @@ const Register = ({ setCurrentPage }) => {
       postal_code: form1.values.postal_code,
       city: form1.values.city,
       phone: form1.values.phone,
-      last_name: form1.values.last_name,
-      first_name: form1.values.first_name,
-      email: form1.values.email,
-      password: form1.values.password,
-      confirm_password: form1.values.confirm_password,
-      subscription: selected,
+      last_name: form2.values.last_name,
+      first_name: form2.values.first_name,
+      email: form2.values.email,
+      password: form2.values.password,
+      confirm_password: form2.values.confirm_password,
+      subscription: {
+        duration:
+          (parseInt(subAmounts.initial.count) +
+            parseInt(subAmounts.extended.count)) *
+          12,
+        projects: parseInt(subAmounts.pack.count) * 5,
+      },
     };
     const result = await api("post", `/Architects/signup`, data);
     toast.success(result.data.message);
