@@ -160,8 +160,8 @@ export default function NestedList(props) {
                         alignItems: "center",
                       }}
                     >
-                      {item.name.substring(0, 30)}
-                      {item.name.length > 30 && "..."}
+                      {item?.name?.substring(0, 30)}
+                      {item?.name?.length > 30 && "..."}
                       <ArrowDropDownIcon
                         id="demo-positioned-button"
                         aria-controls={
@@ -222,12 +222,20 @@ export default function NestedList(props) {
                 {/* right icon */}
                 <ListItemIcon sx={{ mr: -4 }}>
                   {openListLevel1 === item._id ? (
-                    <IconButton onClick={() => handleOpenListLevel1Click()}>
+                    <IconButton
+                      onClick={() => {
+                        props.setLevel2([]);
+                        handleOpenListLevel1Click();
+                      }}
+                    >
                       <ExpandLess />
                     </IconButton>
                   ) : (
                     <IconButton
-                      onClick={() => handleOpenListLevel1Click(item._id)}
+                      onClick={() => {
+                        props.getLevel2(item._id);
+                        handleOpenListLevel1Click(item._id);
+                      }}
                     >
                       <ExpandMore />
                     </IconButton>
@@ -236,7 +244,7 @@ export default function NestedList(props) {
               </ListItem>
               {/* level 2 */}
               <Collapse in={openListLevel1 === item._id}>
-                {item?.categories?.map((category) => {
+                {props.level2?.map((category) => {
                   return (
                     <>
                       <ListItem
@@ -300,8 +308,8 @@ export default function NestedList(props) {
                                 alignItems: "center",
                               }}
                             >
-                              {category.name.substring(0, 30)}
-                              {category.name.length > 30 && "..."}
+                              {category?.name?.substring(0, 30)}
+                              {category?.name?.length > 30 && "..."}
                               <ArrowDropDownIcon
                                 id="demo-positioned-button"
                                 aria-controls={
@@ -388,8 +396,8 @@ export default function NestedList(props) {
                                   <ListItemText
                                     primary={
                                       <div style={{ fontSize: 15 }}>
-                                        {work.name.substring(0, 30)}
-                                        {work.name.length > 30 && "..."}
+                                        {work?.name?.substring(0, 30)}
+                                        {work?.name?.length > 30 && "..."}
                                         <ArrowDropDownIcon
                                           id="demo-positioned-button"
                                           aria-controls={
