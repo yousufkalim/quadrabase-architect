@@ -56,18 +56,33 @@ const AddWorkDetailsModal = ({
     };
     data.work_details = selectedWorkDetail;
     if (currentProject.market_type === "TradesAndTranches") {
-      data.tranch = tranch;
+      if (tranch) {
+        data.tranch = tranch;
+        const result = await api(
+          "post",
+          `/project/addWork/${currentProject._id}`,
+          data
+        );
+        toast.success(result.data.message);
+        setSelectedWorkDetail([]);
+        setSelectedWork();
+        setOpenWorkDetailModal(false);
+        getworks();
+      } else {
+        toast.error("Tranch is required");
+      }
+    } else {
+      const result = await api(
+        "post",
+        `/project/addWork/${currentProject._id}`,
+        data
+      );
+      toast.success(result.data.message);
+      setSelectedWorkDetail([]);
+      setSelectedWork();
+      setOpenWorkDetailModal(false);
+      getworks();
     }
-    const result = await api(
-      "post",
-      `/project/addWork/${currentProject._id}`,
-      data
-    );
-    toast.success(result.data.message);
-    setSelectedWorkDetail([]);
-    setSelectedWork();
-    setOpenWorkDetailModal(false);
-    getworks();
   };
 
   return (
