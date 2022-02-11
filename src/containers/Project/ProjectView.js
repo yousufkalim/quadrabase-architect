@@ -80,13 +80,16 @@ const ProjectView = () => {
   const [openBPUReportModal, setOpenBPUReportModal] = useState(false);
   const [openCCTPReportModal, setOpenCCTPReportModal] = useState(false);
   const [works, setworks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingLevel, setLoadingLevel] = useState(false);
   const [tradeTotal, setTradeTotal] = useState([]);
   const [openTranchesModal, setOpenTranchesModal] = useState(false);
   const [options, setOptions] = useState();
   const [selectedFamily, setSelectedFamily] = useState();
   const [generalCategories, setGeneralCategories] = useState();
+
+  // loader states
+  const [loading, setLoading] = useState(true); // main loader
+  const [libraryLoading, setLibraryLoading] = useState(false); // main loader
+  const [loadingLevel, setLoadingLevel] = useState(""); // work level loading
 
   useEffect(() => {
     getProject();
@@ -262,7 +265,10 @@ const ProjectView = () => {
   // func to get all general libraries
   const getGeneralLib = async () => {
     try {
+      setLibraryLoading(true);
       setGeneralLibrariesData([]);
+      setGeneralCategories([]);
+      setworks([]);
       const result = await api(
         "get",
         `/BookLibraries/getByFamily/${selectedFamily}`
@@ -272,17 +278,27 @@ const ProjectView = () => {
         (a, b) => a.ranking - b.ranking
       );
       setGeneralLibrariesData(data);
+      setLibraryLoading(false);
       setLoading(false);
     } catch (err) {
+      setLibraryLoading(false);
       setLoading(false);
     }
   };
 
   // func to get all general libraries
   const getGeneralCategories = async (id) => {
-    const result = await api("get", `/BookLibraries/getLevel2/${id}`);
-    let data = result.data.categories.sort((a, b) => a.ranking - b.ranking);
-    setGeneralCategories(data);
+    try {
+      setLoadingLevel(id);
+      setGeneralCategories([]);
+      setworks([]);
+      const result = await api("get", `/BookLibraries/getLevel2/${id}`);
+      let data = result.data.categories.sort((a, b) => a.ranking - b.ranking);
+      setGeneralCategories(data);
+      setLoadingLevel("");
+    } catch (err) {
+      setLoadingLevel("");
+    }
   };
 
   // delete work func
@@ -411,13 +427,13 @@ const ProjectView = () => {
   };
 
   const getLevel3 = async (id) => {
-    setLoadingLevel(true);
     try {
+      setLoadingLevel(id);
       const result = await api("get", `/BookLibraries/getLevel3/${id}`);
       setworks(result.data.works);
-      setLoadingLevel(false);
+      setLoadingLevel("");
     } catch (err) {
-      setLoadingLevel(false);
+      setLoadingLevel("");
     }
   };
 
@@ -680,6 +696,7 @@ const ProjectView = () => {
                     level3={works}
                     setworks={setworks}
                     loading={loadingLevel}
+                    libraryLoading={libraryLoading}
                   />
                   <div
                     style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}
