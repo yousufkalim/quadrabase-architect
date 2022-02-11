@@ -6,7 +6,11 @@ import Stack from '@mui/material/Stack';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 // Reports
-import { exportDOCXCCTP } from "../ReportsGen/genDocx";
+import {
+  exportDOCXSimpleCCTP,
+  exportDOCXTradesCCTP,
+  exportDOCXTradesAndTranchesCCTP
+} from "../ReportsGen/genDocx";
 
 import { toast } from "react-toastify";
 
@@ -16,7 +20,17 @@ function ReportCCTPModal(props){
 
   function generateWord(){
     try{
-      exportDOCXCCTP(projectWorkData, currentProject);
+
+      if(currentProject.market_type == "Simple"){
+        exportDOCXSimpleCCTP(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "Trades"){
+        exportDOCXTradesCCTP(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "TradesAndTranches"){
+        exportDOCXTradesAndTranchesCCTP(projectWorkData, currentProject);
+      } else {
+        console.trace("Show me");
+      }
+
     }catch(e){
       toast.error("Could not generate report successfully.");
       console.trace(e);

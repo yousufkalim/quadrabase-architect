@@ -17,8 +17,16 @@ import {
 import {
   headGen,
   rowsGenSimpleEstimation,
+  rowsGenTradesEstimation,
+  rowsGenTradesAndTranchesEstimation,
+  docxParsedDataGenTradesEstimation,
+  docxParsedDataGenTradesAndTranchesEstimation,
   rowsGenSimpleBPU,
-  rowsGenCCTP,
+  rowsGenTradesBPU,
+  rowsGenTradesAndTranchesBPU,
+  rowsGenSimpleCCTP,
+  rowsGenTradesCCTP,
+  rowsGenTradesAndTranchesCCTP,
   footerDataGenSimpleEstimation,
   textRunsSplitGen,
   dataColumnsEstimation,
@@ -30,15 +38,15 @@ const Spacer = new Paragraph({
   text: "",
 });
 
-function exportDOCXestimation(data, currentProject, noPrice){
+function exportDOCXSimpleEstimation(data, currentProject, noPrice){
 
-  const pdfXLSXHead = headGen(
+  const headArr = headGen(
     `${noPrice ? "DQE" : "Estimation"}`,
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = rowsGenSimpleEstimation(data, noPrice);
-  const footerData = footerDataGenSimpleEstimation(data, currentProject, noPrice);
+  const rows = rowsGenSimpleEstimation(data, noPrice);
+  const footerData = footerDataGenSimpleEstimation(data, currentProject, noPrice, true);
 
   const tableHeader = [
     new Table({
@@ -52,7 +60,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
                   alignment: AlignmentType.START,
                   children: [
                     new TextRun({
-                      text: pdfXLSXHead[0],
+                      text: headArr[0],
                       size: 22,
                     })
                   ]
@@ -70,7 +78,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
                   alignment: AlignmentType.CENTER,
                   children: [
                     new TextRun({
-                      text: pdfXLSXHead[1],
+                      text: headArr[1],
                       size: 22,
                       bold: true
                     })
@@ -94,7 +102,7 @@ function exportDOCXestimation(data, currentProject, noPrice){
                   alignment: AlignmentType.END,
                   children: [
                     new TextRun({
-                      text: pdfXLSXHead[2],
+                      text: headArr[2],
                       size: 22,
                     })
                   ]
@@ -146,8 +154,8 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
   const tableBodyRows = [];
 
-  for ( let i = 0; i < pdfXLSXRows.length; i++ ){
-    const currentRow = pdfXLSXRows[i];
+  for ( let i = 0; i < rows.length; i++ ){
+    const currentRow = rows[i];
     const tableRowCells = [];
     for( let j = 0; j < currentRow.length; j++ ){
       const tableCell = new TableCell({
@@ -256,14 +264,368 @@ function exportDOCXestimation(data, currentProject, noPrice){
 
 }
 
-function exportDOCXBPU(data, currentProject){
+function exportDOCXTradesEstimation(data, currentProject, noPrice){
 
-  const pdfXLSXHead = headGen(
+  const headArr = headGen(
+    `${noPrice ? "DQE" : "Estimation"}`,
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const rows = rowsGenTradesEstimation(data, noPrice);
+
+  let docxParsedData = [];
+
+  for(let i = 0; i < rows.length; i++){
+    const currentRow = rows[i];
+    const currentRowDOCXParsedData = docxParsedDataGenTradesEstimation(currentRow, (i+1));
+    docxParsedData = docxParsedData.concat(currentRowDOCXParsedData);
+  }
+
+  const tableHeader = [
+    new Table({
+      alignment: AlignmentType.CENTER,
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.START,
+                  children: [
+                    new TextRun({
+                      text: headArr[0],
+                      size: 22,
+                    })
+                  ]
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new TextRun({
+                      text: headArr[1],
+                      size: 22,
+                      bold: true
+                    })
+                  ]
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: {
+                top: convertInchesToTwip(0.06),
+                bottom: convertInchesToTwip(0.06),
+                left: convertInchesToTwip(0.24),
+                right: convertInchesToTwip(0.24),
+              },
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.END,
+                  children: [
+                    new TextRun({
+                      text: headArr[2],
+                      size: 22,
+                    })
+                  ]
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+          ],
+        }),
+      ],
+    }),
+  ];
+
+  const tableBodyColumns = [];
+
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+
+    const tableCell = new TableCell({
+      children: [
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [
+            new TextRun({
+              text: dataColumnsEstimation[i],
+              size: 26,
+            })
+          ]
+        })
+      ],
+      verticalAlign: VerticalAlign.CENTER,
+      margins: i != 1 ? normalMargin : {
+        top: convertInchesToTwip(0.06),
+        bottom: convertInchesToTwip(0.06),
+        left: convertInchesToTwip(0.72),
+        right: convertInchesToTwip(0.72),
+      },
+      shading: {
+        fill: "#DCDADA"
+      }
+    });
+
+    tableBodyColumns.push(tableCell);
+
+  }
+
+  const tableBodyRows = [];
+
+  for ( let i = 0; i < docxParsedData.length; i++ ){
+    const currentRow = docxParsedData[i];
+    const tableRowCells = [];
+    for( let j = 0; j < currentRow.length; j++ ){
+      const tableCell = new TableCell({
+        children: [
+          new Paragraph({
+            text: `${currentRow[j]}`,
+            alignment: AlignmentType.START,
+          })
+        ],
+        verticalAlign: VerticalAlign.CENTER,
+        margins: normalMargin,
+      });
+      tableRowCells.push(tableCell);
+    }
+    const tableRow = new TableRow({
+      children: tableRowCells,
+    });
+    tableBodyRows.push(tableRow);
+  }
+
+  const tableBody = [
+    new Table({
+      alignment: AlignmentType.CENTER,
+      rows: [
+        new TableRow({
+          children: tableBodyColumns,
+        }),
+        ...tableBodyRows
+      ],
+    }),
+  ];
+
+  const children = [
+    ...tableHeader,
+    Spacer,
+    ...tableBody,
+  ];
+
+  const sections = [{
+    children: children
+  }];
+
+  const doc = new Document({
+    sections: sections,
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    saveAs(blob, `${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}`);
+  });
+
+}
+
+function exportDOCXTradesAndTranchesEstimation(data, currentProject, noPrice){
+
+  const headArr = headGen(
+    `${noPrice ? "DQE" : "Estimation"}`,
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const rows = rowsGenTradesAndTranchesEstimation(data, noPrice);
+
+  let docxParsedData = [];
+
+  for(let i = 0; i < rows.length; i++){
+    const currentRow = rows[i];
+    const currentRowDOCXParsedData = docxParsedDataGenTradesAndTranchesEstimation(currentRow, (i+1));
+    docxParsedData = docxParsedData.concat(currentRowDOCXParsedData);
+  }
+
+  const tableHeader = [
+    new Table({
+      alignment: AlignmentType.CENTER,
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.START,
+                  children: [
+                    new TextRun({
+                      text: headArr[0],
+                      size: 22,
+                    })
+                  ]
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new TextRun({
+                      text: headArr[1],
+                      size: 22,
+                      bold: true
+                    })
+                  ]
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: {
+                top: convertInchesToTwip(0.06),
+                bottom: convertInchesToTwip(0.06),
+                left: convertInchesToTwip(0.24),
+                right: convertInchesToTwip(0.24),
+              },
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.END,
+                  children: [
+                    new TextRun({
+                      text: headArr[2],
+                      size: 22,
+                    })
+                  ]
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+          ],
+        }),
+      ],
+    }),
+  ];
+
+  const tableBodyColumns = [];
+
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+
+    const tableCell = new TableCell({
+      children: [
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [
+            new TextRun({
+              text: dataColumnsEstimation[i],
+              size: 26,
+            })
+          ]
+        })
+      ],
+      verticalAlign: VerticalAlign.CENTER,
+      margins: i != 1 ? normalMargin : {
+        top: convertInchesToTwip(0.06),
+        bottom: convertInchesToTwip(0.06),
+        left: convertInchesToTwip(0.72),
+        right: convertInchesToTwip(0.72),
+      },
+      shading: {
+        fill: "#DCDADA"
+      }
+    });
+
+    tableBodyColumns.push(tableCell);
+
+  }
+
+  const tableBodyRows = [];
+
+  for ( let i = 0; i < docxParsedData.length; i++ ){
+    const currentRow = docxParsedData[i];
+    const tableRowCells = [];
+    for( let j = 0; j < currentRow.length; j++ ){
+      const tableCell = new TableCell({
+        children: [
+          new Paragraph({
+            text: `${currentRow[j]}`,
+            alignment: AlignmentType.START,
+          })
+        ],
+        verticalAlign: VerticalAlign.CENTER,
+        margins: normalMargin,
+      });
+      tableRowCells.push(tableCell);
+    }
+    const tableRow = new TableRow({
+      children: tableRowCells,
+    });
+    tableBodyRows.push(tableRow);
+  }
+
+  const tableBody = [
+    new Table({
+      alignment: AlignmentType.CENTER,
+      rows: [
+        new TableRow({
+          children: tableBodyColumns,
+        }),
+        ...tableBodyRows
+      ],
+    }),
+  ];
+
+  const children = [
+    ...tableHeader,
+    Spacer,
+    ...tableBody,
+  ];
+
+  const sections = [{
+    children: children
+  }];
+
+  const doc = new Document({
+    sections: sections,
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    saveAs(blob, `${currentProject?.name ?? "N/A"} - ${Date.now()} - ${noPrice ? "DQE" : "Estimation"}`);
+  });
+
+}
+
+function exportDOCXSimpleBPU(data, currentProject){
+
+  const headArr = headGen(
     "BPU",
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = rowsGenSimpleBPU(data);
+  const rows = rowsGenSimpleBPU(data);
 
   const tableHeader = [
     new Table({
@@ -273,7 +635,7 @@ function exportDOCXBPU(data, currentProject){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[0],
+                  text: headArr[0],
                   style: "bold",
                   alignment: AlignmentType.START,
                 })
@@ -287,7 +649,7 @@ function exportDOCXBPU(data, currentProject){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[1],
+                  text: headArr[1],
                   style: "bold",
                   alignment: AlignmentType.CENTER,
                 })
@@ -306,7 +668,7 @@ function exportDOCXBPU(data, currentProject){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[2],
+                  text: headArr[2],
                   style: "bold",
                   alignment: AlignmentType.END,
                 })
@@ -352,8 +714,8 @@ function exportDOCXBPU(data, currentProject){
 
   const tableBodyRows = [];
 
-  for ( let i = 0; i < pdfXLSXRows.length; i++ ){
-    const currentRow = pdfXLSXRows[i];
+  for ( let i = 0; i < rows.length; i++ ){
+    const currentRow = rows[i];
     const tableRowCells = [];
     for( let j = 0; j < currentRow.length; j++ ){
       let docxObjs = textRunsSplitGen(currentRow[j]);
@@ -400,14 +762,14 @@ function exportDOCXBPU(data, currentProject){
 
 }
 
-function exportDOCXCCTP(data, currentProject){
+function exportDOCXTradesBPU(data, currentProject){
 
-  const pdfXLSXHead = headGen(
-    "CCTP",
+  const headArr = headGen(
+    "BPU",
     `${currentProject?.name ?? "N/A"}`
   );
 
-  const pdfXLSXRows = rowsGenCCTP(data);
+  const rows = rowsGenTradesBPU(data);
 
   const tableHeader = [
     new Table({
@@ -417,7 +779,7 @@ function exportDOCXCCTP(data, currentProject){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[0],
+                  text: headArr[0],
                   style: "bold",
                   alignment: AlignmentType.START,
                 })
@@ -431,7 +793,295 @@ function exportDOCXCCTP(data, currentProject){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[1],
+                  text: headArr[1],
+                  style: "bold",
+                  alignment: AlignmentType.CENTER,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: {
+                top: convertInchesToTwip(0.06),
+                bottom: convertInchesToTwip(0.06),
+                left: convertInchesToTwip(0.24),
+                right: convertInchesToTwip(0.24),
+              },
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[2],
+                  style: "bold",
+                  alignment: AlignmentType.END,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+          ],
+        }),
+      ],
+    }),
+  ];
+
+  const tableBodyColumns = [];
+
+  for( let i = 0; i < dataColumnsBPU.length; i++ ){
+
+    const tableCell = new TableCell({
+      children: [
+        new Paragraph({
+          text: dataColumnsEstimation[i],
+          alignment: AlignmentType.START,
+        })
+      ],
+      verticalAlign: VerticalAlign.CENTER,
+      margins: i != 1 ? normalMargin : {
+        top: convertInchesToTwip(0.06),
+        bottom: convertInchesToTwip(0.06),
+        left: convertInchesToTwip(0.72),
+        right: convertInchesToTwip(0.72),
+      },
+      shading: {
+        fill: "#DCDADA"
+      }
+    });
+
+    tableBodyColumns.push(tableCell);
+
+  }
+
+  const tableBodyRows = [];
+
+  for ( let i = 0; i < rows.length; i++ ){
+    const currentRow = rows[i];
+    const tableRowCells = [];
+    for( let j = 0; j < currentRow.length; j++ ){
+      let docxObjs = textRunsSplitGen(currentRow[j]);
+      const tableCell = new TableCell({
+        children: docxObjs,
+        verticalAlign: VerticalAlign.CENTER,
+        margins: normalMargin,
+      });
+      tableRowCells.push(tableCell);
+    }
+    const tableRow = new TableRow({
+      children: tableRowCells,
+    });
+    tableBodyRows.push(tableRow);
+  }
+
+  const tableBody = [
+    new Table({
+      rows: [
+        new TableRow({
+          children: tableBodyColumns,
+        }),
+        ...tableBodyRows
+      ],
+    }),
+  ];
+
+  const children = [
+    ...tableHeader,
+    ...tableBody,
+  ];
+
+  const sections = [{
+    children: children
+  }];
+
+  const doc = new Document({
+    sections: sections,
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    saveAs(blob, `${currentProject?.name ?? "N/A"} - ${Date.now()} - BPU`);
+  });
+
+}
+
+function exportDOCXTradesAndTranchesBPU(data, currentProject){
+
+  const headArr = headGen(
+    "BPU",
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const rows = rowsGenTradesAndTranchesBPU(data);
+
+  const tableHeader = [
+    new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[0],
+                  style: "bold",
+                  alignment: AlignmentType.START,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[1],
+                  style: "bold",
+                  alignment: AlignmentType.CENTER,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: {
+                top: convertInchesToTwip(0.06),
+                bottom: convertInchesToTwip(0.06),
+                left: convertInchesToTwip(0.24),
+                right: convertInchesToTwip(0.24),
+              },
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[2],
+                  style: "bold",
+                  alignment: AlignmentType.END,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+          ],
+        }),
+      ],
+    }),
+  ];
+
+  const tableBodyColumns = [];
+
+  for( let i = 0; i < dataColumnsBPU.length; i++ ){
+
+    const tableCell = new TableCell({
+      children: [
+        new Paragraph({
+          text: dataColumnsEstimation[i],
+          alignment: AlignmentType.START,
+        })
+      ],
+      verticalAlign: VerticalAlign.CENTER,
+      margins: i != 1 ? normalMargin : {
+        top: convertInchesToTwip(0.06),
+        bottom: convertInchesToTwip(0.06),
+        left: convertInchesToTwip(0.72),
+        right: convertInchesToTwip(0.72),
+      },
+      shading: {
+        fill: "#DCDADA"
+      }
+    });
+
+    tableBodyColumns.push(tableCell);
+
+  }
+
+  const tableBodyRows = [];
+
+  for ( let i = 0; i < rows.length; i++ ){
+    const currentRow = rows[i];
+    const tableRowCells = [];
+    for( let j = 0; j < currentRow.length; j++ ){
+      let docxObjs = textRunsSplitGen(currentRow[j]);
+      const tableCell = new TableCell({
+        children: docxObjs,
+        verticalAlign: VerticalAlign.CENTER,
+        margins: normalMargin,
+      });
+      tableRowCells.push(tableCell);
+    }
+    const tableRow = new TableRow({
+      children: tableRowCells,
+    });
+    tableBodyRows.push(tableRow);
+  }
+
+  const tableBody = [
+    new Table({
+      rows: [
+        new TableRow({
+          children: tableBodyColumns,
+        }),
+        ...tableBodyRows
+      ],
+    }),
+  ];
+
+  const children = [
+    ...tableHeader,
+    ...tableBody,
+  ];
+
+  const sections = [{
+    children: children
+  }];
+
+  const doc = new Document({
+    sections: sections,
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    saveAs(blob, `${currentProject?.name ?? "N/A"} - ${Date.now()} - BPU`);
+  });
+
+}
+
+function exportDOCXSimpleCCTP(data, currentProject){
+
+  const headArr = headGen(
+    "CCTP",
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const rows = rowsGenSimpleCCTP(data);
+
+  const tableHeader = [
+    new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[0],
+                  style: "bold",
+                  alignment: AlignmentType.START,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[1],
                   style: "bold",
                   alignment: AlignmentType.CENTER,
                 })
@@ -450,7 +1100,7 @@ function exportDOCXCCTP(data, currentProject){
             new TableCell({
               children: [
                 new Paragraph({
-                  text: pdfXLSXHead[2],
+                  text: headArr[2],
                   style: "bold",
                   alignment: AlignmentType.END,
                 })
@@ -469,7 +1119,7 @@ function exportDOCXCCTP(data, currentProject){
 
   const bodyChild = [];
 
-  for(let i = 0; i < pdfXLSXRows.length; i++){
+  for(let i = 0; i < rows.length; i++){
 
     bodyChild.push(
       new Paragraph({
@@ -479,7 +1129,7 @@ function exportDOCXCCTP(data, currentProject){
         },
         children: [
           new TextRun({
-            text: pdfXLSXRows[i].title,
+            text: rows[i].title,
             size: 42,
             bold: true
           }),
@@ -487,7 +1137,239 @@ function exportDOCXCCTP(data, currentProject){
       })
     );
 
-    const CCTPArr = pdfXLSXRows[i].cctp_arr;
+    const CCTPArr = rows[i].cctp_arr;
+
+    for( let j = 0; j < CCTPArr.length; j++ ){
+      let docxObjs = textRunsSplitGen(CCTPArr[j]);
+      bodyChild.push(
+        ...docxObjs
+      );
+    }
+  }
+
+  const children = [
+    ...tableHeader,
+    ...bodyChild
+  ];
+
+  const sections = [{
+    children: children
+  }];
+
+  const doc = new Document({
+    sections: sections,
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    saveAs(blob, `${currentProject?.name ?? "N/A"} - ${Date.now()} - CCTP`);
+  });
+
+}
+
+function exportDOCXTradesCCTP(data, currentProject){
+
+  const headArr = headGen(
+    "CCTP",
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const rows = rowsGenTradesCCTP(data);
+
+  const tableHeader = [
+    new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[0],
+                  style: "bold",
+                  alignment: AlignmentType.START,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[1],
+                  style: "bold",
+                  alignment: AlignmentType.CENTER,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: {
+                top: convertInchesToTwip(0.06),
+                bottom: convertInchesToTwip(0.06),
+                left: convertInchesToTwip(0.72),
+                right: convertInchesToTwip(0.72),
+              },
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[2],
+                  style: "bold",
+                  alignment: AlignmentType.END,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+          ],
+        }),
+      ],
+    }),
+  ];
+
+  const bodyChild = [];
+
+  for(let i = 0; i < rows.length; i++){
+
+    bodyChild.push(
+      new Paragraph({
+        spacing: {
+          before: i == 0 ? 120 : 80,
+          after: 60
+        },
+        children: [
+          new TextRun({
+            text: rows[i].title,
+            size: 42,
+            bold: true
+          }),
+        ],
+      })
+    );
+
+    const CCTPArr = rows[i].cctp_arr;
+
+    for( let j = 0; j < CCTPArr.length; j++ ){
+      let docxObjs = textRunsSplitGen(CCTPArr[j]);
+      bodyChild.push(
+        ...docxObjs
+      );
+    }
+  }
+
+  const children = [
+    ...tableHeader,
+    ...bodyChild
+  ];
+
+  const sections = [{
+    children: children
+  }];
+
+  const doc = new Document({
+    sections: sections,
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    saveAs(blob, `${currentProject?.name ?? "N/A"} - ${Date.now()} - CCTP`);
+  });
+
+}
+
+function exportDOCXTradesAndTranchesCCTP(data, currentProject){
+
+  const headArr = headGen(
+    "CCTP",
+    `${currentProject?.name ?? "N/A"}`
+  );
+
+  const rows = rowsGenTradesAndTranchesCCTP(data);
+
+  const tableHeader = [
+    new Table({
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[0],
+                  style: "bold",
+                  alignment: AlignmentType.START,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[1],
+                  style: "bold",
+                  alignment: AlignmentType.CENTER,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: {
+                top: convertInchesToTwip(0.06),
+                bottom: convertInchesToTwip(0.06),
+                left: convertInchesToTwip(0.72),
+                right: convertInchesToTwip(0.72),
+              },
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+            new TableCell({
+              children: [
+                new Paragraph({
+                  text: headArr[2],
+                  style: "bold",
+                  alignment: AlignmentType.END,
+                })
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+              margins: normalMargin,
+              shading: {
+                fill: "#C4C8CC"
+              }
+            }),
+          ],
+        }),
+      ],
+    }),
+  ];
+
+  const bodyChild = [];
+
+  for(let i = 0; i < rows.length; i++){
+
+    bodyChild.push(
+      new Paragraph({
+        spacing: {
+          before: i == 0 ? 120 : 80,
+          after: 60
+        },
+        children: [
+          new TextRun({
+            text: rows[i].title,
+            size: 42,
+            bold: true
+          }),
+        ],
+      })
+    );
+
+    const CCTPArr = rows[i].cctp_arr;
 
     for( let j = 0; j < CCTPArr.length; j++ ){
       let docxObjs = textRunsSplitGen(CCTPArr[j]);
@@ -528,7 +1410,13 @@ const firstRowShade = {
 };
 
 export {
-  exportDOCXestimation,
-  exportDOCXBPU,
-  exportDOCXCCTP
+  exportDOCXSimpleEstimation,
+  exportDOCXTradesEstimation,
+  exportDOCXTradesAndTranchesEstimation,
+  exportDOCXSimpleBPU,
+  exportDOCXTradesBPU,
+  exportDOCXTradesAndTranchesBPU,
+  exportDOCXSimpleCCTP,
+  exportDOCXTradesCCTP,
+  exportDOCXTradesAndTranchesCCTP
 }
