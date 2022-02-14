@@ -15,8 +15,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -138,140 +137,139 @@ export default function NestedList(props) {
       aria-labelledby="nested-list-subheader"
     >
       {/* level 1 */}
-      {props.level1 &&
-        props.level1.map((item) => {
-          return (
-            <>
-              <ListItem
-                style={{
-                  height: 40,
-                }}
-              >
-                <div style={{ marginRight: 7 }}>
-                  <FolderIcon style={{ color: "#f1966c", fontSize: 20 }} />
-                </div>
-                {/* label */}
-                <ListItemText
-                  primary={
-                    <div
-                      style={{
-                        fontSize: 15,
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {item?.name?.substring(0, 30)}
-                      {item?.name?.length > 30 && "..."}
-                      <ArrowDropDownIcon
-                        id="demo-positioned-button"
-                        aria-controls={
-                          openLevel0 ? "demo-positioned-menu" : undefined
-                        }
-                        aria-haspopup="true"
-                        aria-expanded={openLevel0 ? "true" : undefined}
-                        onClick={(e) => handleAnchorElLevel0Click(e, item)}
-                        sx={{
-                          fontSize: 18,
-                          cursor: "pointer",
-                        }}
-                      />
-                      {/* drop down level 0 */}
-                      <StyledMenu
-                        id="demo-positioned-menu"
-                        aria-labelledby="demo-positioned-button"
-                        anchorEl={anchorElLevel0}
-                        open={openLevel0}
-                        onClose={handleAnchorElLevel0Close}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        sx={{ mt: 1 }}
-                      >
-                        {menuItem0?.cctp_text?.length >= 1 ? (
-                          menuItem0?.cctp_text?.map((cctp, index) => {
-                            return (
+      {props.libraryLoading ? (
+        <ListItem
+          style={{
+            height: 40,
+          }}
+        >
+          <div style={{ marginRight: 7 }}>
+            <FolderIcon style={{ color: "#f1966c", fontSize: 20 }} />
+          </div>{" "}
+          Loading...
+        </ListItem>
+      ) : (
+        <>
+          {props.level1 &&
+            props.level1.map((item) => {
+              return (
+                <>
+                  <ListItem
+                    style={{
+                      height: 40,
+                    }}
+                  >
+                    <div style={{ marginRight: 7 }}>
+                      <FolderIcon style={{ color: "#f1966c", fontSize: 20 }} />
+                    </div>
+                    {/* label */}
+                    <ListItemText
+                      primary={
+                        <div
+                          style={{
+                            fontSize: 15,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          {item?.name?.substring(0, 30)}
+                          {item?.name?.length > 30 && "..."}
+                          <ArrowDropDownIcon
+                            id="demo-positioned-button"
+                            aria-controls={
+                              openLevel0 ? "demo-positioned-menu" : undefined
+                            }
+                            aria-haspopup="true"
+                            aria-expanded={openLevel0 ? "true" : undefined}
+                            onClick={(e) => handleAnchorElLevel0Click(e, item)}
+                            sx={{
+                              fontSize: 18,
+                              cursor: "pointer",
+                            }}
+                          />
+                          {/* drop down level 0 */}
+                          <StyledMenu
+                            id="demo-positioned-menu"
+                            aria-labelledby="demo-positioned-button"
+                            anchorEl={anchorElLevel0}
+                            open={openLevel0}
+                            onClose={handleAnchorElLevel0Close}
+                            anchorOrigin={{
+                              vertical: "top",
+                              horizontal: "left",
+                            }}
+                            transformOrigin={{
+                              vertical: "top",
+                              horizontal: "left",
+                            }}
+                            sx={{ mt: 1 }}
+                          >
+                            {menuItem0?.cctp_text?.length >= 1 ? (
+                              menuItem0?.cctp_text?.map((cctp, index) => {
+                                return (
+                                  <MenuItem
+                                    onClick={() => {
+                                      props.handleOpenCctpModal(cctp);
+                                      handleAnchorElLevel0Close();
+                                    }}
+                                  >
+                                    Text CCTP {index + 1}
+                                  </MenuItem>
+                                );
+                              })
+                            ) : (
                               <MenuItem
                                 onClick={() => {
-                                  props.handleOpenCctpModal(cctp);
-                                  handleAnchorElLevel0Close();
+                                  handleAnchorElLevel1Close();
                                 }}
+                                disabled
                               >
-                                Text CCTP {index + 1}
+                                Empty
                               </MenuItem>
-                            );
-                          })
-                        ) : (
-                          <MenuItem
-                            onClick={() => {
-                              handleAnchorElLevel1Close();
-                            }}
-                            disabled
-                          >
-                            Empty
-                          </MenuItem>
-                        )}
-                      </StyledMenu>
-                    </div>
-                  }
-                />
-                {/* right icon */}
-                <ListItemIcon sx={{ mr: -4 }}>
-                  {openListLevel1 === item._id ? (
-                    <IconButton
-                      onClick={() => {
-                        props.setLevel2([]);
-                        handleOpenListLevel1Click();
-                      }}
-                    >
-                      <ExpandLess />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      onClick={() => {
-                        props.getLevel2(item._id);
-                        handleOpenListLevel1Click(item._id);
-                      }}
-                    >
-                      <ExpandMore />
-                    </IconButton>
+                            )}
+                          </StyledMenu>
+                        </div>
+                      }
+                    />
+                    {/* right icon */}
+                    <ListItemIcon sx={{ mr: -4 }}>
+                      {openListLevel1 === item._id ? (
+                        <IconButton
+                          onClick={() => {
+                            props.setLevel2([]);
+                            handleOpenListLevel1Click();
+                          }}
+                        >
+                          <ExpandLess />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          onClick={() => {
+                            props.getLevel2(item._id);
+                            handleOpenListLevel1Click(item._id);
+                          }}
+                        >
+                          <ExpandMore />
+                        </IconButton>
+                      )}
+                    </ListItemIcon>
+                  </ListItem>
+                  {props.loading === item._id && (
+                    <LinearProgress color="inherit" />
                   )}
-                </ListItemIcon>
-              </ListItem>
-              {/* level 2 */}
-              <Collapse in={openListLevel1 === item._id}>
-                {props.level2?.map((category) => {
-                  return (
-                    <>
-                      <ListItem
-                        sx={{ pl: 2.5 }}
-                        style={{
-                          height: 40,
-                        }}
-                      >
-                        <div>
-                          {props.loading && category._id === openListLevel2 ? (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                marginRight: 1.5,
-                                marginLeft: 1.8,
-                              }}
-                            >
-                              <CircularProgress
-                                size={10}
-                                style={{
-                                  backgroundColor: "#f2a17b",
-                                  color: "#f2a17b",
-                                }}
-                              />
-                            </Box>
-                          ) : (
-                            <>
+
+                  {/* level 2 */}
+                  <Collapse in={openListLevel1 === item._id}>
+                    {props.level2?.map((category) => {
+                      return (
+                        <>
+                          <ListItem
+                            sx={{ pl: 2.5 }}
+                            style={{
+                              height: 40,
+                            }}
+                          >
+                            <div>
                               {openListLevel2 === category._id ? (
                                 <IconButton
                                   onClick={() => {
@@ -280,7 +278,10 @@ export default function NestedList(props) {
                                   }}
                                 >
                                   <ExpandLess
-                                    style={{ color: "#f1966c", fontSize: 20 }}
+                                    style={{
+                                      color: "#f1966c",
+                                      fontSize: 20,
+                                    }}
                                   />
                                 </IconButton>
                               ) : (
@@ -291,210 +292,226 @@ export default function NestedList(props) {
                                   }}
                                 >
                                   <ChevronRightIcon
-                                    style={{ color: "#f1966c", fontSize: 20 }}
+                                    style={{
+                                      color: "#f1966c",
+                                      fontSize: 20,
+                                    }}
                                   />
                                 </IconButton>
                               )}
-                            </>
-                          )}
-                        </div>
-                        {/* label */}
-                        <ListItemText
-                          primary={
-                            <div
-                              style={{
-                                fontSize: 14,
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              {category?.name?.substring(0, 30)}
-                              {category?.name?.length > 30 && "..."}
-                              <ArrowDropDownIcon
-                                id="demo-positioned-button"
-                                aria-controls={
-                                  openLevel1
-                                    ? "demo-positioned-menu"
-                                    : undefined
-                                }
-                                aria-haspopup="true"
-                                aria-expanded={openLevel1 ? "true" : undefined}
-                                onClick={(e) =>
-                                  handleAnchorElLevel1Click(e, category)
-                                }
-                                sx={{
-                                  fontSize: 18,
-                                  cursor: "pointer",
-                                }}
-                              />
-                              <StyledMenu
-                                id="demo-positioned-menu"
-                                aria-labelledby="demo-positioned-button"
-                                anchorEl={anchorElLevel1}
-                                open={openLevel1}
-                                onClose={handleAnchorElLevel1Close}
-                                anchorOrigin={{
-                                  vertical: "top",
-                                  horizontal: "left",
-                                }}
-                                transformOrigin={{
-                                  vertical: "top",
-                                  horizontal: "left",
-                                }}
-                                sx={{ mt: 1 }}
-                              >
-                                {menuItem1?.cctp_text?.length >= 1 ? (
-                                  menuItem1?.cctp_text?.map((cctp, index) => {
-                                    return (
-                                      <MenuItem
-                                        onClick={() => {
-                                          props.handleOpenCctpModal(cctp);
-                                          handleAnchorElLevel1Close();
-                                        }}
-                                      >
-                                        Text CCTP {index + 1}
-                                      </MenuItem>
-                                    );
-                                  })
-                                ) : (
-                                  <MenuItem
-                                    onClick={() => {
-                                      handleAnchorElLevel1Close();
-                                    }}
-                                    disabled
-                                  >
-                                    Empty
-                                  </MenuItem>
-                                )}
-                              </StyledMenu>
                             </div>
-                          }
-                        />
-                        {/* right icon */}
-                      </ListItem>
-                      {/* level 3 */}
-                      <Collapse in={openListLevel2 === category._id}>
-                        {props?.level3?.map((work) => {
-                          if (work.category === openListLevel2) {
-                            return (
-                              <>
-                                <ListItem
-                                  sx={{ pl: 5 }}
+                            {/* label */}
+                            <ListItemText
+                              primary={
+                                <div
                                   style={{
-                                    height: 40,
+                                    fontSize: 14,
+                                    display: "flex",
+                                    alignItems: "center",
                                   }}
                                 >
-                                  <div style={{ marginRight: 10 }}>
-                                    <BookmarkBorderOutlinedIcon
-                                      style={{
-                                        color: "#f1966c",
-                                        fontSize: 20,
-                                      }}
-                                    />
-                                  </div>
-                                  {/* label */}
-                                  <ListItemText
-                                    primary={
-                                      <div style={{ fontSize: 15 }}>
-                                        {work?.name?.substring(0, 30)}
-                                        {work?.name?.length > 30 && "..."}
-                                        <ArrowDropDownIcon
-                                          id="demo-positioned-button"
-                                          aria-controls={
-                                            openLevel2
-                                              ? "demo-positioned-menu"
-                                              : undefined
-                                          }
-                                          aria-haspopup="true"
-                                          aria-expanded={
-                                            openLevel2 ? "true" : undefined
-                                          }
-                                          onClick={(e) =>
-                                            handleAnchorElLevel2Click(e, work)
-                                          }
-                                          sx={{
-                                            fontSize: 18,
-                                            cursor: "pointer",
-                                          }}
-                                        />
-                                        <StyledMenu
-                                          id="demo-positioned-menu"
-                                          aria-labelledby="demo-positioned-button"
-                                          anchorEl={anchorElLevel2}
-                                          open={openLevel2}
-                                          onClose={handleAnchorElLevel2Close}
-                                          anchorOrigin={{
-                                            vertical: "top",
-                                            horizontal: "left",
-                                          }}
-                                          transformOrigin={{
-                                            vertical: "top",
-                                            horizontal: "left",
-                                          }}
-                                          sx={{ mt: 1 }}
-                                        >
-                                          {menuItem2?.cctp_text?.length >= 1 ? (
-                                            menuItem2?.cctp_text?.map(
-                                              (cctp, index) => {
-                                                return (
-                                                  <MenuItem
-                                                    onClick={() => {
-                                                      props.handleOpenCctpModal(
-                                                        cctp
-                                                      );
-                                                      handleAnchorElLevel2Close();
-                                                    }}
-                                                  >
-                                                    Text CCTP {index + 1}
-                                                  </MenuItem>
-                                                );
-                                              }
-                                            )
-                                          ) : (
+                                  {category?.name?.substring(0, 30)}
+                                  {category?.name?.length > 30 && "..."}
+                                  <ArrowDropDownIcon
+                                    id="demo-positioned-button"
+                                    aria-controls={
+                                      openLevel1
+                                        ? "demo-positioned-menu"
+                                        : undefined
+                                    }
+                                    aria-haspopup="true"
+                                    aria-expanded={
+                                      openLevel1 ? "true" : undefined
+                                    }
+                                    onClick={(e) =>
+                                      handleAnchorElLevel1Click(e, category)
+                                    }
+                                    sx={{
+                                      fontSize: 18,
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                  <StyledMenu
+                                    id="demo-positioned-menu"
+                                    aria-labelledby="demo-positioned-button"
+                                    anchorEl={anchorElLevel1}
+                                    open={openLevel1}
+                                    onClose={handleAnchorElLevel1Close}
+                                    anchorOrigin={{
+                                      vertical: "top",
+                                      horizontal: "left",
+                                    }}
+                                    transformOrigin={{
+                                      vertical: "top",
+                                      horizontal: "left",
+                                    }}
+                                    sx={{ mt: 1 }}
+                                  >
+                                    {menuItem1?.cctp_text?.length >= 1 ? (
+                                      menuItem1?.cctp_text?.map(
+                                        (cctp, index) => {
+                                          return (
                                             <MenuItem
                                               onClick={() => {
-                                                handleAnchorElLevel2Close();
+                                                props.handleOpenCctpModal(cctp);
+                                                handleAnchorElLevel1Close();
                                               }}
-                                              disabled
                                             >
-                                              Empty
+                                              Text CCTP {index + 1}
                                             </MenuItem>
-                                          )}
-                                        </StyledMenu>
-                                      </div>
-                                    }
-                                  />
-                                  <ListItemIcon
-                                    sx={{
-                                      mr: -4,
-                                    }}
-                                  >
-                                    <IconButton
-                                      onClick={() =>
-                                        props.openModal(work, item)
-                                      }
-                                    >
-                                      <AddCircleRoundedIcon
-                                        style={{
-                                          color: "#f1966c",
-                                          fontSize: 20,
+                                          );
+                                        }
+                                      )
+                                    ) : (
+                                      <MenuItem
+                                        onClick={() => {
+                                          handleAnchorElLevel1Close();
                                         }}
+                                        disabled
+                                      >
+                                        Empty
+                                      </MenuItem>
+                                    )}
+                                  </StyledMenu>
+                                </div>
+                              }
+                            />
+                            {/* right icon */}
+                          </ListItem>
+                          {props.loading === category._id && (
+                            <LinearProgress color="inherit" />
+                          )}
+                          {/* level 3 */}
+                          <Collapse in={openListLevel2 === category._id}>
+                            {props?.level3?.map((work) => {
+                              if (work.category === openListLevel2) {
+                                return (
+                                  <>
+                                    <ListItem
+                                      sx={{ pl: 5 }}
+                                      style={{
+                                        height: 40,
+                                      }}
+                                    >
+                                      <div style={{ marginRight: 10 }}>
+                                        <BookmarkBorderOutlinedIcon
+                                          style={{
+                                            color: "#f1966c",
+                                            fontSize: 20,
+                                          }}
+                                        />
+                                      </div>
+                                      {/* label */}
+                                      <ListItemText
+                                        primary={
+                                          <div style={{ fontSize: 15 }}>
+                                            {work?.name?.substring(0, 30)}
+                                            {work?.name?.length > 30 && "..."}
+                                            <ArrowDropDownIcon
+                                              id="demo-positioned-button"
+                                              aria-controls={
+                                                openLevel2
+                                                  ? "demo-positioned-menu"
+                                                  : undefined
+                                              }
+                                              aria-haspopup="true"
+                                              aria-expanded={
+                                                openLevel2 ? "true" : undefined
+                                              }
+                                              onClick={(e) =>
+                                                handleAnchorElLevel2Click(
+                                                  e,
+                                                  work
+                                                )
+                                              }
+                                              sx={{
+                                                fontSize: 18,
+                                                cursor: "pointer",
+                                              }}
+                                            />
+                                            <StyledMenu
+                                              id="demo-positioned-menu"
+                                              aria-labelledby="demo-positioned-button"
+                                              anchorEl={anchorElLevel2}
+                                              open={openLevel2}
+                                              onClose={
+                                                handleAnchorElLevel2Close
+                                              }
+                                              anchorOrigin={{
+                                                vertical: "top",
+                                                horizontal: "left",
+                                              }}
+                                              transformOrigin={{
+                                                vertical: "top",
+                                                horizontal: "left",
+                                              }}
+                                              sx={{ mt: 1 }}
+                                            >
+                                              {menuItem2?.cctp_text?.length >=
+                                              1 ? (
+                                                menuItem2?.cctp_text?.map(
+                                                  (cctp, index) => {
+                                                    return (
+                                                      <MenuItem
+                                                        onClick={() => {
+                                                          props.handleOpenCctpModal(
+                                                            cctp
+                                                          );
+                                                          handleAnchorElLevel2Close();
+                                                        }}
+                                                      >
+                                                        Text CCTP {index + 1}
+                                                      </MenuItem>
+                                                    );
+                                                  }
+                                                )
+                                              ) : (
+                                                <MenuItem
+                                                  onClick={() => {
+                                                    handleAnchorElLevel2Close();
+                                                  }}
+                                                  disabled
+                                                >
+                                                  Empty
+                                                </MenuItem>
+                                              )}
+                                            </StyledMenu>
+                                          </div>
+                                        }
                                       />
-                                    </IconButton>
-                                  </ListItemIcon>
-                                </ListItem>
-                              </>
-                            );
-                          }
-                        })}
-                      </Collapse>
-                    </>
-                  );
-                })}
-              </Collapse>
-            </>
-          );
-        })}
+                                      <ListItemIcon
+                                        sx={{
+                                          mr: -4,
+                                        }}
+                                      >
+                                        <IconButton
+                                          onClick={() =>
+                                            props.openModal(work, item)
+                                          }
+                                        >
+                                          <AddCircleRoundedIcon
+                                            style={{
+                                              color: "#f1966c",
+                                              fontSize: 20,
+                                            }}
+                                          />
+                                        </IconButton>
+                                      </ListItemIcon>
+                                    </ListItem>
+                                  </>
+                                );
+                              }
+                            })}
+                          </Collapse>
+                        </>
+                      );
+                    })}
+                  </Collapse>
+                </>
+              );
+            })}
+        </>
+      )}
     </List>
   );
 }
