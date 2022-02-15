@@ -172,8 +172,8 @@ export default function NestedList(props) {
                             alignItems: "center",
                           }}
                         >
-                          {item?.name?.substring(0, 30)}
-                          {item?.name?.length > 30 && "..."}
+                          {item?.name?.substring(0, 25)}
+                          {item?.name?.length > 25 && "..."}
                           <ArrowDropDownIcon
                             id="demo-positioned-button"
                             aria-controls={
@@ -310,8 +310,8 @@ export default function NestedList(props) {
                                     alignItems: "center",
                                   }}
                                 >
-                                  {category?.name?.substring(0, 30)}
-                                  {category?.name?.length > 30 && "..."}
+                                  {category?.name?.substring(0, 25)}
+                                  {category?.name?.length > 25 && "..."}
                                   <ArrowDropDownIcon
                                     id="demo-positioned-button"
                                     aria-controls={
@@ -405,8 +405,8 @@ export default function NestedList(props) {
                                       <ListItemText
                                         primary={
                                           <div style={{ fontSize: 15 }}>
-                                            {work?.name?.substring(0, 30)}
-                                            {work?.name?.length > 30 && "..."}
+                                            {work?.name?.substring(0, 25)}
+                                            {work?.name?.length > 25 && "..."}
                                             <ArrowDropDownIcon
                                               id="demo-positioned-button"
                                               aria-controls={

@@ -149,7 +149,7 @@ const ProjectView = () => {
         });
         tempArray[index1] = tempSum;
       });
-      setTradeTotal(tempArray);
+      setTradeTotal(tempArray.toFixed(2));
       setTotalHT(tempAmount.toFixed(2));
 
       if (currentProject.market_type === "TradesAndTranches") {
@@ -221,7 +221,7 @@ const ProjectView = () => {
         });
         tempArray[index1] = tempSum;
       });
-      setTradeTotal(tempArray);
+      setTradeTotal(tempArray.toFixed(2));
       setTotalHT(tempAmount.toFixed(2));
       setProjectWorkData(data);
     } else {
@@ -648,7 +648,7 @@ const ProjectView = () => {
               }}
             >
               <div className={classes.left_container}>
-                <div style={{ display: "flex", marginBottom: 15 }}>
+                {/* <div style={{ display: "flex", marginBottom: 15 }}>
                   <InputWithLabel
                     placeholder="To Look For"
                     required={true}
@@ -668,7 +668,7 @@ const ProjectView = () => {
                   >
                     <SearchIcon style={{ color: "black" }} />
                   </Button>
-                </div>
+                </div> */}
                 <InputDropdown
                   options={options}
                   value={selectedFamily}
@@ -905,7 +905,7 @@ const ProjectView = () => {
                             >
                               Total Trade n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
-                              {tradeTotal[index]}
+                              {tradeTotal[index].toFixed(2)}
                             </div>
                             <br />
                           </>
@@ -965,7 +965,7 @@ const ProjectView = () => {
                                   >
                                     Total Tranche {item2.tranch}
                                     &nbsp;&nbsp;&nbsp;
-                                    {item2.tranchAmount}
+                                    {item2.tranchAmount.toFixed(2)}
                                   </div>
                                 </>
                               );
@@ -982,7 +982,7 @@ const ProjectView = () => {
                             >
                               Total Trade n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
-                              {tradeTotal[index]}
+                              {tradeTotal[index].toFixed(2)}
                             </div>
                             <br />
                           </>
@@ -1023,13 +1023,13 @@ const ProjectView = () => {
                       >
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>Total HT:</div>
-                          <div>{totalHT}</div>
+                          <div>{parseInt(totalHT).toFixed(2)}</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
                             Total VAT (%):
                           </div>
-                          <div>{currentProject?.vat?.value}</div>
+                          <div>{currentProject?.vat?.value.toFixed(2)}</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
