@@ -65,9 +65,9 @@ function ReportBPUModal(props){
   return (
     <div style={{ width: "30vw"}}>
       <Stack direction="row" spacing={1}>
-        <IconButton aria-label="PDF" onClick={generatePDF}>
+        {/* <IconButton aria-label="PDF" onClick={generatePDF}>
           <PictureAsPdfIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton aria-label="PDF" onClick={generateWord}>
           <TextSnippetIcon />
         </IconButton>

@@ -936,7 +936,6 @@ function parseHTMLTag(tag){
   const embedded = [];
 
   if(innerHTML[0] == "<"){
-
     const elMain = document.createElement("div");
     elMain.innerHTML = innerHTML;
     let htmlCollection = elMain.children;
@@ -961,14 +960,22 @@ const tagsToDocxMap = {
     const text = _.innerHTML;
 
     if(_.embedded.length == 0){
-      return new Paragraph({
-        children: [
-          new TextRun({
-            text: text,
-            size: 24,
+      const textArr = text.split("<br>");
+      const objsArr = [];
+      for( let i = 0; i < textArr.length; i++ ){
+        const currentText = textArr[i];
+        objsArr.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: currentText,
+                size: 24,
+              })
+            ]
           })
-        ]
-      });
+        );
+      }
+      return objsArr;
     } else {
       const obj = _.embedded[0]; // Well incase of "P". We will be dealing with first embedded entry only.
       return tagsToDocxMap[obj.tagName] && tagsToDocxMap[obj.tagName](obj);
