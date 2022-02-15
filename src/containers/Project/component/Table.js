@@ -199,7 +199,7 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {row.work.quantity.toFixed(2)}
+                    {parseInt(row.work.quantity).toFixed(2)}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -208,7 +208,7 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {row.work.unit_price.toFixed(2)}
+                    {parseInt(row.work.unit_price).toFixed(2)}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -217,7 +217,9 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {(row.work.unit_price * row.work.quantity).toFixed(2)}
+                    {parseInt(row.work.unit_price * row.work.quantity).toFixed(
+                      2
+                    )}
                   </TableCell>
                 </TableRow>
               );
@@ -390,7 +392,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetails?.quantity.toFixed(2)}
+                      {parseInt(row?.workDetails?.quantity).toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -399,7 +401,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetails?.unit_price.toFixed(2)}
+                      {parseInt(row?.workDetails?.unit_price).toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -408,9 +410,9 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {(
+                      {parseInt(
                         row?.workDetails?.quantity *
-                        row?.workDetails?.unit_price
+                          row?.workDetails?.unit_price
                       ).toFixed(2)}
                     </TableCell>
                   </TableRow>

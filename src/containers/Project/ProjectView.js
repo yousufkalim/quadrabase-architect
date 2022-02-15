@@ -149,7 +149,7 @@ const ProjectView = () => {
         });
         tempArray[index1] = tempSum;
       });
-      setTradeTotal(tempArray.toFixed(2));
+      setTradeTotal(tempArray);
       setTotalHT(tempAmount.toFixed(2));
 
       if (currentProject.market_type === "TradesAndTranches") {
@@ -221,7 +221,7 @@ const ProjectView = () => {
         });
         tempArray[index1] = tempSum;
       });
-      setTradeTotal(tempArray.toFixed(2));
+      setTradeTotal(tempArray);
       setTotalHT(tempAmount.toFixed(2));
       setProjectWorkData(data);
     } else {
