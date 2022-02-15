@@ -103,18 +103,18 @@ export default function DenseTable({
         <TableHead>
           <TableRow>
             <TableCell style={{ fontWeight: 900, fontSize: 16 }}>
-              Name
+              Designation
             </TableCell>
-            <TableCell align="right" style={{ fontWeight: 900, fontSize: 16 }}>
+            <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
               Unity
             </TableCell>
-            <TableCell align="right" style={{ fontWeight: 900, fontSize: 16 }}>
+            <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
               Qty
             </TableCell>
-            <TableCell align="right" style={{ fontWeight: 900, fontSize: 16 }}>
+            <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
               PU HT
             </TableCell>
-            <TableCell align="right" style={{ fontWeight: 900, fontSize: 16 }}>
+            <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
               Total HT
             </TableCell>
           </TableRow>
@@ -123,7 +123,7 @@ export default function DenseTable({
           {projectWorkData.map((row, index) => {
             if (!row.workDetails) {
               return (
-                <TableRow hover>
+                <TableRow>
                   <TableCell
                     component="th"
                     scope="row"
@@ -134,8 +134,8 @@ export default function DenseTable({
                       alignItems: "center",
                     }}
                   >
-                    {row.work.name.substring(0, 50)}
-                    {row.work.name.length > 50 && "..."}
+                    {row.work.name.substring(0, 75)}
+                    {row.work.name.length > 75 && "..."}
                     <ArrowDropDownIcon
                       id="demo-positioned-button"
                       aria-controls={
@@ -184,40 +184,42 @@ export default function DenseTable({
                     </StyledMenu>
                   </TableCell>
                   <TableCell
-                    align="right"
+                    align="center"
                     style={{
                       borderRight: "1px solid lightgray",
                       width: "10vw",
                     }}
                   >
-                    {row?.workUnit?.name}
+                    {row?.workUnit?.symbol}
                   </TableCell>
                   <TableCell
-                    align="right"
+                    align="center"
                     style={{
                       borderRight: "1px solid lightgray",
                       width: "10vw",
                     }}
                   >
-                    {row.work.quantity}
+                    {parseInt(row.work.quantity).toFixed(2)}
                   </TableCell>
                   <TableCell
-                    align="right"
+                    align="center"
                     style={{
                       borderRight: "1px solid lightgray",
                       width: "10vw",
                     }}
                   >
-                    {row.work.unit_price}
+                    {parseInt(row.work.unit_price).toFixed(2)}
                   </TableCell>
                   <TableCell
-                    align="right"
+                    align="center"
                     style={{
                       borderRight: "1px solid lightgray",
                       width: "10vw",
                     }}
                   >
-                    {row.work.unit_price * row.work.quantity}
+                    {parseInt(row.work.unit_price * row.work.quantity).toFixed(
+                      2
+                    )}
                   </TableCell>
                 </TableRow>
               );
@@ -225,7 +227,7 @@ export default function DenseTable({
               return (
                 <>
                   {row.work._id !== projectWorkData[index - 1]?.work._id && (
-                    <TableRow hover>
+                    <TableRow>
                       <TableCell
                         style={{
                           borderRight: "1px solid lightgray",
@@ -234,8 +236,8 @@ export default function DenseTable({
                           alignItems: "center",
                         }}
                       >
-                        {row?.work?.name?.substring(0, 50)}
-                        {row?.work?.name?.length > 50 && "..."}
+                        {row?.work?.name?.substring(0, 75)}
+                        {row?.work?.name?.length > 75 && "..."}
                         <ArrowDropDownIcon
                           id="demo-positioned-button"
                           aria-controls={
@@ -278,28 +280,28 @@ export default function DenseTable({
                         </StyledMenu>
                       </TableCell>
                       <TableCell
-                        align="right"
+                        align="center"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
                       ></TableCell>
                       <TableCell
-                        align="right"
+                        align="center"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
                       ></TableCell>
                       <TableCell
-                        align="right"
+                        align="center"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
                         }}
                       ></TableCell>
                       <TableCell
-                        align="right"
+                        align="center"
                         style={{
                           borderRight: "1px solid lightgray",
                           width: "10vw",
@@ -308,7 +310,7 @@ export default function DenseTable({
                     </TableRow>
                   )}
 
-                  <TableRow hover style={{ backgroundColor: "#eeeeee" }}>
+                  <TableRow style={{ backgroundColor: "#eeeeee" }}>
                     <TableCell
                       component="th"
                       scope="row"
@@ -320,8 +322,11 @@ export default function DenseTable({
                       }}
                     >
                       &nbsp;&nbsp;&nbsp;
-                      {row?.workDetails?.name?.substring(0, 50)}
-                      {row?.workDetails?.name?.length > 50 && "..."}
+                      <i>
+                        {" "}
+                        {row?.workDetails?.name?.substring(0, 50)}
+                        {row?.workDetails?.name?.length > 50 && "..."}
+                      </i>
                       <ArrowDropDownIcon
                         id="demo-positioned-button"
                         aria-controls={
@@ -372,41 +377,43 @@ export default function DenseTable({
                       </StyledMenu>
                     </TableCell>
                     <TableCell
-                      align="right"
+                      align="center"
                       style={{
                         borderRight: "1px solid lightgray",
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetailsUnit?.name}
+                      {row?.workDetailsUnit?.symbol}
                     </TableCell>
                     <TableCell
-                      align="right"
+                      align="center"
                       style={{
                         borderRight: "1px solid lightgray",
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetails?.quantity}
+                      {parseInt(row?.workDetails?.quantity).toFixed(2)}
                     </TableCell>
                     <TableCell
-                      align="right"
+                      align="center"
                       style={{
                         borderRight: "1px solid lightgray",
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetails?.unit_price}
+                      {parseInt(row?.workDetails?.unit_price).toFixed(2)}
                     </TableCell>
                     <TableCell
-                      align="right"
+                      align="center"
                       style={{
                         borderRight: "1px solid lightgray",
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetails?.quantity *
-                        row?.workDetails?.unit_price}
+                      {parseInt(
+                        row?.workDetails?.quantity *
+                          row?.workDetails?.unit_price
+                      ).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 </>
