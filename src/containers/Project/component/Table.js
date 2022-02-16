@@ -62,6 +62,7 @@ export default function DenseTable({
   handleOpenEditWorkModal,
   handleOpenEditWorkDetailModal,
   currentProject,
+  getworks,
 }) {
   const [work, setWork] = useState([]);
   const [workDetails, setWorkDetails] = useState([]);
@@ -311,6 +312,18 @@ export default function DenseTable({
     }
   };
 
+  // Duplicate Work
+  const handleDuplicateWork = async (id) => {
+    const res = await api(
+      "post",
+      `/project/duplicateWork/${currentProject._id}`,
+      {
+        workId: id,
+      }
+    );
+    getworks();
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -396,7 +409,14 @@ export default function DenseTable({
                         >
                           To Delete
                         </MenuItem>
-                        <MenuItem>Duplicate</MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleDuplicateWork(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Duplicate
+                        </MenuItem>
                         <MenuItem
                           onClick={() => {
                             handleWorkTop(menuItem0._id);
@@ -535,7 +555,14 @@ export default function DenseTable({
                           >
                             To Delete
                           </MenuItem>
-                          <MenuItem>Duplicate</MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleDuplicateWork(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Duplicate
+                          </MenuItem>
                           <MenuItem
                             onClick={() => {
                               handleWorkTop(menuItem1._id);
