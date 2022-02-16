@@ -893,6 +893,7 @@ const ProjectView = () => {
                               handleOpenEditWorkDetailModal={
                                 handleOpenEditWorkDetailModal
                               }
+                              currentProject={currentProject}
                             />
                             <div
                               style={{
@@ -952,6 +953,7 @@ const ProjectView = () => {
                                     handleOpenEditWorkDetailModal={
                                       handleOpenEditWorkDetailModal
                                     }
+                                    currentProject={currentProject}
                                   />
                                   <div
                                     style={{
@@ -999,6 +1001,7 @@ const ProjectView = () => {
                         handleOpenEditWorkDetailModal={
                           handleOpenEditWorkDetailModal
                         }
+                        currentProject={currentProject}
                       />
                     )}
                   </div>

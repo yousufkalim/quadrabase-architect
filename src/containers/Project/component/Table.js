@@ -10,6 +10,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
+import api from "../../../api";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -60,6 +61,7 @@ export default function DenseTable({
   handleOpenDeleteWorkDetailModal,
   handleOpenEditWorkModal,
   handleOpenEditWorkDetailModal,
+  currentProject,
 }) {
   const [work, setWork] = useState([]);
   const [workDetails, setWorkDetails] = useState([]);
@@ -121,6 +123,53 @@ export default function DenseTable({
     setAnchorElLevel2(null);
   };
 
+  //WorkUp
+  const handleWorkUp = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let minRanking = Math.min.apply(
+        Math,
+        work.map((item) => {
+          return item.ranking ? item.ranking : 0;
+        })
+      );
+      console.log("min ranking", minRanking, id);
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: minRanking - 1,
+      }).then(() => {
+        let tempArr = [...work];
+        tempArr[filteredIndex].ranking = minRanking - 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWork(tempArr);
+      });
+    }
+  };
+
+  //Work Down
+  const handleWorkDown = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== work.length - 1) {
+      let maxRanking = Math.max.apply(
+        Math,
+        work.map((item) => {
+          return item.ranking;
+        })
+      );
+      console.log(id, maxRanking);
+
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: maxRanking + 1,
+      }).then(() => {
+        let tempArr = [...work];
+        tempArr[filteredIndex].ranking = maxRanking + 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWork(tempArr);
+      });
+    }
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -173,42 +222,58 @@ export default function DenseTable({
                         cursor: "pointer",
                       }}
                     />
-                    <StyledMenu
-                      id="demo-positioned-menu"
-                      aria-labelledby="demo-positioned-button"
-                      anchorEl={anchorElLevel0}
-                      open={openLevel0}
-                      onClose={handleAnchorElLevel0Close}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                      sx={{ mt: 1 }}
-                    >
-                      <MenuItem
-                        onClick={() => {
-                          handleOpenEditWorkModal(menuItem0);
-                          handleAnchorElLevel0Close();
+                    {row._id === menuItem0._id && (
+                      <StyledMenu
+                        id="demo-positioned-menu"
+                        aria-labelledby="demo-positioned-button"
+                        anchorEl={anchorElLevel0}
+                        open={openLevel0}
+                        onClose={handleAnchorElLevel0Close}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
                         }}
-                      >
-                        To Modify
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => {
-                          handleOpenDeleteWorkModal(menuItem0._id);
-                          handleAnchorElLevel0Close();
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
                         }}
+                        sx={{ mt: 1 }}
                       >
-                        To Delete
-                      </MenuItem>
-                      <MenuItem>Duplicate</MenuItem>
-                      <MenuItem>Up</MenuItem>
-                      <MenuItem>Down</MenuItem>
-                    </StyledMenu>
+                        <MenuItem
+                          onClick={() => {
+                            handleOpenEditWorkModal(menuItem0);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          To Modify
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleOpenDeleteWorkModal(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          To Delete
+                        </MenuItem>
+                        <MenuItem>Duplicate</MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkUp(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Up
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkDown(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Down
+                        </MenuItem>
+                      </StyledMenu>
+                    )}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -278,44 +343,60 @@ export default function DenseTable({
                           cursor: "pointer",
                         }}
                       />
-                      <StyledMenu
-                        id="demo-positioned-menu"
-                        aria-labelledby="demo-positioned-button"
-                        anchorEl={anchorElLevel1}
-                        open={openLevel1}
-                        onClose={handleAnchorElLevel1Close}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        sx={{ mt: 1 }}
-                      >
-                        {row._id === menuItem1._id && row.unit_price && (
+                      {row._id === menuItem1._id && (
+                        <StyledMenu
+                          id="demo-positioned-menu"
+                          aria-labelledby="demo-positioned-button"
+                          anchorEl={anchorElLevel1}
+                          open={openLevel1}
+                          onClose={handleAnchorElLevel1Close}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          sx={{ mt: 1 }}
+                        >
+                          {row._id === menuItem1._id && row.unit_price && (
+                            <MenuItem
+                              onClick={() => {
+                                handleOpenEditWorkModal(menuItem1);
+                                handleAnchorElLevel0Close();
+                              }}
+                            >
+                              To Modify
+                            </MenuItem>
+                          )}
                           <MenuItem
                             onClick={() => {
-                              handleOpenEditWorkModal(menuItem1);
-                              handleAnchorElLevel0Close();
+                              handleOpenDeleteWorkModal(menuItem1._id);
+                              handleAnchorElLevel1Close();
                             }}
                           >
-                            To Modify
+                            To Delete
                           </MenuItem>
-                        )}
-                        <MenuItem
-                          onClick={() => {
-                            handleOpenDeleteWorkModal(menuItem1._id);
-                            handleAnchorElLevel1Close();
-                          }}
-                        >
-                          To Delete
-                        </MenuItem>
-                        <MenuItem>Duplicate</MenuItem>
-                        <MenuItem>Up</MenuItem>
-                        <MenuItem>Down</MenuItem>
-                      </StyledMenu>
+                          <MenuItem>Duplicate</MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkUp(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Up
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkDown(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Down
+                          </MenuItem>
+                        </StyledMenu>
+                      )}
                     </TableCell>
                     <TableCell
                       align="center"
