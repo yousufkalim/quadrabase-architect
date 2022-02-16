@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -61,6 +61,30 @@ export default function DenseTable({
   handleOpenEditWorkModal,
   handleOpenEditWorkDetailModal,
 }) {
+  const [work, setWork] = useState([]);
+  const [workDetails, setWorkDetails] = useState([]);
+  // for sorting work and workDetails
+  useEffect(() => {
+    let tempWork = [];
+    let tempWorkDetails = [];
+    projectWorkData?.map((item) => {
+      let tempWorkObject = item.work;
+      tempWorkObject.unit = item.workUnit;
+      tempWork.parentId = item._id;
+      tempWork.push(tempWorkObject);
+      if (item.workDetails) {
+        let tempObject = item.workDetails;
+        tempObject.parentId = item.work._id;
+        tempObject.unit = item.workDetailsUnit;
+        tempWorkDetails.push(tempObject);
+      }
+    });
+    tempWork = tempWork.sort((a, b) => a.ranking - b.ranking);
+    tempWorkDetails = tempWorkDetails.sort((a, b) => a.ranking - b.ranking);
+    setWork(tempWork);
+    setWorkDetails(tempWorkDetails);
+  }, [projectWorkData]);
+
   // for level 0 dropdown menu
   const [anchorElLevel0, setAnchorElLevel0] = useState(null);
   const [menuItem0, setMenuItem0] = useState([]);
@@ -120,8 +144,8 @@ export default function DenseTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {projectWorkData.map((row, index) => {
-            if (!row.workDetails) {
+          {work.map((row, index) => {
+            if (workDetails.length === 0) {
               return (
                 <TableRow>
                   <TableCell
@@ -134,8 +158,8 @@ export default function DenseTable({
                       alignItems: "center",
                     }}
                   >
-                    {row.work.name.substring(0, 75)}
-                    {row.work.name.length > 75 && "..."}
+                    {row.name.substring(0, 75)}
+                    {row.name.length > 75 && "..."}
                     <ArrowDropDownIcon
                       id="demo-positioned-button"
                       aria-controls={
@@ -143,7 +167,7 @@ export default function DenseTable({
                       }
                       aria-haspopup="true"
                       aria-expanded={openLevel0 ? "true" : undefined}
-                      onClick={(e) => handleAnchorElLevel0Click(e, row.work)}
+                      onClick={(e) => handleAnchorElLevel0Click(e, row)}
                       sx={{
                         fontSize: 18,
                         cursor: "pointer",
@@ -167,20 +191,23 @@ export default function DenseTable({
                     >
                       <MenuItem
                         onClick={() => {
-                          handleOpenDeleteWorkModal(menuItem0._id);
-                          handleAnchorElLevel0Close();
-                        }}
-                      >
-                        To Delete
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => {
                           handleOpenEditWorkModal(menuItem0);
                           handleAnchorElLevel0Close();
                         }}
                       >
                         To Modify
                       </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleOpenDeleteWorkModal(menuItem0._id);
+                          handleAnchorElLevel0Close();
+                        }}
+                      >
+                        To Delete
+                      </MenuItem>
+                      <MenuItem>Duplicate</MenuItem>
+                      <MenuItem>Up</MenuItem>
+                      <MenuItem>Down</MenuItem>
                     </StyledMenu>
                   </TableCell>
                   <TableCell
@@ -190,7 +217,7 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {row?.workUnit?.symbol}
+                    {row?.unit?.symbol}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -199,7 +226,7 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {parseInt(row.work.quantity).toFixed(2)}
+                    {parseInt(row.quantity).toFixed(2)}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -208,7 +235,7 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {parseInt(row.work.unit_price).toFixed(2)}
+                    {parseInt(row.unit_price).toFixed(2)}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -217,103 +244,18 @@ export default function DenseTable({
                       width: "10vw",
                     }}
                   >
-                    {parseInt(row.work.unit_price * row.work.quantity).toFixed(
-                      2
-                    )}
+                    {parseInt(row.unit_price * row.quantity).toFixed(2)}
                   </TableCell>
                 </TableRow>
               );
-            } else {
+            } else if (
+              workDetails.length > 0 &&
+              row._id !== work[index - 1]?._id
+            ) {
               return (
                 <>
-                  {row.work._id !== projectWorkData[index - 1]?.work._id && (
-                    <TableRow>
-                      <TableCell
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "35vw",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        {row?.work?.name?.substring(0, 75)}
-                        {row?.work?.name?.length > 75 && "..."}
-                        <ArrowDropDownIcon
-                          id="demo-positioned-button"
-                          aria-controls={
-                            openLevel1 ? "demo-positioned-menu" : undefined
-                          }
-                          aria-haspopup="true"
-                          aria-expanded={openLevel1 ? "true" : undefined}
-                          onClick={(e) =>
-                            handleAnchorElLevel1Click(e, row.work)
-                          }
-                          sx={{
-                            fontSize: 18,
-                            cursor: "pointer",
-                          }}
-                        />
-                        <StyledMenu
-                          id="demo-positioned-menu"
-                          aria-labelledby="demo-positioned-button"
-                          anchorEl={anchorElLevel1}
-                          open={openLevel1}
-                          onClose={handleAnchorElLevel1Close}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "left",
-                          }}
-                          transformOrigin={{
-                            vertical: "top",
-                            horizontal: "left",
-                          }}
-                          sx={{ mt: 1 }}
-                        >
-                          <MenuItem
-                            onClick={() => {
-                              handleOpenDeleteWorkModal(menuItem1._id);
-                              handleAnchorElLevel1Close();
-                            }}
-                          >
-                            To Delete
-                          </MenuItem>
-                        </StyledMenu>
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                    </TableRow>
-                  )}
-
-                  <TableRow style={{ backgroundColor: "#eeeeee" }}>
+                  <TableRow>
                     <TableCell
-                      component="th"
-                      scope="row"
                       style={{
                         borderRight: "1px solid lightgray",
                         width: "35vw",
@@ -321,22 +263,16 @@ export default function DenseTable({
                         alignItems: "center",
                       }}
                     >
-                      &nbsp;&nbsp;&nbsp;
-                      <i>
-                        {" "}
-                        {row?.workDetails?.name?.substring(0, 50)}
-                        {row?.workDetails?.name?.length > 50 && "..."}
-                      </i>
+                      {row?.name?.substring(0, 75)}
+                      {row?.name?.length > 75 && "..."}
                       <ArrowDropDownIcon
                         id="demo-positioned-button"
                         aria-controls={
-                          openLevel2 ? "demo-positioned-menu" : undefined
+                          openLevel1 ? "demo-positioned-menu" : undefined
                         }
                         aria-haspopup="true"
-                        aria-expanded={openLevel2 ? "true" : undefined}
-                        onClick={(e) =>
-                          handleAnchorElLevel2Click(e, row.workDetails)
-                        }
+                        aria-expanded={openLevel1 ? "true" : undefined}
+                        onClick={(e) => handleAnchorElLevel1Click(e, row)}
                         sx={{
                           fontSize: 18,
                           cursor: "pointer",
@@ -345,9 +281,9 @@ export default function DenseTable({
                       <StyledMenu
                         id="demo-positioned-menu"
                         aria-labelledby="demo-positioned-button"
-                        anchorEl={anchorElLevel2}
-                        open={openLevel2}
-                        onClose={handleAnchorElLevel2Close}
+                        anchorEl={anchorElLevel1}
+                        open={openLevel1}
+                        onClose={handleAnchorElLevel1Close}
                         anchorOrigin={{
                           vertical: "top",
                           horizontal: "left",
@@ -358,22 +294,27 @@ export default function DenseTable({
                         }}
                         sx={{ mt: 1 }}
                       >
+                        {row._id === menuItem1._id && row.unit_price && (
+                          <MenuItem
+                            onClick={() => {
+                              handleOpenEditWorkModal(menuItem1);
+                              handleAnchorElLevel0Close();
+                            }}
+                          >
+                            To Modify
+                          </MenuItem>
+                        )}
                         <MenuItem
                           onClick={() => {
-                            handleOpenDeleteWorkDetailModal(menuItem2._id);
-                            handleAnchorElLevel2Close();
+                            handleOpenDeleteWorkModal(menuItem1._id);
+                            handleAnchorElLevel1Close();
                           }}
                         >
                           To Delete
                         </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            handleOpenEditWorkDetailModal(menuItem2);
-                            handleAnchorElLevel2Close();
-                          }}
-                        >
-                          To Modify
-                        </MenuItem>
+                        <MenuItem>Duplicate</MenuItem>
+                        <MenuItem>Up</MenuItem>
+                        <MenuItem>Down</MenuItem>
                       </StyledMenu>
                     </TableCell>
                     <TableCell
@@ -383,7 +324,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetailsUnit?.symbol}
+                      {row?.unit?.symbol}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -392,7 +333,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {parseInt(row?.workDetails?.quantity).toFixed(2)}
+                      {row.quantity && parseInt(row.quantity).toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -401,7 +342,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {parseInt(row?.workDetails?.unit_price).toFixed(2)}
+                      {row.unit_price && parseInt(row.unit_price).toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -410,12 +351,125 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {parseInt(
-                        row?.workDetails?.quantity *
-                          row?.workDetails?.unit_price
-                      ).toFixed(2)}
+                      {row.unit_price &&
+                        row.quantity &&
+                        parseInt(row.unit_price * row.quantity).toFixed(2)}
                     </TableCell>
                   </TableRow>
+                  {workDetails.map((row2, index) => {
+                    return (
+                      row2.parentId === row._id && (
+                        <TableRow style={{ backgroundColor: "#eeeeee" }}>
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "35vw",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            &nbsp;&nbsp;&nbsp;
+                            <i>
+                              {" "}
+                              {row2.name?.substring(0, 50)}
+                              {row2.name?.length > 50 && "..."}
+                            </i>
+                            <ArrowDropDownIcon
+                              id="demo-positioned-button"
+                              aria-controls={
+                                openLevel2 ? "demo-positioned-menu" : undefined
+                              }
+                              aria-haspopup="true"
+                              aria-expanded={openLevel2 ? "true" : undefined}
+                              onClick={(e) =>
+                                handleAnchorElLevel2Click(e, row2)
+                              }
+                              sx={{
+                                fontSize: 18,
+                                cursor: "pointer",
+                              }}
+                            />
+                            <StyledMenu
+                              id="demo-positioned-menu"
+                              aria-labelledby="demo-positioned-button"
+                              anchorEl={anchorElLevel2}
+                              open={openLevel2}
+                              onClose={handleAnchorElLevel2Close}
+                              anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "left",
+                              }}
+                              transformOrigin={{
+                                vertical: "top",
+                                horizontal: "left",
+                              }}
+                              sx={{ mt: 1 }}
+                            >
+                              <MenuItem
+                                onClick={() => {
+                                  handleOpenEditWorkDetailModal(menuItem2);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                To Modify
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleOpenDeleteWorkDetailModal(
+                                    menuItem2._id
+                                  );
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                To Delete
+                              </MenuItem>
+                              <MenuItem>Duplicate</MenuItem>
+                              <MenuItem>Up</MenuItem>
+                              <MenuItem>Down</MenuItem>
+                            </StyledMenu>
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {row2?.unit?.symbol}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {parseInt(row2.quantity).toFixed(2)}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {parseInt(row2.unit_price).toFixed(2)}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {parseInt(row2.quantity * row2.unit_price)}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    );
+                  })}
                 </>
               );
             }

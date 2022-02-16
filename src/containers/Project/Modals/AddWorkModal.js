@@ -24,6 +24,7 @@ const AddWorkModal = ({
     unit: "",
     unit_price: "",
     quantity: 1,
+    ranking: 0,
     work_details: [],
   });
   const [options, setOptions] = useState([]);
@@ -36,7 +37,7 @@ const AddWorkModal = ({
         prev.name = selectedWork.name;
         prev.unit = selectedWork.unit;
         prev.unit_price = selectedWork.unit_price;
-        prev.name = selectedWork.name;
+        prev.ranking = selectedWork.ranking;
         return { ...prev };
       });
   }, [selectedWork]);
