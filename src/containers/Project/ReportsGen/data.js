@@ -455,6 +455,138 @@ function pdfParsedDataGenTradesAndTranchesEstimation(trade, index){
 
 }
 
+function docxParsedDataGenTradesEstimation(trade, index){
+
+  const docxParsedData = [];
+
+  // Populate trade title in xlsxParsedData
+  const tradeArr = [];
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeArr[i] = `${index}`;
+    } else if (i == 1){
+      tradeArr[i] = trade.trade;
+    } else {
+      tradeArr[i] = "";
+    }
+  }
+  docxParsedData.push(tradeArr);
+
+  const workAndWorkDetailsRows = trade.rows;
+  
+  // Populate body data in xlsxParsedData
+  for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+    let arr = [];
+    for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+      arr[k] = workAndWorkDetailsRows[j][k];
+    }
+    docxParsedData.push(arr);
+  }
+
+  const tradeTotal = calculateTotalHT(workAndWorkDetailsRows);
+
+  // Populate trade total in xlsxParsedData
+  const tradeTotalHTArr = [];
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTArr[j] = `Trade Total:`;
+    } else if (j == 5){
+      tradeTotalHTArr[j] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTArr[j] = "";
+    }
+  }
+  docxParsedData.push(tradeTotalHTArr);
+
+  return docxParsedData;
+
+}
+
+function docxParsedDataGenTradesAndTranchesEstimation(trade, index){
+
+  const docxParsedData = [];
+
+  // Populate trade title in pdfParsedData
+  const tradeArr = [];
+  for( let i = 0; i < dataColumnsEstimation.length; i++ ){
+    if(i == 0){
+      tradeArr[i] = `${index}`;
+    } else if (i == 1){
+      tradeArr[i] = trade.trade;
+    } else {
+      tradeArr[i] = "";
+    }
+  }
+  docxParsedData.push(tradeArr);
+
+  const trachesRows = trade.rows;
+  let tradeTotal = null; // null is okay, undefined is not.
+  for( let i = 0; i < trachesRows.length; i++ ){
+
+    const currentObj = trachesRows[i];
+
+    // Populate tranch title in pdfParsedData
+    const tranchArr = [];
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      if(j == 0){
+        tranchArr[j] = `${index}.${i+1}`;
+      } else if (j == 1){
+        tranchArr[j] = currentObj.tranch;
+      } else {
+        tranchArr[j] = "";
+      }
+    }
+    docxParsedData.push(tranchArr);
+
+    const workAndWorkDetailsRows = currentObj.rows;
+
+    // Populate body data in pdfParsedData
+    for( let j = 0; j < workAndWorkDetailsRows.length; j++ ){
+      let arr = [];
+      for( let k = 0; k < dataColumnsEstimation.length; k++ ){
+        arr[k] = workAndWorkDetailsRows[j][k];
+      }
+      docxParsedData.push(arr);
+    }
+
+    const trancheTotalHT = calculateTotalHT(workAndWorkDetailsRows);
+
+    // Populate tranch total in pdfParsedData
+    const trancheTotalHTObj = [];
+    for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+      if(j == 1){
+        trancheTotalHTObj[j] = `Tranche Total:`;
+      } else if (j == 5){
+        trancheTotalHTObj[j] = trancheTotalHT ?? "";
+      } else {
+        trancheTotalHTObj[j] = "";
+      }
+    }
+    docxParsedData.push(trancheTotalHTObj);
+
+    if(trancheTotalHT){
+      tradeTotal = tradeTotal + trancheTotalHT;
+    }
+
+  }
+
+  // Populate trade total in pdfParsedData
+  const tradeTotalHTObj = [];
+  for( let j = 0; j < dataColumnsEstimation.length; j++ ){
+    if(j == 1){
+      tradeTotalHTObj[j] = `Trade Total:`;
+    } else if (j == 5){
+      tradeTotalHTObj[j] = tradeTotal ?? "";
+    } else {
+      tradeTotalHTObj[j] = "";
+    }
+  }
+  docxParsedData.push(tradeTotalHTObj);
+
+  return docxParsedData;
+
+}
+
 function calculateTotalHT(data, noPrice){
 
   if(noPrice){
@@ -647,20 +779,74 @@ function rowsGenTradesAndTranchesBPU(data){
 
 }
 
-function rowsGenCCTP(data){
+function rowsGenSimpleCCTP(data){
 
   const rows = [];
 
   for( let i = 0; i < data.length; i++ ){
-    const CCTPArr = data[i].work.cctp_text;
-    if(CCTPArr.length == 0){
+    const cctpArr = data[i].work.cctp_text;
+    if(cctpArr.length == 0){
       continue;
     }
     const obj = {
       "title": `${i+1}. ${data[i].work.name}`,
-      "cctp_arr": CCTPArr
+      "cctp_arr": cctpArr
     };
     rows.push(obj);
+  }
+
+  return rows;
+
+}
+
+function rowsGenTradesCCTP(data){
+
+  const rows = [];
+
+  for( let i = 0; i < data.length; i++ ){
+    const currentObjTrade = data[i];
+    const workAndWorkDetailsArr = currentObjTrade.data;
+    for( let j = 0; j < workAndWorkDetailsArr.length; j++ ){
+      const currentObjWork = workAndWorkDetailsArr[j];
+      const cctpArr = currentObjWork.work.cctp_text;
+      if(cctpArr.length == 0){
+        continue;
+      }
+      const obj = {
+        "title": `${i+1}.${j+1}. ${currentObjWork.work.name}`,
+        "cctp_arr": cctpArr
+      };
+      rows.push(obj);
+    }
+  }
+
+  return rows;
+
+}
+
+function rowsGenTradesAndTranchesCCTP(data){
+
+  const rows = [];
+
+  for( let i = 0; i < data.length; i++ ){
+    const currentObjTrade = data[i];
+    const tranchesArr = currentObjTrade.data;
+    for( let j = 0; j < tranchesArr.length; j++ ){
+      const currentObjTranch = tranchesArr[j];
+      const workAndWorkDetailsArr = currentObjTranch.tranchData;
+      for( let k = 0; k < workAndWorkDetailsArr.length; k++ ){
+        const currentObjWork = workAndWorkDetailsArr[k];
+        const cctpArr = currentObjWork.work.cctp_text;
+        if(cctpArr.length == 0){
+          continue;
+        }
+        const obj = {
+          "title": `${i+1}.${j+1}.${k+1}. ${currentObjWork.work.name}`,
+          "cctp_arr": cctpArr
+        };
+        rows.push(obj);
+      }
+    }
   }
 
   return rows;
@@ -750,7 +936,6 @@ function parseHTMLTag(tag){
   const embedded = [];
 
   if(innerHTML[0] == "<"){
-
     const elMain = document.createElement("div");
     elMain.innerHTML = innerHTML;
     let htmlCollection = elMain.children;
@@ -775,14 +960,22 @@ const tagsToDocxMap = {
     const text = _.innerHTML;
 
     if(_.embedded.length == 0){
-      return new Paragraph({
-        children: [
-          new TextRun({
-            text: text,
-            size: 24,
+      const textArr = text.split("<br>");
+      const objsArr = [];
+      for( let i = 0; i < textArr.length; i++ ){
+        const currentText = textArr[i];
+        objsArr.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: currentText,
+                size: 24,
+              })
+            ]
           })
-        ]
-      });
+        );
+      }
+      return objsArr;
     } else {
       const obj = _.embedded[0]; // Well incase of "P". We will be dealing with first embedded entry only.
       return tagsToDocxMap[obj.tagName] && tagsToDocxMap[obj.tagName](obj);
@@ -944,11 +1137,15 @@ export {
   xlsxParsedFooterDataGenEstimation,
   pdfParsedDataGenTradesEstimation,
   pdfParsedDataGenTradesAndTranchesEstimation,
+  docxParsedDataGenTradesEstimation,
+  docxParsedDataGenTradesAndTranchesEstimation,
   calculateWSCols,
   rowsGenSimpleBPU,
   rowsGenTradesBPU,
   rowsGenTradesAndTranchesBPU,
-  rowsGenCCTP,
+  rowsGenSimpleCCTP,
+  rowsGenTradesCCTP,
+  rowsGenTradesAndTranchesCCTP,
   footerDataGenSimpleEstimation,
   textRunsSplitGen,
   dataColumnsEstimation,

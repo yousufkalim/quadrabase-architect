@@ -12,7 +12,11 @@ import {
   exportPDFTradesBPU,
   exportPDFTradesAndTranchesBPU
 } from "../ReportsGen/genPDF";
-import { exportDOCXBPU } from "../ReportsGen/genDocx";
+import { 
+  exportDOCXSimpleBPU,
+  exportDOCXTradesBPU,
+  exportDOCXTradesAndTranchesBPU
+} from "../ReportsGen/genDocx";
 
 import { toast } from "react-toastify";
 
@@ -41,7 +45,17 @@ function ReportBPUModal(props){
 
   function generateWord(){
     try{
-      exportDOCXBPU(projectWorkData, currentProject);
+
+      if(currentProject.market_type == "Simple"){
+        exportDOCXSimpleBPU(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "Trades"){
+        exportDOCXTradesBPU(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "TradesAndTranches"){
+        exportDOCXTradesAndTranchesBPU(projectWorkData, currentProject);
+      } else {
+        console.trace("Show me");
+      }
+
     }catch(e){
       toast.error("Could not generate report successfully.");
       console.trace(e);
@@ -51,9 +65,9 @@ function ReportBPUModal(props){
   return (
     <div style={{ width: "30vw"}}>
       <Stack direction="row" spacing={1}>
-        <IconButton aria-label="PDF" onClick={generatePDF}>
+        {/* <IconButton aria-label="PDF" onClick={generatePDF}>
           <PictureAsPdfIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton aria-label="PDF" onClick={generateWord}>
           <TextSnippetIcon />
         </IconButton>

@@ -54,7 +54,7 @@ function exportPDFSimpleEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.fontSize = 12;
@@ -75,7 +75,7 @@ function exportPDFSimpleEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.fontSize = 10;
@@ -126,7 +126,7 @@ function exportPDFSimpleEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.lineWidth = 0.1;
@@ -166,7 +166,7 @@ function exportPDFTradesEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.fontSize = 12;
@@ -196,7 +196,7 @@ function exportPDFTradesEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.fontSize = 10;
@@ -242,7 +242,7 @@ function exportPDFTradesAndTranchesEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.fontSize = 12;
@@ -272,7 +272,7 @@ function exportPDFTradesAndTranchesEstimation(data, currentProject, noPrice){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
+      // global styling
       applyGlobalStyling(s);
 
       s.fontSize = 10;
@@ -319,15 +319,10 @@ function exportPDFSimpleBPU(data, currentProject){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      // global styling
+      applyGlobalStyling(s);
+
       s.fontSize = 12;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
       s.fillColor = [191, 191, 191];
 
@@ -347,15 +342,10 @@ function exportPDFSimpleBPU(data, currentProject){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      // global styling
+      applyGlobalStyling(s);
+
       s.fontSize = 10;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
 
     },
@@ -390,15 +380,10 @@ function exportPDFTradesBPU(data, currentProject){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      // global styling
+      applyGlobalStyling(s);
+
       s.fontSize = 12;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
       s.fillColor = [191, 191, 191];
 
@@ -417,15 +402,10 @@ function exportPDFTradesBPU(data, currentProject){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      // global styling
+      applyGlobalStyling(s);
+
       s.fontSize = 10;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
 
     },
@@ -462,15 +442,10 @@ function exportPDFTradesAndTranchesBPU(data, currentProject){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      // global styling
+      applyGlobalStyling(s);
+
       s.fontSize = 12;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
       s.fillColor = [191, 191, 191];
 
@@ -487,15 +462,10 @@ function exportPDFTradesAndTranchesBPU(data, currentProject){
     didParseCell: (data) => {
       const s = data.cell.styles;
 
-      //global styling
-      s.overflow = 'linebreak';
-      s.columnWidth = 'wrap';
-      s.font = 'helvetica';
+      // global styling
+      applyGlobalStyling(s);
+
       s.fontSize = 10;
-      s.cellPadding = 3;
-      s.overflowColumns = 'linebreak';
-      s.lineColor = [0, 0, 0];
-      s.borders = "t";
       s.lineWidth = 0.1;
 
     },

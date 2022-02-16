@@ -18,7 +18,11 @@ import {
   exportPDFTradesEstimation,
   exportPDFTradesAndTranchesEstimation
 } from "../ReportsGen/genPDF";
-import { exportDOCXestimation } from "../ReportsGen/genDocx";
+import { 
+  exportDOCXSimpleEstimation,
+  exportDOCXTradesEstimation,
+  exportDOCXTradesAndTranchesEstimation
+} from "../ReportsGen/genDocx";
 
 import { toast } from "react-toastify";
 
@@ -66,7 +70,17 @@ function ReportEstimationModal(props){
 
   function generateWord(){
     try{
-      exportDOCXestimation(projectWorkData, currentProject);
+
+      if(currentProject.market_type == "Simple"){
+        exportDOCXSimpleEstimation(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "Trades"){
+        exportDOCXTradesEstimation(projectWorkData, currentProject);
+      } else if(currentProject.market_type == "TradesAndTranches"){
+        exportDOCXTradesAndTranchesEstimation(projectWorkData, currentProject);
+      } else {
+        console.trace("Show me");
+      }
+
     }catch(e){
       toast.error("Could not generate report successfully.");
       console.trace(e);
