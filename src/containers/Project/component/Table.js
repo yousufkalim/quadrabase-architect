@@ -145,7 +145,57 @@ export default function DenseTable({
     }
   };
 
-  //WorkDetail Bottom
+  //Work Up
+  const handleWorkUp = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let tempArr = [...work];
+      let currentRanking = tempArr[filteredIndex].ranking;
+      let prevRanking = tempArr[filteredIndex - 1].ranking;
+
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: prevRanking,
+      }).then(() => {
+        api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+          workId: tempArr[filteredIndex - 1]._id,
+          ranking: currentRanking,
+        }).then(() => {
+          tempArr[filteredIndex].ranking = prevRanking;
+          tempArr[filteredIndex - 1].ranking = currentRanking;
+          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          setWork(tempArr);
+        });
+      });
+    }
+  };
+
+  //Work Down
+  const handleWorkDown = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== work.length - 1) {
+      let tempArr = [...work];
+      let currentRanking = tempArr[filteredIndex].ranking;
+      let nextRanking = tempArr[filteredIndex + 1].ranking;
+
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: nextRanking,
+      }).then(() => {
+        api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+          workId: tempArr[filteredIndex + 1]._id,
+          ranking: currentRanking,
+        }).then(() => {
+          tempArr[filteredIndex].ranking = nextRanking;
+          tempArr[filteredIndex + 1].ranking = currentRanking;
+          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          setWork(tempArr);
+        });
+      });
+    }
+  };
+
+  //Work Bottom
   const handleWorkBottom = async (id) => {
     let filteredIndex = work.findIndex((dt) => dt._id == id);
     if (filteredIndex !== work.length - 1) {
@@ -307,6 +357,23 @@ export default function DenseTable({
                         </MenuItem>
                         <MenuItem
                           onClick={() => {
+                            handleWorkUp(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Up
+                        </MenuItem>
+                        handleWorkDown
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkDown(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Down
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
                             handleWorkBottom(menuItem0._id);
                             handleAnchorElLevel0Close();
                           }}
@@ -427,6 +494,22 @@ export default function DenseTable({
                             }}
                           >
                             Top
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkUp(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Up
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkDown(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Down
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
