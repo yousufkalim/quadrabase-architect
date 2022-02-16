@@ -123,8 +123,8 @@ export default function DenseTable({
     setAnchorElLevel2(null);
   };
 
-  //WorkUp
-  const handleWorkUp = async (id) => {
+  //Work Top
+  const handleWorkTop = async (id) => {
     let filteredIndex = work.findIndex((dt) => dt._id == id);
     if (filteredIndex != 0) {
       let minRanking = Math.min.apply(
@@ -133,7 +133,6 @@ export default function DenseTable({
           return item.ranking ? item.ranking : 0;
         })
       );
-      console.log("min ranking", minRanking, id);
       api("put", `/project/updateWorkRanking/${currentProject._id}`, {
         workId: id,
         ranking: minRanking - 1,
@@ -146,8 +145,8 @@ export default function DenseTable({
     }
   };
 
-  //Work Down
-  const handleWorkDown = async (id) => {
+  //WorkDetail Bottom
+  const handleWorkBottom = async (id) => {
     let filteredIndex = work.findIndex((dt) => dt._id == id);
     if (filteredIndex !== work.length - 1) {
       let maxRanking = Math.max.apply(
@@ -156,8 +155,6 @@ export default function DenseTable({
           return item.ranking;
         })
       );
-      console.log(id, maxRanking);
-
       api("put", `/project/updateWorkRanking/${currentProject._id}`, {
         workId: id,
         ranking: maxRanking + 1,
@@ -166,6 +163,50 @@ export default function DenseTable({
         tempArr[filteredIndex].ranking = maxRanking + 1;
         tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
         setWork(tempArr);
+      });
+    }
+  };
+
+  //WorkDetail Top
+  const handleWorkDetailTop = async (id) => {
+    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let minRanking = Math.min.apply(
+        Math,
+        workDetails.map((item) => {
+          return item.ranking ? item.ranking : 0;
+        })
+      );
+      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+        workDetailId: id,
+        ranking: minRanking - 1,
+      }).then(() => {
+        let tempArr = [...workDetails];
+        tempArr[filteredIndex].ranking = minRanking - 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWorkDetails(tempArr);
+      });
+    }
+  };
+
+  //WorkDetail Bottom
+  const handleWorkDetailBottom = async (id) => {
+    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== workDetails.length - 1) {
+      let maxRanking = Math.max.apply(
+        Math,
+        workDetails.map((item) => {
+          return item.ranking;
+        })
+      );
+      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+        workDetailId: id,
+        ranking: maxRanking + 1,
+      }).then(() => {
+        let tempArr = [...workDetails];
+        tempArr[filteredIndex].ranking = maxRanking + 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWorkDetails(tempArr);
       });
     }
   };
@@ -258,19 +299,19 @@ export default function DenseTable({
                         <MenuItem>Duplicate</MenuItem>
                         <MenuItem
                           onClick={() => {
-                            handleWorkUp(menuItem0._id);
+                            handleWorkTop(menuItem0._id);
                             handleAnchorElLevel0Close();
                           }}
                         >
-                          Up
+                          Top
                         </MenuItem>
                         <MenuItem
                           onClick={() => {
-                            handleWorkDown(menuItem0._id);
+                            handleWorkBottom(menuItem0._id);
                             handleAnchorElLevel0Close();
                           }}
                         >
-                          Down
+                          Bottom
                         </MenuItem>
                       </StyledMenu>
                     )}
@@ -381,19 +422,19 @@ export default function DenseTable({
                           <MenuItem>Duplicate</MenuItem>
                           <MenuItem
                             onClick={() => {
-                              handleWorkUp(menuItem1._id);
+                              handleWorkTop(menuItem1._id);
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Up
+                            Top
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
-                              handleWorkDown(menuItem1._id);
+                              handleWorkBottom(menuItem1._id);
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Down
+                            Bottom
                           </MenuItem>
                         </StyledMenu>
                       )}
@@ -507,8 +548,22 @@ export default function DenseTable({
                                 To Delete
                               </MenuItem>
                               <MenuItem>Duplicate</MenuItem>
-                              <MenuItem>Up</MenuItem>
-                              <MenuItem>Down</MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleWorkDetailTop(menuItem2._id);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Top
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleWorkDetailBottom(menuItem2._id);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Bottom
+                              </MenuItem>
                             </StyledMenu>
                           </TableCell>
                           <TableCell
