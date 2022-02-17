@@ -11,6 +11,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
 import api from "../../../api";
+import { toast } from "react-toastify";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -115,8 +116,10 @@ export default function DenseTable({
   // for level 2 dropdown menu
   const [anchorElLevel2, setAnchorElLevel2] = useState(null);
   const [menuItem2, setMenuItem2] = useState([]);
+  const [parentItem, setParentItem] = useState([]);
   const openLevel2 = Boolean(anchorElLevel2);
-  const handleAnchorElLevel2Click = (event, item) => {
+  const handleAnchorElLevel2Click = (event, item, item2) => {
+    setParentItem(item2);
     setMenuItem2(item);
     setAnchorElLevel2(event.currentTarget);
   };
@@ -153,6 +156,7 @@ export default function DenseTable({
       let tempArr = [...work];
       let currentRanking = tempArr[filteredIndex].ranking;
       let prevRanking = tempArr[filteredIndex - 1].ranking;
+      console.log(currentRanking, prevRanking);
 
       api("put", `/project/updateWorkRanking/${currentProject._id}`, {
         workId: id,
@@ -322,6 +326,22 @@ export default function DenseTable({
       }
     );
     getworks();
+    toast.success(res.data.message);
+  };
+
+  // Duplicate Work Detail
+  const handleDuplicateWorkDetail = async (workId, workDetailId) => {
+    console.log(workId, workDetailId);
+    const res = await api(
+      "post",
+      `/project/duplicateWorkDetail/${currentProject._id}`,
+      {
+        workId,
+        workDetailId,
+      }
+    );
+    getworks();
+    toast.success(res.data.message);
   };
 
   return (
@@ -665,7 +685,7 @@ export default function DenseTable({
                               aria-haspopup="true"
                               aria-expanded={openLevel2 ? "true" : undefined}
                               onClick={(e) =>
-                                handleAnchorElLevel2Click(e, row2)
+                                handleAnchorElLevel2Click(e, row2, row)
                               }
                               sx={{
                                 fontSize: 18,
@@ -706,7 +726,17 @@ export default function DenseTable({
                               >
                                 To Delete
                               </MenuItem>
-                              <MenuItem>Duplicate</MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleDuplicateWorkDetail(
+                                    parentItem._id,
+                                    menuItem2._id
+                                  );
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Duplicate
+                              </MenuItem>
                               <MenuItem
                                 onClick={() => {
                                   handleWorkDetailTop(menuItem2._id);
