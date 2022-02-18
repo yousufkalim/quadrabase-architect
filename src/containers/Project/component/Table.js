@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,6 +10,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
+import api from "../../../api";
+import { toast } from "react-toastify";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -60,7 +62,33 @@ export default function DenseTable({
   handleOpenDeleteWorkDetailModal,
   handleOpenEditWorkModal,
   handleOpenEditWorkDetailModal,
+  currentProject,
+  getworks,
 }) {
+  const [work, setWork] = useState([]);
+  const [workDetails, setWorkDetails] = useState([]);
+  // for sorting work and workDetails
+  useEffect(() => {
+    let tempWork = [];
+    let tempWorkDetails = [];
+    projectWorkData?.map((item) => {
+      let tempWorkObject = item.work;
+      tempWorkObject.unit = item.workUnit;
+      tempWork.parentId = item._id;
+      tempWork.push(tempWorkObject);
+      if (item.workDetails) {
+        let tempObject = item.workDetails;
+        tempObject.parentId = item.work._id;
+        tempObject.unit = item.workDetailsUnit;
+        tempWorkDetails.push(tempObject);
+      }
+    });
+    tempWork = tempWork.sort((a, b) => a.ranking - b.ranking);
+    tempWorkDetails = tempWorkDetails.sort((a, b) => a.ranking - b.ranking);
+    setWork(tempWork);
+    setWorkDetails(tempWorkDetails);
+  }, [projectWorkData]);
+
   // for level 0 dropdown menu
   const [anchorElLevel0, setAnchorElLevel0] = useState(null);
   const [menuItem0, setMenuItem0] = useState([]);
@@ -88,13 +116,232 @@ export default function DenseTable({
   // for level 2 dropdown menu
   const [anchorElLevel2, setAnchorElLevel2] = useState(null);
   const [menuItem2, setMenuItem2] = useState([]);
+  const [parentItem, setParentItem] = useState([]);
   const openLevel2 = Boolean(anchorElLevel2);
-  const handleAnchorElLevel2Click = (event, item) => {
+  const handleAnchorElLevel2Click = (event, item, item2) => {
+    setParentItem(item2);
     setMenuItem2(item);
     setAnchorElLevel2(event.currentTarget);
   };
   const handleAnchorElLevel2Close = () => {
     setAnchorElLevel2(null);
+  };
+
+  //Work Top
+  const handleWorkTop = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let minRanking = Math.min.apply(
+        Math,
+        work.map((item) => {
+          return item.ranking ? item.ranking : 0;
+        })
+      );
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: minRanking - 1,
+      }).then(() => {
+        let tempArr = [...work];
+        tempArr[filteredIndex].ranking = minRanking - 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWork(tempArr);
+      });
+    }
+  };
+
+  //Work Up
+  const handleWorkUp = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let tempArr = [...work];
+      let currentRanking = tempArr[filteredIndex].ranking;
+      let prevRanking = tempArr[filteredIndex - 1].ranking;
+      console.log(currentRanking, prevRanking);
+
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: prevRanking,
+      }).then(() => {
+        api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+          workId: tempArr[filteredIndex - 1]._id,
+          ranking: currentRanking,
+        }).then(() => {
+          tempArr[filteredIndex].ranking = prevRanking;
+          tempArr[filteredIndex - 1].ranking = currentRanking;
+          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          setWork(tempArr);
+        });
+      });
+    }
+  };
+
+  //Work Down
+  const handleWorkDown = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== work.length - 1) {
+      let tempArr = [...work];
+      let currentRanking = tempArr[filteredIndex].ranking;
+      let nextRanking = tempArr[filteredIndex + 1].ranking;
+
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: nextRanking,
+      }).then(() => {
+        api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+          workId: tempArr[filteredIndex + 1]._id,
+          ranking: currentRanking,
+        }).then(() => {
+          tempArr[filteredIndex].ranking = nextRanking;
+          tempArr[filteredIndex + 1].ranking = currentRanking;
+          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          setWork(tempArr);
+        });
+      });
+    }
+  };
+
+  //Work Bottom
+  const handleWorkBottom = async (id) => {
+    let filteredIndex = work.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== work.length - 1) {
+      let maxRanking = Math.max.apply(
+        Math,
+        work.map((item) => {
+          return item.ranking;
+        })
+      );
+      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: maxRanking + 1,
+      }).then(() => {
+        let tempArr = [...work];
+        tempArr[filteredIndex].ranking = maxRanking + 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWork(tempArr);
+      });
+    }
+  };
+
+  //WorkDetail Top
+  const handleWorkDetailTop = async (id) => {
+    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let minRanking = Math.min.apply(
+        Math,
+        workDetails.map((item) => {
+          return item.ranking ? item.ranking : 0;
+        })
+      );
+      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+        workDetailId: id,
+        ranking: minRanking - 1,
+      }).then(() => {
+        let tempArr = [...workDetails];
+        tempArr[filteredIndex].ranking = minRanking - 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWorkDetails(tempArr);
+      });
+    }
+  };
+
+  //WorkDetail Up
+  const handleWorkDetailUp = async (id) => {
+    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+    if (filteredIndex != 0) {
+      let tempArr = [...workDetails];
+      let currentRanking = tempArr[filteredIndex].ranking;
+      let prevRanking = tempArr[filteredIndex - 1].ranking;
+
+      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+        workDetailId: id,
+        ranking: prevRanking,
+      }).then(() => {
+        api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+          workDetailId: tempArr[filteredIndex - 1]._id,
+          ranking: currentRanking,
+        }).then(() => {
+          tempArr[filteredIndex].ranking = prevRanking;
+          tempArr[filteredIndex - 1].ranking = currentRanking;
+          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          setWorkDetails(tempArr);
+        });
+      });
+    }
+  };
+
+  //workDetails Down
+  const handleWorkDetailsDown = async (id) => {
+    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== workDetails.length - 1) {
+      let tempArr = [...workDetails];
+      let currentRanking = tempArr[filteredIndex].ranking;
+      let nextRanking = tempArr[filteredIndex + 1].ranking;
+
+      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+        workId: id,
+        ranking: nextRanking,
+      }).then(() => {
+        api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+          workId: tempArr[filteredIndex + 1]._id,
+          ranking: currentRanking,
+        }).then(() => {
+          tempArr[filteredIndex].ranking = nextRanking;
+          tempArr[filteredIndex + 1].ranking = currentRanking;
+          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          setWorkDetails(tempArr);
+        });
+      });
+    }
+  };
+
+  //WorkDetail Bottom
+  const handleWorkDetailBottom = async (id) => {
+    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+    if (filteredIndex !== workDetails.length - 1) {
+      let maxRanking = Math.max.apply(
+        Math,
+        workDetails.map((item) => {
+          return item.ranking;
+        })
+      );
+      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+        workDetailId: id,
+        ranking: maxRanking + 1,
+      }).then(() => {
+        let tempArr = [...workDetails];
+        tempArr[filteredIndex].ranking = maxRanking + 1;
+        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+        setWorkDetails(tempArr);
+      });
+    }
+  };
+
+  // Duplicate Work
+  const handleDuplicateWork = async (id) => {
+    const res = await api(
+      "post",
+      `/project/duplicateWork/${currentProject._id}`,
+      {
+        workId: id,
+      }
+    );
+    getworks();
+    toast.success(res.data.message);
+  };
+
+  // Duplicate Work Detail
+  const handleDuplicateWorkDetail = async (workId, workDetailId) => {
+    console.log(workId, workDetailId);
+    const res = await api(
+      "post",
+      `/project/duplicateWorkDetail/${currentProject._id}`,
+      {
+        workId,
+        workDetailId,
+      }
+    );
+    getworks();
+    toast.success(res.data.message);
   };
 
   return (
@@ -120,8 +367,8 @@ export default function DenseTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {projectWorkData.map((row, index) => {
-            if (!row.workDetails) {
+          {work.map((row, index) => {
+            if (workDetails.length === 0) {
               return (
                 <TableRow>
                   <TableCell
@@ -134,8 +381,8 @@ export default function DenseTable({
                       alignItems: "center",
                     }}
                   >
-                    {row.work.name.substring(0, 75)}
-                    {row.work.name.length > 75 && "..."}
+                    {row.name.substring(0, 75)}
+                    {row.name.length > 75 && "..."}
                     <ArrowDropDownIcon
                       id="demo-positioned-button"
                       aria-controls={
@@ -143,116 +390,157 @@ export default function DenseTable({
                       }
                       aria-haspopup="true"
                       aria-expanded={openLevel0 ? "true" : undefined}
-                      onClick={(e) => handleAnchorElLevel0Click(e, row.work)}
+                      onClick={(e) => handleAnchorElLevel0Click(e, row)}
                       sx={{
                         fontSize: 18,
                         cursor: "pointer",
                       }}
                     />
-                    <StyledMenu
-                      id="demo-positioned-menu"
-                      aria-labelledby="demo-positioned-button"
-                      anchorEl={anchorElLevel0}
-                      open={openLevel0}
-                      onClose={handleAnchorElLevel0Close}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                      sx={{ mt: 1 }}
-                    >
-                      <MenuItem
-                        onClick={() => {
-                          handleOpenDeleteWorkModal(menuItem0._id);
-                          handleAnchorElLevel0Close();
+                    {row._id === menuItem0._id && (
+                      <StyledMenu
+                        id="demo-positioned-menu"
+                        aria-labelledby="demo-positioned-button"
+                        anchorEl={anchorElLevel0}
+                        open={openLevel0}
+                        onClose={handleAnchorElLevel0Close}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
                         }}
-                      >
-                        To Delete
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => {
-                          handleOpenEditWorkModal(menuItem0);
-                          handleAnchorElLevel0Close();
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
                         }}
+                        sx={{ mt: 1 }}
                       >
-                        To Modify
-                      </MenuItem>
-                    </StyledMenu>
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    style={{
-                      borderRight: "1px solid lightgray",
-                      width: "10vw",
-                    }}
-                  >
-                    {row?.workUnit?.symbol}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    style={{
-                      borderRight: "1px solid lightgray",
-                      width: "10vw",
-                    }}
-                  >
-                    {parseInt(row.work.quantity).toFixed(2)}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    style={{
-                      borderRight: "1px solid lightgray",
-                      width: "10vw",
-                    }}
-                  >
-                    {parseInt(row.work.unit_price).toFixed(2)}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    style={{
-                      borderRight: "1px solid lightgray",
-                      width: "10vw",
-                    }}
-                  >
-                    {parseInt(row.work.unit_price * row.work.quantity).toFixed(
-                      2
+                        <MenuItem
+                          onClick={() => {
+                            handleOpenEditWorkModal(menuItem0);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          To Modify
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleOpenDeleteWorkModal(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          To Delete
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleDuplicateWork(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Duplicate
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkTop(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Top
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkUp(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Up
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkDown(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Down
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleWorkBottom(menuItem0._id);
+                            handleAnchorElLevel0Close();
+                          }}
+                        >
+                          Bottom
+                        </MenuItem>
+                      </StyledMenu>
                     )}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{
+                      borderRight: "1px solid lightgray",
+                      width: "10vw",
+                    }}
+                  >
+                    {row?.unit?.symbol}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{
+                      borderRight: "1px solid lightgray",
+                      width: "10vw",
+                    }}
+                  >
+                    {parseInt(row.quantity).toFixed(2)}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{
+                      borderRight: "1px solid lightgray",
+                      width: "10vw",
+                    }}
+                  >
+                    {parseInt(row.unit_price).toFixed(2)}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{
+                      borderRight: "1px solid lightgray",
+                      width: "10vw",
+                    }}
+                  >
+                    {parseInt(row.unit_price * row.quantity).toFixed(2)}
                   </TableCell>
                 </TableRow>
               );
-            } else {
+            } else if (
+              workDetails.length > 0 &&
+              row._id !== work[index - 1]?._id
+            ) {
               return (
                 <>
-                  {row.work._id !== projectWorkData[index - 1]?.work._id && (
-                    <TableRow>
-                      <TableCell
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "35vw",
-                          display: "flex",
-                          alignItems: "center",
+                  <TableRow>
+                    <TableCell
+                      style={{
+                        borderRight: "1px solid lightgray",
+                        width: "35vw",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      {row?.name?.substring(0, 75)}
+                      {row?.name?.length > 75 && "..."}
+                      <ArrowDropDownIcon
+                        id="demo-positioned-button"
+                        aria-controls={
+                          openLevel1 ? "demo-positioned-menu" : undefined
+                        }
+                        aria-haspopup="true"
+                        aria-expanded={openLevel1 ? "true" : undefined}
+                        onClick={(e) => handleAnchorElLevel1Click(e, row)}
+                        sx={{
+                          fontSize: 18,
+                          cursor: "pointer",
                         }}
-                      >
-                        {row?.work?.name?.substring(0, 75)}
-                        {row?.work?.name?.length > 75 && "..."}
-                        <ArrowDropDownIcon
-                          id="demo-positioned-button"
-                          aria-controls={
-                            openLevel1 ? "demo-positioned-menu" : undefined
-                          }
-                          aria-haspopup="true"
-                          aria-expanded={openLevel1 ? "true" : undefined}
-                          onClick={(e) =>
-                            handleAnchorElLevel1Click(e, row.work)
-                          }
-                          sx={{
-                            fontSize: 18,
-                            cursor: "pointer",
-                          }}
-                        />
+                      />
+                      {row._id === menuItem1._id && (
                         <StyledMenu
                           id="demo-positioned-menu"
                           aria-labelledby="demo-positioned-button"
@@ -269,6 +557,16 @@ export default function DenseTable({
                           }}
                           sx={{ mt: 1 }}
                         >
+                          {row._id === menuItem1._id && row.unit_price && (
+                            <MenuItem
+                              onClick={() => {
+                                handleOpenEditWorkModal(menuItem1);
+                                handleAnchorElLevel0Close();
+                              }}
+                            >
+                              To Modify
+                            </MenuItem>
+                          )}
                           <MenuItem
                             onClick={() => {
                               handleOpenDeleteWorkModal(menuItem1._id);
@@ -277,104 +575,48 @@ export default function DenseTable({
                           >
                             To Delete
                           </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleDuplicateWork(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Duplicate
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkTop(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Top
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkUp(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Up
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkDown(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Down
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleWorkBottom(menuItem1._id);
+                              handleAnchorElLevel1Close();
+                            }}
+                          >
+                            Bottom
+                          </MenuItem>
                         </StyledMenu>
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          borderRight: "1px solid lightgray",
-                          width: "10vw",
-                        }}
-                      ></TableCell>
-                    </TableRow>
-                  )}
-
-                  <TableRow style={{ backgroundColor: "#eeeeee" }}>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      style={{
-                        borderRight: "1px solid lightgray",
-                        width: "35vw",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      &nbsp;&nbsp;&nbsp;
-                      <i>
-                        {" "}
-                        {row?.workDetails?.name?.substring(0, 50)}
-                        {row?.workDetails?.name?.length > 50 && "..."}
-                      </i>
-                      <ArrowDropDownIcon
-                        id="demo-positioned-button"
-                        aria-controls={
-                          openLevel2 ? "demo-positioned-menu" : undefined
-                        }
-                        aria-haspopup="true"
-                        aria-expanded={openLevel2 ? "true" : undefined}
-                        onClick={(e) =>
-                          handleAnchorElLevel2Click(e, row.workDetails)
-                        }
-                        sx={{
-                          fontSize: 18,
-                          cursor: "pointer",
-                        }}
-                      />
-                      <StyledMenu
-                        id="demo-positioned-menu"
-                        aria-labelledby="demo-positioned-button"
-                        anchorEl={anchorElLevel2}
-                        open={openLevel2}
-                        onClose={handleAnchorElLevel2Close}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        sx={{ mt: 1 }}
-                      >
-                        <MenuItem
-                          onClick={() => {
-                            handleOpenDeleteWorkDetailModal(menuItem2._id);
-                            handleAnchorElLevel2Close();
-                          }}
-                        >
-                          To Delete
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            handleOpenEditWorkDetailModal(menuItem2);
-                            handleAnchorElLevel2Close();
-                          }}
-                        >
-                          To Modify
-                        </MenuItem>
-                      </StyledMenu>
+                      )}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -383,7 +625,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {row?.workDetailsUnit?.symbol}
+                      {row?.unit?.symbol}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -392,7 +634,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {parseInt(row?.workDetails?.quantity).toFixed(2)}
+                      {row.quantity && parseInt(row.quantity).toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -401,7 +643,7 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {parseInt(row?.workDetails?.unit_price).toFixed(2)}
+                      {row.unit_price && parseInt(row.unit_price).toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -410,12 +652,165 @@ export default function DenseTable({
                         width: "10vw",
                       }}
                     >
-                      {parseInt(
-                        row?.workDetails?.quantity *
-                          row?.workDetails?.unit_price
-                      ).toFixed(2)}
+                      {row.unit_price &&
+                        row.quantity &&
+                        parseInt(row.unit_price * row.quantity).toFixed(2)}
                     </TableCell>
                   </TableRow>
+                  {workDetails.map((row2, index) => {
+                    return (
+                      row2.parentId === row._id && (
+                        <TableRow style={{ backgroundColor: "#eeeeee" }}>
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "35vw",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            &nbsp;&nbsp;&nbsp;
+                            <i>
+                              {" "}
+                              {row2.name?.substring(0, 50)}
+                              {row2.name?.length > 50 && "..."}
+                            </i>
+                            <ArrowDropDownIcon
+                              id="demo-positioned-button"
+                              aria-controls={
+                                openLevel2 ? "demo-positioned-menu" : undefined
+                              }
+                              aria-haspopup="true"
+                              aria-expanded={openLevel2 ? "true" : undefined}
+                              onClick={(e) =>
+                                handleAnchorElLevel2Click(e, row2, row)
+                              }
+                              sx={{
+                                fontSize: 18,
+                                cursor: "pointer",
+                              }}
+                            />
+                            <StyledMenu
+                              id="demo-positioned-menu"
+                              aria-labelledby="demo-positioned-button"
+                              anchorEl={anchorElLevel2}
+                              open={openLevel2}
+                              onClose={handleAnchorElLevel2Close}
+                              anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "left",
+                              }}
+                              transformOrigin={{
+                                vertical: "top",
+                                horizontal: "left",
+                              }}
+                              sx={{ mt: 1 }}
+                            >
+                              <MenuItem
+                                onClick={() => {
+                                  handleOpenEditWorkDetailModal(menuItem2);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                To Modify
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleOpenDeleteWorkDetailModal(
+                                    menuItem2._id
+                                  );
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                To Delete
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleDuplicateWorkDetail(
+                                    parentItem._id,
+                                    menuItem2._id
+                                  );
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Duplicate
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleWorkDetailTop(menuItem2._id);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Top
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleWorkDetailUp(menuItem2._id);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Up
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleWorkDetailsDown(menuItem2._id);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Down
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleWorkDetailBottom(menuItem2._id);
+                                  handleAnchorElLevel2Close();
+                                }}
+                              >
+                                Bottom
+                              </MenuItem>
+                            </StyledMenu>
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {row2?.unit?.symbol}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {parseInt(row2.quantity).toFixed(2)}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {parseInt(row2.unit_price).toFixed(2)}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              borderRight: "1px solid lightgray",
+                              width: "10vw",
+                            }}
+                          >
+                            {parseInt(row2.quantity * row2.unit_price)}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    );
+                  })}
                 </>
               );
             }
