@@ -4,8 +4,10 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export default function RowRadioButtonsGroup(props) {
+  const { t } = useTranslation();
   return (
     <FormControl component="fieldset" disabled={props.disabled}>
       <Typography>{props.label}</Typography>
@@ -22,7 +24,7 @@ export default function RowRadioButtonsGroup(props) {
             <FormControlLabel
               value={item.value}
               control={<Radio />}
-              label={<div style={{ fontSize: 14 }}>{item.label}</div>}
+              label={<div style={{ fontSize: 14 }}>{t(item.label)}</div>}
             />
           );
         })}

@@ -5,6 +5,7 @@ import { Store, UpdateStore } from "../../StoreContext";
 import moment from "moment";
 import api from "../../api";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 // Importing Components
 import Header from "../../components/Header";
@@ -13,6 +14,7 @@ import InputWithLabel from "../../components/InputWithLabel";
 
 // component
 const Index = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const store = Store();
   const updateStore = UpdateStore();
@@ -72,11 +74,12 @@ const Index = () => {
             {store.user.first_name} {store.user.last_name}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            Member Since: {moment(store.user.createdAt).format("MMMM Do YYYY")}
+            {t("Member Since")}:{" "}
+            {moment(store.user.createdAt).format("MMMM Do YYYY")}
           </Typography>
         </div>
         <div className={classes.right_container} onSubmit={handleSubmit}>
-          <h1 style={{ width: "100vw", color: "black" }}>My Profile</h1>
+          <h1 style={{ width: "100vw", color: "black" }}>{t("My Profile")}</h1>
           <form className={classes.form} autoComplete="off">
             {/* All fields */}
             <br />
@@ -84,7 +87,7 @@ const Index = () => {
             <Grid container spacing={2}>
               <Grid item zeroMinWidth xs>
                 <InputWithLabel
-                  label="Firstname"
+                  label={t("Firstname")}
                   required={true}
                   name="first_name"
                   type="text"
@@ -96,7 +99,7 @@ const Index = () => {
               </Grid>
               <Grid item zeroMinWidth xs>
                 <InputWithLabel
-                  label="Lastame"
+                  label={t("Lastname")}
                   required={true}
                   name="last_name"
                   type="text"
@@ -122,7 +125,7 @@ const Index = () => {
             <Grid container spacing={2}>
               <Grid item zeroMinWidth xs>
                 <InputWithLabel
-                  label="Old Password"
+                  label={t("Old Password")}
                   name="oldPassword"
                   type="password"
                   value={values.oldPassword}
@@ -133,7 +136,7 @@ const Index = () => {
               </Grid>
               <Grid item zeroMinWidth xs>
                 <InputWithLabel
-                  label="New Password"
+                  label={t("New Password")}
                   name="newPassword"
                   type="password"
                   value={values.newPassword}
@@ -145,7 +148,7 @@ const Index = () => {
             </Grid>
             <br />
             <InputWithLabel
-              label="Establishment"
+              label={t("Establishment")}
               required={true}
               name="establishment"
               type="text"
@@ -169,7 +172,7 @@ const Index = () => {
             {/* register button */}
             <div style={{ width: "100%", textAlign: "right" }}>
               <Button variant="contained" className={classes.btn} type="submit">
-                Update
+                {t("Update")}
               </Button>
             </div>
           </form>

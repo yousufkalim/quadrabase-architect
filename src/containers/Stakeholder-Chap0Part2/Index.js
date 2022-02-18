@@ -15,9 +15,11 @@ import api from "../../api";
 import { Store } from "../../StoreContext";
 import AddChap0Part2 from "./Chap0Part2 management/AddChap0Part2";
 import EditChap0Part2 from "./Chap0Part2 management/EditChap0Part2";
+import { useTranslation } from "react-i18next";
 
 // component
 const Index = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const store = Store();
 
@@ -134,7 +136,7 @@ const Index = () => {
       <Header />
       {/* stakholder modals */}
       <Modal
-        title="Add Stakeholder"
+        title={t("Add Stakeholder")}
         open={addStakeholderModal}
         onClose={handleAddStakeholderModal}
         component={
@@ -144,7 +146,7 @@ const Index = () => {
         }
       />
       <Modal
-        title="Edit Stakeholder"
+        title={t("Edit Stakeholder")}
         open={editStakeholderModal}
         onClose={handleEditStakeholderModal}
         component={
@@ -166,7 +168,7 @@ const Index = () => {
       />
       {/* Chap0part2 modals */}
       <Modal
-        title="Add Chap0Part2"
+        title={t("Add Chap0Part2")}
         open={addChap0Part2Modal}
         onClose={handleAddChap0Part2Modal}
         component={
@@ -174,7 +176,7 @@ const Index = () => {
         }
       />
       <Modal
-        title="Edit Chap0Part2"
+        title={t("Edit Chap0Part2")}
         open={editChap0Part2Modal}
         onClose={handleEditChap0Part2Modal}
         component={
@@ -200,7 +202,7 @@ const Index = () => {
         <div className={classes.left_container}>
           <div className={classes.flex_container}>
             <span style={{ fontSize: 24 }}>
-              <i>Stakeholders</i>
+              <i>{t("Stakeholders")}</i>
             </span>
             <Button
               variant="contained"
@@ -208,7 +210,7 @@ const Index = () => {
               style={{ backgroundColor: "#3b373c" }}
               onClick={handleAddStakeholderModal}
             >
-              Add Stakeholder
+              {t("Add Stakeholder")}
             </Button>
           </div>
           <div>
@@ -233,7 +235,7 @@ const Index = () => {
               style={{ backgroundColor: "#3b373c" }}
               onClick={handleAddChap0Part2Modal}
             >
-              Add Chap0Part2
+              {t("Add Chap0Part2")}
             </Button>
           </div>
           <div>

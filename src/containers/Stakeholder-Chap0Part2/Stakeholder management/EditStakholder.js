@@ -7,9 +7,11 @@ import { toast } from "react-toastify";
 import InputWithLabel from "../../../components/InputWithLabel";
 import InputDropdown from "../../../components/InputDropdown";
 import { useStyles } from "../../../css/addStakeholder";
+import { useTranslation } from "react-i18next";
 
 // component
 const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
+  const { t } = useTranslation();
   const store = Store();
   const classes = useStyles();
   // states
@@ -80,7 +82,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Name"
+                label={t("Name")}
                 required={true}
                 name="name"
                 type="text"
@@ -93,7 +95,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
             <Grid item zeroMinWidth xs>
               <InputDropdown
                 name="type"
-                label="Type"
+                label={t("Type")}
                 value={values.type}
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
                 options={options}
@@ -105,7 +107,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Email"
+                label={t("Email")}
                 required={true}
                 name="email"
                 type="email"
@@ -117,7 +119,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
             </Grid>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Contact Number"
+                label={t("Contact Number")}
                 required={true}
                 name="contact_no"
                 type="number"
@@ -133,7 +135,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Entity"
+                label={t("Entity")}
                 required={true}
                 name="entity"
                 type="text"
@@ -145,7 +147,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
             </Grid>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Service"
+                label={t("Service")}
                 required={true}
                 name="service"
                 type="text"
@@ -158,7 +160,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           </Grid>
           <br />
           <InputWithLabel
-            label="City"
+            label={t("City")}
             required={true}
             name="city"
             type="text"
@@ -169,7 +171,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <br />
 
           <InputWithLabel
-            label="Address 1"
+            label={t("Address 1")}
             required={true}
             name="address1"
             type="text"
@@ -180,7 +182,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <br />
 
           <InputWithLabel
-            label="Address 2"
+            label={t("Address 2")}
             required={true}
             name="address2"
             type="text"
@@ -190,7 +192,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           <br />
           <br />
           <InputWithLabel
-            label="Zipcode"
+            label={t("Zipcode")}
             required={true}
             name="zipcode"
             type="number"
@@ -202,7 +204,7 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
           {/* register button */}
           <div style={{ width: "100%", textAlign: "right" }}>
             <Button variant="contained" className={classes.btn} type="submit">
-              Update
+              {t("Update")}
             </Button>
           </div>
         </form>

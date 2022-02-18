@@ -16,6 +16,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Divider } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { styled, alpha } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -60,6 +61,7 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function NestedList(props) {
+  const { t } = useTranslation();
   // for level 0 dropdown menu
   const [anchorElLevel0, setAnchorElLevel0] = useState(null);
   const openLevel0 = Boolean(anchorElLevel0);
@@ -212,13 +214,13 @@ export default function NestedList(props) {
             sx={{ mt: 4.5 }}
           >
             <MenuItem
-              style={{ width: 200 }}
+              style={{ width: 230 }}
               onClick={() => {
                 props?.handleOpenLibrariesModal();
                 handleAnchorElLevel0Close();
               }}
             >
-              Add Libraries
+              {t("Add Library")}
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -226,7 +228,7 @@ export default function NestedList(props) {
                 handleAnchorElLevel0Close();
               }}
             >
-              Manage Families
+              {t("Manage Families")}
             </MenuItem>
           </StyledMenu>
         </div>
@@ -293,7 +295,7 @@ export default function NestedList(props) {
                     }}
                   >
                     <EditIcon style={{ marginRight: 10 }} />
-                    Edit
+                    {t("Edit")}
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
@@ -302,7 +304,7 @@ export default function NestedList(props) {
                     }}
                   >
                     <DeleteIcon style={{ marginRight: 10 }} />
-                    Delete
+                    {t("Delete")}
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
@@ -310,7 +312,7 @@ export default function NestedList(props) {
                       handleAnchorElLevel1Close();
                     }}
                   >
-                    Up
+                    {t("Up")}
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
@@ -318,7 +320,7 @@ export default function NestedList(props) {
                       handleAnchorElLevel1Close();
                     }}
                   >
-                    Down
+                    {t("Down")}
                   </MenuItem>
                   <Divider />
                   <MenuItem
@@ -327,7 +329,7 @@ export default function NestedList(props) {
                       handleAnchorElLevel1Close();
                     }}
                   >
-                    Add Category
+                    {t("Add Category")}
                   </MenuItem>
                 </StyledMenu>
               </ListItem>
@@ -398,7 +400,7 @@ export default function NestedList(props) {
                             }}
                           >
                             <EditIcon style={{ marginRight: 10 }} />
-                            Edit
+                            {t("Edit")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -407,7 +409,7 @@ export default function NestedList(props) {
                             }}
                           >
                             <DeleteIcon style={{ marginRight: 10 }} />
-                            Delete
+                            {t("Delete")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -415,7 +417,7 @@ export default function NestedList(props) {
                               handleAnchorElLevel2Close();
                             }}
                           >
-                            Up
+                            {t("Up")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -423,7 +425,7 @@ export default function NestedList(props) {
                               handleAnchorElLevel2Close();
                             }}
                           >
-                            Down
+                            {t("Down")}
                           </MenuItem>
                           <Divider />
                           <MenuItem
@@ -432,7 +434,7 @@ export default function NestedList(props) {
                               handleAnchorElLevel2Close();
                             }}
                           >
-                            Add Work
+                            {t("Add Work")}
                           </MenuItem>
                         </StyledMenu>
                       </ListItem>
@@ -512,7 +514,7 @@ export default function NestedList(props) {
                                       }}
                                     >
                                       <EditIcon style={{ marginRight: 10 }} />
-                                      Edit
+                                      {t("Edit")}
                                     </MenuItem>
                                     <MenuItem
                                       onClick={() => {
@@ -534,7 +536,7 @@ export default function NestedList(props) {
                                         handleAnchorElLevel3Close();
                                       }}
                                     >
-                                      Up
+                                      {t("Up")}
                                     </MenuItem>
                                     <MenuItem
                                       onClick={() => {
@@ -545,7 +547,7 @@ export default function NestedList(props) {
                                         handleAnchorElLevel3Close();
                                       }}
                                     >
-                                      Down
+                                      {t("Down")}
                                     </MenuItem>
                                     <Divider />
                                     <MenuItem
@@ -556,7 +558,7 @@ export default function NestedList(props) {
                                         handleAnchorElLevel3Close();
                                       }}
                                     >
-                                      Add Work Detail
+                                      {t("Add Work Detail")}
                                     </MenuItem>
                                   </StyledMenu>
                                 </ListItem>
@@ -633,7 +635,7 @@ export default function NestedList(props) {
                                                 <EditIcon
                                                   style={{ marginRight: 10 }}
                                                 />
-                                                Edit
+                                                {t("Edit")}
                                               </MenuItem>
                                               <MenuItem
                                                 onClick={() => {
@@ -646,7 +648,7 @@ export default function NestedList(props) {
                                                 <DeleteIcon
                                                   style={{ marginRight: 10 }}
                                                 />
-                                                Delete
+                                                {t("Delete")}
                                               </MenuItem>
                                               <MenuItem
                                                 onClick={() => {
@@ -657,7 +659,7 @@ export default function NestedList(props) {
                                                   handleAnchorElLevel4Close();
                                                 }}
                                               >
-                                                Up
+                                                {t("Up")}
                                               </MenuItem>
                                               <MenuItem
                                                 onClick={() => {
@@ -668,7 +670,7 @@ export default function NestedList(props) {
                                                   handleAnchorElLevel4Close();
                                                 }}
                                               >
-                                                Down
+                                                {t("Down")}
                                               </MenuItem>
                                             </StyledMenu>
                                           </ListItem>

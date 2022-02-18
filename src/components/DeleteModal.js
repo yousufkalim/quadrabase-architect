@@ -1,15 +1,17 @@
 // init
 import React from "react";
 import { Typography, Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 // component
 const DeleteModal = (props) => {
+  const { t } = useTranslation();
   // jsx
   return (
     <div style={{ display: "grid", placeItems: "center", padding: 20 }}>
-      <Typography variant="h4">Are You Sure?</Typography>
+      <Typography variant="h4">{t("Are You Sure?")}</Typography>
       <Typography variant="subtitle1">
-        Do you really want to delete? This process cannot be undone?
+        {t("Do you really want to delete? This process cannot be undone?")}
       </Typography>
       <br />
       <div style={{ display: "flex" }}>
@@ -22,7 +24,7 @@ const DeleteModal = (props) => {
           }}
           onClick={props.handleCancel}
         >
-          Cancel
+          {t("Cancel")}
         </Button>
         <Button
           variant="contained"
@@ -33,7 +35,7 @@ const DeleteModal = (props) => {
           }}
           onClick={props.handleDelete}
         >
-          Delete
+          {t("Delete")}
         </Button>
       </div>
     </div>

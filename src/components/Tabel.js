@@ -23,6 +23,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import PageviewIcon from "@mui/icons-material/Pageview";
+import { useTranslation } from "react-i18next";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -61,6 +62,7 @@ function EnhancedTableHead(props) {
 
     onRequestSort,
   } = props;
+  const { t } = useTranslation();
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -80,9 +82,8 @@ function EnhancedTableHead(props) {
                 direction={orderBy === headCell.id ? order : "asc"}
                 onClick={createSortHandler(headCell.id)}
               >
-                {props.translate
-                  ? props.translate(`${headCell.label}`)
-                  : headCell.label}
+                {console.log(headCell.label)}
+                {t(headCell.label)}
                 {orderBy === headCell.id ? (
                   <Box component="span" sx={visuallyHidden}>
                     {order === "desc"

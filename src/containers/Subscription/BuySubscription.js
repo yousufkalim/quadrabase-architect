@@ -5,8 +5,11 @@ import SubscriptionCard from "./SubscriptionCard";
 import { Button } from "@mui/material";
 import { Store } from "../../StoreContext";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+
 // component
 const BuySubscription = ({ handleBuySubModal }) => {
+  const { t } = useTranslation();
   const store = Store();
   // states
   const [subscriptions, setSubscriptions] = useState();
@@ -81,7 +84,7 @@ const BuySubscription = ({ handleBuySubModal }) => {
           disabled={!selected}
           onClick={handleClick}
         >
-          Buy Subscription
+          {t("Buy Subscription")}
         </Button>
       </div>
     </>

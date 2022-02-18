@@ -4,9 +4,11 @@ import InputWithLabel from "../../../components/InputWithLabel";
 import { Button } from "@mui/material";
 import InputDropdown from "../../../components/InputDropdown";
 import api from "../../../api";
+import { useTranslation } from "react-i18next";
 
 function Index(props) {
   const { ProviderOptions } = props;
+  const { t } = useTranslation();
   const [Name, setName] = useState("");
   const [documents, setDocuments] = useState([]);
 
@@ -52,7 +54,7 @@ function Index(props) {
           <div style={{ width: "40%" }}>
             <InputDropdown
               name="Name"
-              label="Select Provider"
+              label={t("Select Provider")}
               value={Name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -80,10 +82,14 @@ function Index(props) {
           <div style={{ width: "18%" }}>
             <Button
               onClick={handleAdd}
-              style={{ backgroundColor: "#3b373c", width: 150 }}
+              style={{
+                backgroundColor: "#3b373c",
+                width: 200,
+                fontSize: 12,
+              }}
               variant="contained"
             >
-              Add Provider
+              {t("Add Provider")}
             </Button>
           </div>
         </div>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -49,6 +50,7 @@ function a11yProps(index) {
 
 // component
 const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   // states
   const [values, setValues] = useState({
@@ -110,7 +112,7 @@ const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
       {/* All fields */}
       <br />
       <InputWithLabel
-        label="Name"
+        label={t("Name")}
         required={true}
         name="name"
         type="text"
@@ -169,7 +171,7 @@ const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
       {/* create button */}
       <div style={{ width: "100%", textAlign: "right" }}>
         <Button variant="contained" className={classes.btn} type="submit">
-          Update
+          {t("Update")}
         </Button>
       </div>
     </form>

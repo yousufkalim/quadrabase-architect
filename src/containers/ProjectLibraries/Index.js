@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useStyles } from "../../css/projectLibraries";
 import { Store } from "../../StoreContext";
 import api from "../../api";
+import { useTranslation } from "react-i18next";
 
 // Importing Components
 import Header from "../../components/Header";
@@ -22,6 +23,7 @@ import EditWorkDetailsModal from "./WorkDetails/EditWorkDetailsModal";
 
 // component
 const Index = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const store = Store();
   //   families states
@@ -426,14 +428,14 @@ const Index = () => {
       <Header />
       {/* families modal */}
       <Modal
-        title="Manage Families"
+        title={t("Manage Families")}
         open={openFamiliesModal}
         onClose={handleOpenFamiliesModal}
         component={<AddFamilyModal />}
       />
       {/* Libararies modals */}
       <Modal
-        title="Add Library"
+        title={t("Add Library")}
         open={openLibrariesModal}
         onClose={handleOpenLibrariesModal}
         component={
@@ -444,7 +446,7 @@ const Index = () => {
         }
       />
       <Modal
-        title="Edit Library"
+        title={t("Edit Library")}
         open={openEditLibrariesModal}
         onClose={handleOpenEditLibrariesModal}
         component={
@@ -466,7 +468,7 @@ const Index = () => {
       />
       {/* Category modals */}
       <Modal
-        title="Add Category"
+        title={t("Add Category")}
         open={openAddCatgeoryModal}
         onClose={handleOpenAddCatgeoryModal}
         component={
@@ -478,7 +480,7 @@ const Index = () => {
         }
       />
       <Modal
-        title="Edit Category"
+        title={t("Edit Category")}
         open={openEditCatgeoryModal}
         onClose={handleOpenEditCatgeoryModal}
         component={
@@ -500,7 +502,7 @@ const Index = () => {
       />
       {/* Work modals */}
       <Modal
-        title="Add Work"
+        title={t("Add Work")}
         open={openAddWorkModal}
         onClose={handleOpenAddWorkModal}
         component={
@@ -512,7 +514,7 @@ const Index = () => {
         }
       />
       <Modal
-        title="Edit Work"
+        title={t("Edit Work")}
         open={openEditWorkModal}
         onClose={handleOpenEditWorkModal}
         component={
@@ -534,7 +536,7 @@ const Index = () => {
       />
       {/* Work Detail modals */}
       <Modal
-        title="Add Work Detail"
+        title={t("Add Work Detail")}
         open={openAddWorkDetailModal}
         onClose={handleOpenAddWorkDetailModal}
         component={
@@ -546,7 +548,7 @@ const Index = () => {
         }
       />
       <Modal
-        title="Edit Work Detail"
+        title={t("Edit Work Detail")}
         open={openEditWorkDetailModal}
         onClose={handleOpenEditWorkDetailModal}
         component={
@@ -568,7 +570,7 @@ const Index = () => {
       />
       <div className={classes.container}>
         <NestedList
-          label="Project Libraries"
+          label={t("Project Libraries")}
           handleOpenFamiliesModal={handleOpenFamiliesModal}
           handleOpenLibrariesModal={handleOpenLibrariesModal}
           handleOpenEditLibrariesModal={handleOpenEditLibrariesModal}

@@ -4,6 +4,7 @@ import api from "../../../api";
 import { toast } from "react-toastify";
 import { Store } from "../../../StoreContext";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -54,6 +55,7 @@ const AddCategoryModal = ({
   categoryData,
   library,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   // states
   const [values, setValues] = useState({
@@ -100,7 +102,7 @@ const AddCategoryModal = ({
       {/* All fields */}
       <br />
       <InputWithLabel
-        label="Name"
+        label={t("Name")}
         required={true}
         name="name"
         type="text"
@@ -159,7 +161,7 @@ const AddCategoryModal = ({
       {/* create button */}
       <div style={{ width: "100%", textAlign: "right" }}>
         <Button variant="contained" className={classes.btn} type="submit">
-          Create
+          {t("Create")}
         </Button>
       </div>
     </form>
