@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import { Store } from "../../../StoreContext";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -17,6 +18,7 @@ const AddWorkDetailsModal = ({
   workDetailData,
   work,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   // states
   const [values, setValues] = useState({
@@ -62,7 +64,7 @@ const AddWorkDetailsModal = ({
       {/* All fields */}
       <br />
       <InputWithLabel
-        label="Name"
+        label={t("Name")}
         required={true}
         name="name"
         type="text"
@@ -82,7 +84,7 @@ const AddWorkDetailsModal = ({
       <br />
       <InputDropdown
         name="unit"
-        label="Unit"
+        label={t("Unit")}
         value={values.unit}
         onChange={(e) => handleChange(e.target.name, e.target.value)}
         options={options}
@@ -92,7 +94,7 @@ const AddWorkDetailsModal = ({
       {/* create button */}
       <div style={{ width: "100%", textAlign: "right" }}>
         <Button variant="contained" className={classes.btn} type="submit">
-          Create
+          {t("Create")}
         </Button>
       </div>
     </form>

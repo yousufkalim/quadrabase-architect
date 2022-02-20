@@ -1,7 +1,9 @@
 import React from "react";
 import { TextField } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
-export default function index(props) {
+export default function Index(props) {
+  const { t } = useTranslation();
   return (
     <div>
       <TextField
@@ -30,7 +32,7 @@ export default function index(props) {
           value={props.component === "register" ? 0 : ""}
           disabled={props.first === "notDisable" ? false : true}
         >
-          {props.component === "register" ? "0" : "Select An Option"}
+          {props.component === "register" ? "0" : t("Select An Option")}
         </option>
 
         {props?.options?.map((option) => (

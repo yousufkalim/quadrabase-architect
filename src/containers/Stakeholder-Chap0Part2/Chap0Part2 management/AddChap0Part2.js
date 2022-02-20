@@ -7,9 +7,11 @@ import { toast } from "react-toastify";
 import InputWithLabel from "../../../components/InputWithLabel";
 import { useStyles } from "../../../css/addStakeholder";
 import RichTextEditor from "../../../components/RichTextEditor";
+import { useTranslation } from "react-i18next";
 
 // component
 const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
+  const { t } = useTranslation();
   const store = Store();
   const classes = useStyles();
   // states
@@ -40,7 +42,7 @@ const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
           {/* All fields */}
           <br />
           <InputWithLabel
-            label="Title"
+            label={t("Title")}
             required={true}
             name="title"
             type="text"
@@ -49,7 +51,7 @@ const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
           />
           <br />
           <br />
-          <label htmlFor="grid-first-name">Text</label>
+          <label htmlFor="grid-first-name">{t("Text")}</label>
           <br />
           <br />
           <RichTextEditor value={text} setValue={setText} />
@@ -58,7 +60,7 @@ const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
           {/* create button */}
           <div style={{ width: "100%", textAlign: "right" }}>
             <Button variant="contained" className={classes.btn} type="submit">
-              Create
+              {t("Create")}
             </Button>
           </div>
         </form>

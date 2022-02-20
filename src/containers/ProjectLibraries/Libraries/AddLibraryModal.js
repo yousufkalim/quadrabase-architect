@@ -4,6 +4,7 @@ import api from "../../../api";
 import { toast } from "react-toastify";
 import { Store } from "../../../StoreContext";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -51,6 +52,7 @@ function a11yProps(index) {
 
 // component
 const AddLibraryModal = ({ handleOpenLibrariesModal, librariesData }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const store = Store();
   // states
@@ -125,7 +127,7 @@ const AddLibraryModal = ({ handleOpenLibrariesModal, librariesData }) => {
       <Grid container spacing={2}>
         <Grid item zeroMinWidth xs>
           <InputWithLabel
-            label="Name"
+            label={t("Name")}
             required={true}
             name="name"
             type="text"
@@ -135,7 +137,7 @@ const AddLibraryModal = ({ handleOpenLibrariesModal, librariesData }) => {
         </Grid>
         <Grid item zeroMinWidth xs>
           <InputWithOptions
-            label="Select Family"
+            label={t("Select Family")}
             required={true}
             name="family"
             value={values.families}
@@ -195,7 +197,7 @@ const AddLibraryModal = ({ handleOpenLibrariesModal, librariesData }) => {
       {/* create button */}
       <div style={{ width: "100%", textAlign: "right" }}>
         <Button variant="contained" className={classes.btn} type="submit">
-          Create
+          {t("Create")}
         </Button>
       </div>
     </form>

@@ -7,6 +7,7 @@ import RowRadioButtonsGroup from "./component/RadioGroup";
 import InputDropdown from "../../components/InputDropdown";
 import { Store, UpdateStore } from "../../StoreContext";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const TOC = [
   {
@@ -39,6 +40,7 @@ const TOP = [
 ];
 
 const AddProjectModal = ({ handleAddProjectModal }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const store = Store();
   const updateStore = UpdateStore();
@@ -97,7 +99,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         {/* All fields */}
         <br />
         <InputWithLabel
-          label="Name"
+          label={t("Name")}
           required={true}
           name="name"
           type="text"
@@ -109,7 +111,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         <Grid container spacing={2}>
           <Grid item zeroMinWidth xs>
             <InputWithLabel
-              label="Prescriber"
+              label={t("Prescriber")}
               required={true}
               name="prescriber"
               value={values.prescriber}
@@ -119,7 +121,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
           </Grid>
           <Grid item zeroMinWidth xs>
             <InputDropdown
-              label="VAT"
+              label={t("VAT")}
               required={true}
               name="vat"
               value={values.vat}
@@ -132,7 +134,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         <br />
         <RowRadioButtonsGroup
           row={true}
-          label="Type of Contract"
+          label={t("Type Of Contract")}
           data={TOC}
           value={values.market_type}
           name="market_type"
@@ -141,7 +143,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         <br />
         <RowRadioButtonsGroup
           row={true}
-          label="Type of Project"
+          label={t("Type Of Project")}
           data={TOP}
           value={values.structure}
           name="structure"

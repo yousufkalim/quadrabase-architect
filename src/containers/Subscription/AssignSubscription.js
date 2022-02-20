@@ -5,10 +5,13 @@ import InputWithLabel from "../../components/InputWithLabel";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { UpdateStore } from "../../StoreContext";
+import { useTranslation } from "react-i18next";
+
 // component
 const BuySubscription = ({ assignSub, handleAssignSubModal }) => {
-  const [email, setEmail] = useState("");
+  const { t } = useTranslation();
   const updateStore = UpdateStore();
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     setEmail(assignSub?.email);
@@ -53,7 +56,7 @@ const BuySubscription = ({ assignSub, handleAssignSubModal }) => {
             }}
             type="submit"
           >
-            Assign Subscription
+            {t("Assign Subscription")}
           </Button>
         </div>
       </form>

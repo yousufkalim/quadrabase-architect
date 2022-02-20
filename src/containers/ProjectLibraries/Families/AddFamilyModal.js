@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -10,6 +11,7 @@ import { Button } from "@mui/material";
 
 // component
 const AddFamilyModal = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const [name, setName] = useState();
   const [familiesData, setFamiliesData] = useState();
@@ -74,7 +76,7 @@ const AddFamilyModal = () => {
               }}
             >
               <InputWithLabel
-                label="Name"
+                label={t("Name")}
                 required={true}
                 name="text"
                 type="text"
@@ -98,7 +100,7 @@ const AddFamilyModal = () => {
                   className={classes.btn2}
                   onClick={() => setUpdateFamily(family)}
                 >
-                  Edit
+                  {t("Edit")}
                 </Button>
               ) : (
                 <Button
@@ -106,7 +108,7 @@ const AddFamilyModal = () => {
                   className={classes.btn2}
                   onClick={handleUpdate}
                 >
-                  Update
+                  {t("Update")}
                 </Button>
               )}
 
@@ -120,7 +122,7 @@ const AddFamilyModal = () => {
                 }}
                 onClick={() => handleDelete(family._id)}
               >
-                Delete
+                {t("Delete")}
               </Button>
             </div>
           );
@@ -130,7 +132,7 @@ const AddFamilyModal = () => {
         {/* All fields */}
         <br />
         <InputWithLabel
-          label="Name"
+          label={t("Name")}
           required={true}
           name="text"
           type="text"
@@ -143,7 +145,7 @@ const AddFamilyModal = () => {
         {/* create button */}
         <div style={{ width: "100%", textAlign: "right" }}>
           <Button variant="contained" className={classes.btn} type="submit">
-            Add Family
+            {t("Add Family")}
           </Button>
         </div>
       </form>

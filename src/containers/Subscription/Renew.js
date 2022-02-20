@@ -6,8 +6,11 @@ import { Button } from "@mui/material";
 import { Store } from "../../StoreContext";
 import { toast } from "react-toastify";
 import { UpdateStore } from "../../StoreContext";
+import { useTranslation } from "react-i18next";
+
 // component
 const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
+  const { t } = useTranslation();
   const store = Store();
   const updateStore = UpdateStore();
   // states
@@ -92,7 +95,7 @@ const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
           disabled={!selected}
           onClick={handleClick}
         >
-          Buy Credits
+          {t("Buy Credits")}
         </Button>
       </div>
     </>

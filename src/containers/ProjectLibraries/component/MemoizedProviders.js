@@ -4,9 +4,11 @@ import InputWithLabel from "../../../components/InputWithLabel";
 import { Button } from "@mui/material";
 import InputDropdown from "../../../components/InputDropdown";
 import api from "../../../api";
+import { useTranslation } from "react-i18next";
 
 function Index(props) {
   const { isLoading, ProviderOptions } = props;
+  const { t } = useTranslation();
 
   const [Name, setName] = useState("");
   const [Edit, setEdit] = useState(false);
@@ -66,7 +68,7 @@ function Index(props) {
           <div style={{ width: "38.5%" }}>
             <InputDropdown
               name="Name"
-              label="Select Provider"
+              label={t("Select Provider")}
               disabled={Edit ? false : true}
               value={Name}
               onChange={(e) => {
@@ -97,7 +99,7 @@ function Index(props) {
           <div>
             <div
               style={{
-                width: 162,
+                width: 185,
                 display: "flex",
                 justifyContent: "space-around",
               }}
@@ -109,17 +111,17 @@ function Index(props) {
                 style={{ backgroundColor: "#3b373c", width: 75 }}
                 variant="contained"
               >
-                {Edit ? "Update" : "Edit"}
+                {Edit ? t("Update") : t("Edit")}
               </Button>
               <Button
                 onClick={props.onDelete}
                 disabled={isLoading}
-                label={"Delete"}
+                label={t("Delete")}
                 default={false}
-                style={{ backgroundColor: "#3b373c", width: 75 }}
+                style={{ backgroundColor: "#3b373c", width: 100 }}
                 variant="contained"
               >
-                Delete
+                {t("Delete")}
               </Button>
             </div>
           </div>

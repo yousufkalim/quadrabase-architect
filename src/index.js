@@ -5,6 +5,7 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { BrowserRouter } from "react-router-dom";
 import { StoreProvider } from "./StoreContext";
+import "./utils/i18n";
 
 // Rendering DOM
 ReactDOM.render(

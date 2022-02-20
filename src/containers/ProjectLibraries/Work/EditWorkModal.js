@@ -4,6 +4,7 @@ import api from "../../../api";
 import { toast } from "react-toastify";
 import { Store } from "../../../StoreContext";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -54,6 +55,7 @@ function a11yProps(index) {
 
 // component
 const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   // states
   const [values, setValues] = useState({
@@ -169,7 +171,7 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
       <Grid container spacing={2}>
         <Grid item zeroMinWidth xs>
           <InputWithLabel
-            label="Name"
+            label={t("Name")}
             required={true}
             name="name"
             type="text"
@@ -190,7 +192,7 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
         <Grid item zeroMinWidth xs>
           <InputDropdown
             name="unit"
-            label="Unit"
+            label={t("Unit")}
             value={values.unit}
             onChange={(e) => handleChange(e.target.name, e.target.value)}
             options={options}
@@ -302,7 +304,7 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
       {/* create button */}
       <div style={{ width: "100%", textAlign: "right" }}>
         <Button variant="contained" className={classes.btn} type="submit">
-          Update
+          {t("Update")}
         </Button>
       </div>
     </form>

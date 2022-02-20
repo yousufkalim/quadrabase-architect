@@ -10,6 +10,7 @@ import { Divider } from "@mui/material";
 import moment from "moment";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Importing Components
 import Header from "../components/Header";
@@ -24,6 +25,7 @@ import AddProjectModal from "./Project/AddProjectModal";
 
 // Home Component
 export default function Home() {
+  const { t } = useTranslation();
   const classes = useStyles();
   const store = Store();
   const history = useHistory();
@@ -103,13 +105,13 @@ export default function Home() {
     <div>
       <Header />
       <Modal
-        title="Buy Subscription"
+        title={t("Buy Subscription")}
         open={buySubModal}
         onClose={handleBuySubModal}
         component={<BuySubscription handleBuySubModal={handleBuySubModal} />}
       />
       <Modal
-        title="Assign Subscription"
+        title={t("Assign Subscription")}
         open={assignSubModal}
         onClose={handleAssignSubModal}
         component={
@@ -120,7 +122,7 @@ export default function Home() {
         }
       />
       <Modal
-        title="Buy Projects"
+        title={t("Buy Projects")}
         open={buyProjectsModal}
         onClose={handleBuyProjectsModals}
         component={
@@ -131,7 +133,7 @@ export default function Home() {
         }
       />
       <Modal
-        title="Renew Subscription"
+        title={t("Renew Subscription")}
         open={renewModal}
         onClose={handleRenewModalModal}
         component={
@@ -142,7 +144,7 @@ export default function Home() {
         }
       />
       <Modal
-        title="Add Project"
+        title={t("Add Project")}
         open={addProjectModal}
         onClose={handleAddProjectModal}
         component={
@@ -153,7 +155,7 @@ export default function Home() {
         <div className={classes.left_container}>
           <div className={classes.flex_container}>
             <span style={{ fontSize: 24 }}>
-              <i>Subscriptions</i>
+              <i>{t("Subscriptions")}</i>
             </span>
             <Button
               variant="contained"
@@ -161,7 +163,7 @@ export default function Home() {
               style={{ backgroundColor: "#3b373c" }}
               onClick={handleBuySubModal}
             >
-              Buy Subscriptiion
+              {t("Buy Subscription")}
             </Button>
           </div>
           <div style={{ marginTop: 10 }}>
@@ -173,17 +175,17 @@ export default function Home() {
             />
           </div>
           <span style={{ fontSize: 24 }}>
-            <i>My Subscription</i>
+            <i>{t("My Subscription")}</i>
           </span>
           <div className={classes.my_sub}>
             {!mySubscription?.assigned_to ? (
               <span className={classes.my_sub_info}>
-                No Subscription Assigned
+                {t("No Subscription Assigned")}
               </span>
             ) : (
               <>
                 <span className={classes.my_sub_info}>
-                  <div>Number of remaining projects:</div>{" "}
+                  <div>{t("Number of remaining projects")}:</div>{" "}
                   <div>
                     {mySubscription?.projects - store?.user?.projects?.length}
                   </div>
@@ -197,7 +199,7 @@ export default function Home() {
                         style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
                         onClick={handleBuyProjectsModals}
                       >
-                        Buy Projects
+                        {t("Buy Projects")}
                       </Button>
                     )}
                   </>
@@ -208,13 +210,13 @@ export default function Home() {
                     style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
                     onClick={handleBuyProjectsModals}
                   >
-                    Buy Projects
+                    {t("Buy Projects")}
                   </Button>
                 )}
 
                 <Divider variant="middle" style={{ marginBottom: 10 }} />
                 <span className={classes.my_sub_info}>
-                  <div>Subscription Valid until:</div>{" "}
+                  <div>{t("Subscription Valid until")}:</div>{" "}
                   <div>
                     {moment(mySubscription?.end_date).format("DD/MM/YYYY")}
                   </div>
@@ -228,7 +230,7 @@ export default function Home() {
                         style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
                         onClick={handleRenewModalModal}
                       >
-                        renew
+                        {t("renew")}
                       </Button>
                     )}
                   </>
@@ -239,7 +241,7 @@ export default function Home() {
                     style={{ backgroundColor: "#3b373c", marginBottom: 10 }}
                     onClick={handleRenewModalModal}
                   >
-                    renew
+                    {t("renew")}
                   </Button>
                 )}
               </>
@@ -250,7 +252,7 @@ export default function Home() {
           <div className={classes.flex_container}>
             <span style={{ fontSize: 24 }}>
               <i>
-                My Projects({store?.user?.projects?.length}/
+                {t("My Projects")}({store?.user?.projects?.length}/
                 {mySubscription?.projects ? mySubscription?.projects : 0})
               </i>
             </span>
@@ -270,7 +272,7 @@ export default function Home() {
                 store?.user?.projects?.length >= mySubscription?.projects
               }
             >
-              New Project
+              {t("New Project")}
             </Button>
           </div>
           <div style={{ marginTop: 10 }}>
