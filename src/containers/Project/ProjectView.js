@@ -13,6 +13,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
 import LayersIcon from "@mui/icons-material/Layers";
+import { useTranslation } from "react-i18next";
 
 // components
 import Header from "../../components/Header";
@@ -40,6 +41,7 @@ import EditChap0Part2 from "./Modals/EditChap0Part2";
 import Loader from "./component/Loader";
 
 const ProjectView = () => {
+  const { t } = useTranslation();
   const params = useParams();
   const history = useHistory();
   const { id } = params;
@@ -308,10 +310,11 @@ const ProjectView = () => {
       `/project/deleteWork/${currentProject._id}`,
       {
         data: { workId: deleteWorkId },
-      }
+      },
+      t
     );
     handleOpenDeleteWorkModal();
-    toast.success(response.data.message);
+    toast.success(t(response.data.message));
     getworks();
   };
 
@@ -322,10 +325,11 @@ const ProjectView = () => {
       `/project/deleteWorkDetail/${currentProject._id}`,
       {
         data: { workDetailId: deleteWorkDetailId },
-      }
+      },
+      t
     );
     handleOpenDeleteWorkDetailModal();
-    toast.success(response.data.message);
+    toast.success(t(response.data.message));
     getworks();
   };
 
@@ -445,7 +449,7 @@ const ProjectView = () => {
         <>
           <Header />
           <Modal
-            title="Add a Work"
+            title={t("Add a Work")}
             open={openWorkModal}
             onClose={() => setOpenWorkModal(false)}
             component={
@@ -462,7 +466,7 @@ const ProjectView = () => {
             }
           />
           <Modal
-            title="Select Work Details"
+            title={t("Select Work Details")}
             open={openWorkDetailModal}
             onClose={() => setOpenWorkDetailModal(false)}
             component={
@@ -479,7 +483,7 @@ const ProjectView = () => {
             }
           />
           <Modal
-            title="Project Properties"
+            title={t("Project Properties")}
             open={openPropertiesModal}
             onClose={handleOpenPropertiesModal}
             component={
@@ -523,7 +527,7 @@ const ProjectView = () => {
             }
           />
           <Modal
-            title="Edit a Work"
+            title={t("Edit a Work")}
             open={openEditWorkModal}
             onClose={handleOpenEditWorkModal}
             component={
@@ -536,7 +540,7 @@ const ProjectView = () => {
             }
           />
           <Modal
-            title="Edit a Work Detail"
+            title={t("Edit a Work Detail")}
             open={openEditWorkDetailModal}
             onClose={handleOpenEditWorkDetailModal}
             component={
@@ -593,7 +597,7 @@ const ProjectView = () => {
             }
           />
           <Modal
-            title="Edit Chap. 0 part 2"
+            title={t("Edit Chap. 0 part 2")}
             open={openEditChap0Part2Modal}
             onClose={handleOpenEditChap0Part2Modal}
             component={
@@ -606,7 +610,7 @@ const ProjectView = () => {
             }
           />
           <Modal
-            title="Manage Tranches"
+            title={t("Manage Tranches")}
             open={openTranchesModal}
             onClose={handleTranchesModal}
             component={<TracnhesModal />}
@@ -627,7 +631,7 @@ const ProjectView = () => {
                   }
                   onClick={handleOpenPropertiesModal}
                 >
-                  Properties
+                  {t("Properties")}
                 </Button>
                 <Button
                   variant="contained"
@@ -637,7 +641,7 @@ const ProjectView = () => {
                   }
                   onClick={() => history.push("/")}
                 >
-                  To Leave
+                  {t("To Leave")}
                 </Button>
               </div>
             </div>
@@ -681,7 +685,7 @@ const ProjectView = () => {
                   <div
                     style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}
                   >
-                    <i>General Libraries</i>
+                    <i>{t("General Libraries")}</i>
                   </div>
                   <NestedList
                     level1={generalLibrariesData}
@@ -701,7 +705,7 @@ const ProjectView = () => {
                   <div
                     style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}
                   >
-                    <i>Project Libraries</i>
+                    <i>{t("Project Libraries")}</i>
                   </div>
                   <NestedList
                     level1={projectLibrariesData}
@@ -1028,18 +1032,20 @@ const ProjectView = () => {
                         }}
                       >
                         <div className={classes.flex_container}>
-                          <div className={classes.fotter_text}>Total HT:</div>
+                          <div className={classes.fotter_text}>
+                            {t("Total HT")}:
+                          </div>
                           <div>{parseInt(totalHT).toFixed(2)}</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
-                            Total VAT (%):
+                            {t("Total VAT")} (%):
                           </div>
                           <div>{currentProject?.vat?.value.toFixed(2)}</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
-                            Total Price:
+                            {t("Total Price")}:
                           </div>
                           <div>
                             {(

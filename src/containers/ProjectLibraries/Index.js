@@ -102,9 +102,11 @@ const Index = () => {
   const handleDeleteLibrary = async () => {
     const result = await api(
       "delete",
-      `/BookLibraries/delete/${deleteLibrary}`
+      `/BookLibraries/delete/${deleteLibrary}`,
+      {},
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleDeleteLibraryModal();
   };
 
@@ -114,7 +116,7 @@ const Index = () => {
       "delete",
       `/BookLibraries/delete/Category/${deleteCategory}`
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleDeleteCategoryModal();
   };
 
@@ -122,9 +124,11 @@ const Index = () => {
   const handleDeleteWork = async () => {
     const result = await api(
       "delete",
-      `/BookLibraries/delete/Work/${deleteWork}`
+      `/BookLibraries/delete/Work/${deleteWork}`,
+      {},
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenDeleteWorkModal();
   };
 
@@ -132,9 +136,11 @@ const Index = () => {
   const handleDeleteWorkDetail = async () => {
     const result = await api(
       "delete",
-      `/BookLibraries/delete/WorkDetail/${deleteWorkDetail}`
+      `/BookLibraries/delete/WorkDetail/${deleteWorkDetail}`,
+      {},
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenDeleteWorkDetailModal();
   };
 

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -14,6 +15,7 @@ const EditChap0Part2 = ({
   currentProject,
   getProject,
 }) => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
 
@@ -32,9 +34,10 @@ const EditChap0Part2 = ({
     const result = await api(
       "put",
       `/ArchitectsChap0/updateByProject/${currentProject._id}/${editChap0Part2.id._id}`,
-      data
+      data,
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenEditChap0Part2Modal();
     getProject();
   };
@@ -45,7 +48,7 @@ const EditChap0Part2 = ({
         {/* All fields */}
         <br />
         <InputWithLabel
-          label="Title"
+          label={t("Title")}
           required={true}
           name="title"
           type="text"
@@ -54,7 +57,7 @@ const EditChap0Part2 = ({
         />
         <br />
         <br />
-        <label htmlFor="grid-first-name">Text</label>
+        <label htmlFor="grid-first-name">{t("Text")}</label>
         <br />
         <br />
         <RichTextEditor value={editChap0Part2.id.text} setValue={setText} />
@@ -70,7 +73,7 @@ const EditChap0Part2 = ({
             }}
             type="submit"
           >
-            Update
+            {t("Update")}
           </Button>
         </div>
       </form>

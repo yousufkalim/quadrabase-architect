@@ -31,8 +31,13 @@ const EditChap0Part2 = ({ handleEditChap0Part2Modal, Chap0Part2 }) => {
       title,
       text,
     };
-    const result = await api("put", `/ArchitectsChap0/${Chap0Part2._id}`, data);
-    toast.success(result.data.message);
+    const result = await api(
+      "put",
+      `/ArchitectsChap0/${Chap0Part2._id}`,
+      data,
+      t
+    );
+    toast.success(t(result.data.message));
     handleEditChap0Part2Modal();
   };
 

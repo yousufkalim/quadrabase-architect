@@ -62,9 +62,10 @@ const BuySubscription = ({ mySubscription, handleRenewModalModal }) => {
     const result = await api(
       "put",
       `/licenses/renew/${mySubscription._id}`,
-      data
+      data,
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     const response = await api("get", "/Architects/current/loggedIn");
     if (response.data.user) {
       updateStore({ loggedIn: true, user: response.data.user });

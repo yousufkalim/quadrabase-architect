@@ -54,10 +54,11 @@ const AddStakholder = ({ handleAddStakeholderModal }) => {
     const result = await api(
       "post",
       `/stakeholders/create/${store.user._id}`,
-      values
+      values,
+      t
     );
     handleAddStakeholderModal();
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
   };
 
   // jsx

@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import InputDropdown from "../../../components/InputDropdown";
+import { useTranslation } from "react-i18next";
 
 const AddWorkDetailsModal = ({
   selectedWork,
@@ -17,6 +18,7 @@ const AddWorkDetailsModal = ({
   currentProject,
   getworks,
 }) => {
+  const { t } = useTranslation();
   // states
   const [tranchOptions, setTranchOptions] = useState([]);
   const [tranch, setTranch] = useState("");
@@ -64,9 +66,10 @@ const AddWorkDetailsModal = ({
           const result = await api(
             "post",
             `/project/addWork/${currentProject._id}`,
-            data
+            data,
+            t
           );
-          toast.success(result.data.message);
+          toast.success(t(result.data.message));
           setSelectedWorkDetail([]);
           setSelectedWork();
           setOpenWorkDetailModal(false);
@@ -78,9 +81,10 @@ const AddWorkDetailsModal = ({
         const result = await api(
           "post",
           `/project/addWork/${currentProject._id}`,
-          data
+          data,
+          t
         );
-        toast.success(result.data.message);
+        toast.success(t(result.data.message));
         setSelectedWorkDetail([]);
         setSelectedWork();
         setOpenWorkDetailModal(false);
@@ -129,7 +133,7 @@ const AddWorkDetailsModal = ({
           }}
           onClick={handleValidate}
         >
-          Submit
+          {t("Submit")}
         </Button>
       </div>
     </div>

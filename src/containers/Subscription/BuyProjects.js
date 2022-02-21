@@ -62,13 +62,14 @@ const BuySubscription = ({ mySubscription, handleBuyProjectsModals }) => {
     const result = await api(
       "put",
       `/licenses/buyprojects/${mySubscription._id}`,
-      data
+      data,
+      t
     );
     const response = await api("get", "/Architects/current/loggedIn");
     if (response.data.user) {
       updateStore({ loggedIn: true, user: response.data.user });
     }
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleBuyProjectsModals();
   };
 

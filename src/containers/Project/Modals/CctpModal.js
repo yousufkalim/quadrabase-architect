@@ -1,7 +1,9 @@
 import React from "react";
 import { Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const CctpModal = ({ handleOpenCctpModal, cctp_text }) => {
+  const { t } = useTranslation();
   return (
     <div style={{ width: "45vw" }}>
       <div
@@ -25,7 +27,7 @@ const CctpModal = ({ handleOpenCctpModal, cctp_text }) => {
           }}
           onClick={handleOpenCctpModal}
         >
-          Close
+          {t("Close")}
         </Button>
       </div>
     </div>

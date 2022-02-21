@@ -16,6 +16,7 @@ import { Store } from "../../StoreContext";
 import AddChap0Part2 from "./Chap0Part2 management/AddChap0Part2";
 import EditChap0Part2 from "./Chap0Part2 management/EditChap0Part2";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 // component
 const Index = () => {
@@ -84,14 +85,23 @@ const Index = () => {
   const handleDeleteStakeholder = async () => {
     const result = await api(
       "delete",
-      `/stakeholders/${deleteStakeholder}/${store.user._id}`
+      `/stakeholders/${deleteStakeholder}/${store.user._id}`,
+      {},
+      t
     );
+    toast.success(t(result.data.message));
     handleDeleteStakeholderModal();
   };
 
   //   func to delete chap0part2
   const handleDeleteChap0Part2 = async () => {
-    const result = await api("delete", `/ArchitectsChap0/${deleteChap0part2}`);
+    const result = await api(
+      "delete",
+      `/ArchitectsChap0/${deleteChap0part2}`,
+      {},
+      t
+    );
+    toast.success(t(result.data.message));
     handleDeleteChap0Part2Modal();
   };
 

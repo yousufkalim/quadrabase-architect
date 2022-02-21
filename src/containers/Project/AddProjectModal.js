@@ -84,8 +84,8 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
     e.preventDefault();
     let data = values;
     data.architect = store.user._id;
-    const result = await api("post", `/project/create`, data);
-    toast.success(result.data.message);
+    const result = await api("post", `/project/create`, data, t);
+    toast.success(t(result.data.message));
     handleAddProjectModal();
     const response = await api("get", "/Architects/current/loggedIn");
     if (response.data.user) {

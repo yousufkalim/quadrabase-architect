@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Store } from "../../../StoreContext";
 import api from "../../../api";
+import { useTranslation } from "react-i18next";
 
 // component
 import { Button } from "@mui/material";
@@ -19,6 +20,7 @@ const AddWorkModal = ({
   setSelectedWork,
   getworks,
 }) => {
+  const { t } = useTranslation();
   const [values, setValues] = useState({
     name: "",
     unit: "",
@@ -80,9 +82,10 @@ const AddWorkModal = ({
         const result = await api(
           "post",
           `/project/addWork/${currentProject._id}`,
-          data
+          data,
+          t
         );
-        toast.success(result.data.message);
+        toast.success(t(result.data.message));
         setSelectedWorkDetail([]);
         setSelectedWork();
         setOpenWorkModal(false);
@@ -94,9 +97,10 @@ const AddWorkModal = ({
       const result = await api(
         "post",
         `/project/addWork/${currentProject._id}`,
-        data
+        data,
+        t
       );
-      toast.success(result.data.message);
+      toast.success(t(result.data.message));
       setSelectedWorkDetail([]);
       setSelectedWork();
       setOpenWorkModal(false);
@@ -113,7 +117,7 @@ const AddWorkModal = ({
         {/* All fields */}
         <br />
         <InputWithLabel
-          label="Name"
+          label={t("Name")}
           required={true}
           name="name"
           type="text"
@@ -124,14 +128,14 @@ const AddWorkModal = ({
         <br />
         <InputDropdown
           name="unit"
-          label="Unit"
+          label={t("Unit")}
           value={values.unit}
           onChange={(e) => handleChange(e.target.name, e.target.value)}
           options={options}
         />
         <br />
         <InputWithLabel
-          label="Qty"
+          label={t("Qty")}
           required={true}
           name="quantity"
           type="text"
@@ -174,7 +178,7 @@ const AddWorkModal = ({
             }}
             type="submit"
           >
-            Submit
+            {t("Submit")}
           </Button>
         </div>
       </form>

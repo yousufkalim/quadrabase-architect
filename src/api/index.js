@@ -2,7 +2,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const api = async (method = "get", uri, body) => {
+const api = async (method = "get", uri, body, t) => {
   const token = localStorage.getItem("token");
   if (token) {
     axios.defaults.headers = {
@@ -22,7 +22,13 @@ const api = async (method = "get", uri, body) => {
           console.log("API Error --------> ", err?.response);
           if (err.response.data.message !== "Unauthorized Access!") {
             toast.error(
-              err?.response?.data ? err.response.data.message : err?.message
+              err?.response?.data
+                ? t
+                  ? t(err.response.data.message)
+                  : err.response.data.message
+                : t
+                ? t(err?.message)
+                : err?.message
             );
           }
           reject(err);
