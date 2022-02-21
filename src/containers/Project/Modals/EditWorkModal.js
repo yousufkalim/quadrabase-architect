@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Store } from "../../../StoreContext";
 import api from "../../../api";
+import { useTranslation } from "react-i18next";
 
 // component
 import { Button } from "@mui/material";
@@ -15,6 +16,7 @@ const EditWorkModal = ({
   handleOpenEditWorkModal,
   getworks,
 }) => {
+  const { t } = useTranslation();
   const [values, setValues] = useState({
     name: "",
     unit: "",
@@ -65,9 +67,10 @@ const EditWorkModal = ({
     const result = await api(
       "put",
       `/project/updateWork/${currentProject._id}`,
-      data
+      data,
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenEditWorkModal();
     getworks();
   };
@@ -81,7 +84,7 @@ const EditWorkModal = ({
         {/* All fields */}
         <br />
         <InputWithLabel
-          label="Name"
+          label={t("Name")}
           required={true}
           name="name"
           type="text"
@@ -92,14 +95,14 @@ const EditWorkModal = ({
         <br />
         <InputDropdown
           name="unit"
-          label="Unit"
+          label={t("Unit")}
           value={values.unit}
           onChange={(e) => handleChange(e.target.name, e.target.value)}
           options={options}
         />
         <br />
         <InputWithLabel
-          label="Qty"
+          label={t("Qty")}
           required={true}
           name="quantity"
           type="text"
@@ -129,7 +132,7 @@ const EditWorkModal = ({
             }}
             type="submit"
           >
-            Update
+            {t("Update")}
           </Button>
         </div>
       </form>

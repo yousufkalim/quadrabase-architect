@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -65,6 +66,7 @@ export default function DenseTable({
   currentProject,
   getworks,
 }) {
+  const { t } = useTranslation();
   const [work, setWork] = useState([]);
   const [workDetails, setWorkDetails] = useState([]);
   // for sorting work and workDetails
@@ -323,10 +325,11 @@ export default function DenseTable({
       `/project/duplicateWork/${currentProject._id}`,
       {
         workId: id,
-      }
+      },
+      t
     );
     getworks();
-    toast.success(res.data.message);
+    toast.success(t(res.data.message));
   };
 
   // Duplicate Work Detail
@@ -338,10 +341,11 @@ export default function DenseTable({
       {
         workId,
         workDetailId,
-      }
+      },
+      t
     );
     getworks();
-    toast.success(res.data.message);
+    toast.success(t(res.data.message));
   };
 
   return (
@@ -350,19 +354,19 @@ export default function DenseTable({
         <TableHead>
           <TableRow>
             <TableCell style={{ fontWeight: 900, fontSize: 16 }}>
-              Designation
+              {t("Designation")}
             </TableCell>
             <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
-              Unity
+              {t("Unity")}
             </TableCell>
             <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
-              Qty
+              {t("Qty")}
             </TableCell>
             <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
               PU HT
             </TableCell>
             <TableCell align="center" style={{ fontWeight: 900, fontSize: 16 }}>
-              Total HT
+              {t("Total HT")}
             </TableCell>
           </TableRow>
         </TableHead>

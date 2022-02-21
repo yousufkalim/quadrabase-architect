@@ -26,8 +26,8 @@ const AddChap0Part2 = ({ handleAddChap0Part2Modal }) => {
       text,
     };
     data.architect = store.user._id;
-    const result = await api("post", `/ArchitectsChap0/create/`, data);
-    toast.success(result.data.message);
+    const result = await api("post", `/ArchitectsChap0/create/`, data, t);
+    toast.success(t(result.data.message));
     handleAddChap0Part2Modal();
   };
 

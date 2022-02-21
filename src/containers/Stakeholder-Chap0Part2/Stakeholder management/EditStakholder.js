@@ -67,8 +67,13 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
   // handle Submit function
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await api("put", `/stakeholders/${stakeholder._id}`, values);
-    toast.success(result.data.message);
+    const result = await api(
+      "put",
+      `/stakeholders/${stakeholder._id}`,
+      values,
+      t
+    );
+    toast.success(t(result.data.message));
     handleEditStakeholderModal();
   };
 
@@ -183,7 +188,6 @@ const EditStakholder = ({ stakeholder, handleEditStakeholderModal }) => {
 
           <InputWithLabel
             label={t("Address 2")}
-            required={true}
             name="address2"
             type="text"
             value={values.address2}

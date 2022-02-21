@@ -23,12 +23,12 @@ const BuySubscription = ({ assignSub, handleAssignSubModal }) => {
     const data = {
       email: email,
     };
-    const result = await api("put", `/licenses/${assignSub.id}`, data);
+    const result = await api("put", `/licenses/${assignSub.id}`, data, t);
     const response = await api("get", "/Architects/current/loggedIn");
     if (response.data.user) {
       updateStore({ loggedIn: true, user: response.data.user });
     }
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleAssignSubModal();
   };
   return (

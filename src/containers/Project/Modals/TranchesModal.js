@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 // component
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -10,6 +11,7 @@ import { Button } from "@mui/material";
 
 // component
 const TranchesModal = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const [name, setName] = useState();
   const [tracnhesData, setTranchesData] = useState();
@@ -27,18 +29,23 @@ const TranchesModal = () => {
 
   // handle update
   const handleUpdate = async () => {
-    const result = await api("put", `/Tranches/${updateTranch._id}`, {
-      name: updateTranch.name,
-    });
-    toast.success(result.data.message);
+    const result = await api(
+      "put",
+      `/Tranches/${updateTranch._id}`,
+      {
+        name: updateTranch.name,
+      },
+      t
+    );
+    toast.success(t(result.data.message));
     setUpdateTranch();
     getTranches();
   };
 
   // handle delete
   const handleDelete = async (id) => {
-    const result = await api("delete", `/Tranches/${id}`);
-    toast.success(result.data.message);
+    const result = await api("delete", `/Tranches/${id}`, {}, t);
+    toast.success(t(result.data.message));
     setUpdateTranch();
     getTranches();
   };
@@ -46,14 +53,19 @@ const TranchesModal = () => {
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await api("post", `/Tranches/create`, {
-      name,
-      ranking:
-        tracnhesData.length > 0
-          ? tracnhesData[tracnhesData.length - 1].ranking + 1
-          : 0,
-    });
-    toast.success(result.data.message);
+    const result = await api(
+      "post",
+      `/Tranches/create`,
+      {
+        name,
+        ranking:
+          tracnhesData.length > 0
+            ? tracnhesData[tracnhesData.length - 1].ranking + 1
+            : 0,
+      },
+      t
+    );
+    toast.success(t(result.data.message));
     setName();
     getTranches();
   };
@@ -80,7 +92,7 @@ const TranchesModal = () => {
               }}
             >
               <InputWithLabel
-                label="Name"
+                label={t("Name")}
                 required={true}
                 name="text"
                 type="text"
@@ -104,7 +116,7 @@ const TranchesModal = () => {
                   className={classes.btn2}
                   onClick={() => setUpdateTranch(tranch)}
                 >
-                  Edit
+                  {t("Edit")}
                 </Button>
               ) : (
                 <Button
@@ -112,7 +124,7 @@ const TranchesModal = () => {
                   className={classes.btn2}
                   onClick={handleUpdate}
                 >
-                  Update
+                  {t("Update")}
                 </Button>
               )}
 
@@ -126,13 +138,13 @@ const TranchesModal = () => {
                 }}
                 onClick={() => handleDelete(tranch._id)}
               >
-                Delete
+                {t("Delete")}
               </Button>
             </div>
           );
         })}
       </div>
-      <h2>Add Tranch</h2>
+      <h2>{t("Add Tranch")}</h2>
       <form className={classes.smform} onSubmit={handleSubmit}>
         {/* All fields */}
         <br />
@@ -150,7 +162,7 @@ const TranchesModal = () => {
         {/* create button */}
         <div style={{ width: "100%", textAlign: "right" }}>
           <Button variant="contained" className={classes.btn} type="submit">
-            Add tranch
+            {t("Add Tranch")}
           </Button>
         </div>
       </form>

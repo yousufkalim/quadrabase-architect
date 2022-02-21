@@ -135,9 +135,10 @@ const AddLibraryModal = ({ library, handleOpenEditLibrariesModal }) => {
     const result = await api(
       "put",
       `/BookLibraries/update/${library._id}`,
-      data
+      data,
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenEditLibrariesModal();
   };
 

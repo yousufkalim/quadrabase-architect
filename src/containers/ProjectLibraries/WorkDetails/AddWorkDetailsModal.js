@@ -53,8 +53,8 @@ const AddWorkDetailsModal = ({
     let data = values;
     data.workId = work;
     data.ranking = workDetailData ? workDetailData.length : 0;
-    const result = await api("post", `/BookLibraries/add/WorkDetail`, data);
-    toast.success(result.data.message);
+    const result = await api("post", `/BookLibraries/add/WorkDetail`, data, t);
+    toast.success(t(result.data.message));
     handleOpenAddWorkDetailModal();
   };
 

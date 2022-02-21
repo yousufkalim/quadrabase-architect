@@ -138,8 +138,8 @@ const AddWorkModal = ({ handleOpenAddWorkModal, workData, category }) => {
     data.categoryId = category;
     data.providers = ProviderDataArr;
     data.ranking = workData ? workData.length : 0;
-    const result = await api("post", `/BookLibraries/add/Work`, data);
-    toast.success(result.data.message);
+    const result = await api("post", `/BookLibraries/add/Work`, data, t);
+    toast.success(t(result.data.message));
     handleOpenAddWorkModal();
   };
 

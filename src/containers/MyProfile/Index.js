@@ -56,14 +56,15 @@ const Index = () => {
     const result = await api(
       "put",
       `/Architects/update/${store.user._id}`,
-      values
+      values,
+      t
     );
     updateStore({ loggedIn: true, user: result.data.architect });
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
   };
 
   return (
-    <div>
+    <div style={{ overflow: "hidden" }}>
       <Header />
       <div
         style={{ display: "flex", justifyContent: "center", paddingTop: 10 }}

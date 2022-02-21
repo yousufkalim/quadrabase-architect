@@ -100,9 +100,10 @@ const EditCategoryModal = ({ handleOpenEditCatgeoryModal, category }) => {
     const result = await api(
       "put",
       `/BookLibraries/update/editCategory/${category._id}`,
-      data
+      data,
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenEditCatgeoryModal();
   };
 

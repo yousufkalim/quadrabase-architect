@@ -29,10 +29,15 @@ const AddFamilyModal = () => {
 
   // handle update
   const handleUpdate = async () => {
-    const result = await api("put", `/Families/update/${updateFamily._id}`, {
-      name: updateFamily.name,
-    });
-    toast.success(result.data.message);
+    const result = await api(
+      "put",
+      `/Families/update/${updateFamily._id}`,
+      {
+        name: updateFamily.name,
+      },
+      t
+    );
+    toast.success(t(result.data.message));
     setUpdateFamily();
     getFamilies();
   };
@@ -40,7 +45,7 @@ const AddFamilyModal = () => {
   // handle delete
   const handleDelete = async (id) => {
     const result = await api("delete", `/Families/delete/${id}`);
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     setUpdateFamily();
     getFamilies();
   };
@@ -48,8 +53,8 @@ const AddFamilyModal = () => {
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await api("post", `/Families/architect/create`, { name });
-    toast.success(result.data.message);
+    const result = await api("post", `/Families/architect/create`, { name }, t);
+    toast.success(t(result.data.message));
     setName();
     getFamilies();
   };

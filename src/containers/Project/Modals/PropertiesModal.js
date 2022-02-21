@@ -5,6 +5,7 @@ import { useStyles } from "../../../css/projectView";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import styled from "@emotion/styled";
+import { useTranslation } from "react-i18next";
 
 // components
 import Tabs from "@mui/material/Tabs";
@@ -114,6 +115,7 @@ const PropertiesModal = ({
   currentProject,
   getProject,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   //  States
@@ -264,8 +266,8 @@ const PropertiesModal = ({
         data.chap0part2 = { id: values.chap0part2, status: "modified" };
       }
     }
-    const result = await api("put", `/project/${currentProject._id}`, data);
-    toast.success(result.data.message);
+    const result = await api("put", `/project/${currentProject._id}`, data, t);
+    toast.success(t(result.data.message));
     handleOpenPropertiesModal();
     getProject();
   };
@@ -273,15 +275,25 @@ const PropertiesModal = ({
   //   handle submit
   const handleSubmit2 = async (e) => {
     e.preventDefault();
-    const result = await api("put", `/project/${currentProject._id}`, values2);
-    toast.success(result.data.message);
+    const result = await api(
+      "put",
+      `/project/${currentProject._id}`,
+      values2,
+      t
+    );
+    toast.success(t(result.data.message));
     handleOpenPropertiesModal();
     getProject();
   };
   //   handle submit
   const handleSubmit3 = async () => {
-    const result = await api("put", `/project/${currentProject._id}`, values3);
-    toast.success(result.data.message);
+    const result = await api(
+      "put",
+      `/project/${currentProject._id}`,
+      values3,
+      t
+    );
+    toast.success(t(result.data.message));
     handleOpenPropertiesModal();
     getProject();
   };
@@ -293,16 +305,16 @@ const PropertiesModal = ({
     <Box sx={{ width: "45vw" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleTabChange}>
-          <Tab label="Project References" {...a11yProps(0)} />
-          <Tab label="Market Type / Structure" {...a11yProps(1)} />
-          <Tab label="Stakeholders" {...a11yProps(2)} />
+          <Tab label={t("Project References")} {...a11yProps(0)} />
+          <Tab label={t("Market Type / Structure")} {...a11yProps(1)} />
+          <Tab label={t("Stakeholders")} {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
         <form className={classes.form} onSubmit={handleSubmit}>
           {/* All fields */}
           <InputWithLabel
-            label="Name"
+            label={t("Name")}
             required={true}
             name="name"
             type="text"
@@ -314,7 +326,7 @@ const PropertiesModal = ({
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
               <InputWithLabel
-                label="Prescriber"
+                label={t("Prescriber")}
                 required={true}
                 name="prescriber"
                 value={values.prescriber}
@@ -326,7 +338,7 @@ const PropertiesModal = ({
             </Grid>
             <Grid item zeroMinWidth xs>
               <InputDropdown
-                label="VAT"
+                label={t("VAT")}
                 required={true}
                 name="vat"
                 value={values.vat}
@@ -338,7 +350,7 @@ const PropertiesModal = ({
           </Grid>
           <br />
           <InputWithLabel
-            label="Reference"
+            label={t("Reference")}
             name="reference"
             type="text"
             value={values.reference}
@@ -347,7 +359,7 @@ const PropertiesModal = ({
           <br />
           <br />
           <label htmlFor="grid-first-name" style={{ color: "gray" }}>
-            Description
+            {t("Description")}
           </label>
           <Textarea
             name="description"
@@ -377,13 +389,13 @@ const PropertiesModal = ({
             <option value="" disabled></option>
 
             <option value="general" disabled>
-              General Chap. 0 part 2
+              {t("General Chap. 0 part 2")}
             </option>
             {chapOptions?.chap0?.map((option) => (
               <option value={option._id}>{option.title}</option>
             ))}
             <option value="architect" disabled>
-              Architect Chap. 0 part 2
+              {t("Architect Chap. 0 part 2")}
             </option>
             {chapOptions?.architectsChap0?.map((option) => (
               <option value={option._id}>{option.title}</option>
@@ -401,7 +413,7 @@ const PropertiesModal = ({
               }}
               type="submit"
             >
-              Update
+              {t("Update")}
             </Button>
           </div>
         </form>
@@ -411,7 +423,7 @@ const PropertiesModal = ({
           {/* All fields */}
           <RowRadioButtonsGroup
             row={true}
-            label="Type of Contract"
+            label={t("Type Of Contract")}
             data={TOC}
             value={values2.market_type}
             name="market_type"
@@ -421,7 +433,7 @@ const PropertiesModal = ({
           <br />
           <RowRadioButtonsGroup
             row={true}
-            label="Type of Project"
+            label={t("Type Of Project")}
             data={TOP}
             value={values2.structure}
             name="structure"
@@ -430,7 +442,7 @@ const PropertiesModal = ({
           {/* register button */}
           <div style={{ width: "100%", textAlign: "right" }}>
             <Button variant="contained" className={classes.btn} type="submit">
-              Update
+              {t("Update")}
             </Button>
           </div>
         </form>
@@ -440,7 +452,7 @@ const PropertiesModal = ({
           <Grid item zeroMinWidth xs>
             <InputDropdown
               name="type"
-              label="Type"
+              label={t("Type")}
               value={typeValue}
               onChange={(e) => setTypeValue(e.target.value)}
               options={typeOptions}
@@ -449,7 +461,7 @@ const PropertiesModal = ({
           </Grid>
           <Grid item zeroMinWidth xs>
             <InputWithOptions
-              label="Select Stakeholder"
+              label={t("Select Stakeholder")}
               required={true}
               name="family"
               value={values3.stakeholders}
@@ -466,7 +478,7 @@ const PropertiesModal = ({
             className={classes.btn}
             onClick={handleSubmit3}
           >
-            Update
+            {t("Update")}
           </Button>
         </div>
       </TabPanel>

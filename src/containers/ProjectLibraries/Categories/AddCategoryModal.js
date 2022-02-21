@@ -91,8 +91,8 @@ const AddCategoryModal = ({
     cctp_text4 && data.cctp_text.push(cctp_text4);
     data.libraryId = library;
     data.ranking = categoryData ? categoryData.length : 0;
-    const result = await api("post", `/BookLibraries/add/Category`, data);
-    toast.success(result.data.message);
+    const result = await api("post", `/BookLibraries/add/Category`, data, t);
+    toast.success(t(result.data.message));
     handleOpenAddCatgeoryModal();
   };
 

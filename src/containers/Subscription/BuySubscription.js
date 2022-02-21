@@ -57,8 +57,13 @@ const BuySubscription = ({ handleBuySubModal }) => {
     const data = {
       subscription: selected._id,
     };
-    const result = await api("post", `/licenses/buy/${store.user._id}`, data);
-    toast.success(result.data.message);
+    const result = await api(
+      "post",
+      `/licenses/buy/${store.user._id}`,
+      data,
+      t
+    );
+    toast.success(t(result.data.message));
     handleBuySubModal();
   };
 

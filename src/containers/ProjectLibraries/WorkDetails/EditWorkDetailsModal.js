@@ -62,9 +62,10 @@ const EditWorkDetailsModal = ({
     const result = await api(
       "put",
       `/BookLibraries/edit/WorkDetail/${workDetail._id}`,
-      data
+      data,
+      t
     );
-    toast.success(result.data.message);
+    toast.success(t(result.data.message));
     handleOpenEditWorkDetailModal();
   };
 
