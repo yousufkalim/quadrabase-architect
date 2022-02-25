@@ -115,6 +115,7 @@ const Register = ({ setCurrentPage }) => {
   // states
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
+  const [invoiceUrl, setInvoiceUrl] = useState("");
   const [form1, setForm1] = useState({
     values: {
       establishment: "",
@@ -142,9 +143,6 @@ const Register = ({ setCurrentPage }) => {
     touched: {},
   });
 
-  const [subscriptions, setSubscriptions] = useState();
-  const [selected, setSelected] = useState(""); ///state for selected subscription
-
   const [subAmounts, setSubAmount] = useState({
     initial: {
       count: 1,
@@ -159,12 +157,6 @@ const Register = ({ setCurrentPage }) => {
       price: 500,
     },
   });
-
-  // useEffetct
-  useEffect(() => {
-    getAllSubscriptions();
-  }, []);
-
   useEffect(() => {
     const errors = validate(form1.values, schema1);
     setForm1((formState) => ({
@@ -180,12 +172,6 @@ const Register = ({ setCurrentPage }) => {
       errors: errors || {},
     }));
   }, [form2.values]);
-
-  // function to get all subs
-  const getAllSubscriptions = async () => {
-    const result = await api("get", `/Subscriptions/getAll/architect`);
-    setSubscriptions(result?.data?.subscription);
-  };
 
   // handle change function
   const handleChange = (name, value) => {
@@ -219,6 +205,7 @@ const Register = ({ setCurrentPage }) => {
   // handle Finish function
   const handleFinish = async (e) => {
     e.preventDefault();
+    // to creating account
     let data = {
       establishment: form1.values.establishment,
       service: form1.values.service,
@@ -243,7 +230,40 @@ const Register = ({ setCurrentPage }) => {
     };
     const result = await api("post", `/Architects/signup`, data);
     toast.success(result.data.message);
-    setCurrentPage("login");
+    // to generate invoice
+    let invoiceData = {
+      address1: form1.values.address_1,
+      initialPrice: subAmounts.initial.price,
+      initialCount: subAmounts.initial.count,
+      extendedPrice: subAmounts.extended.price,
+      extendedCount: subAmounts.extended.count,
+      packPrice: subAmounts.pack.price,
+      packCount: subAmounts.pack.count,
+      totalHT:
+        subAmounts.initial.price * subAmounts.initial.count +
+        subAmounts.extended.price * subAmounts.extended.count +
+        subAmounts.pack.price * subAmounts.pack.count,
+      tvaPercentage: 20,
+      tvaAmount:
+        ((subAmounts.initial.price * subAmounts.initial.count +
+          subAmounts.extended.price * subAmounts.extended.count +
+          subAmounts.pack.price * subAmounts.pack.count) *
+          20) /
+        100,
+      TotalCost:
+        ((subAmounts.initial.price * subAmounts.initial.count +
+          subAmounts.extended.price * subAmounts.extended.count +
+          subAmounts.pack.price * subAmounts.pack.count) *
+          20) /
+          100 +
+        subAmounts.initial.price * subAmounts.initial.count +
+        subAmounts.extended.price * subAmounts.extended.count +
+        subAmounts.pack.price * subAmounts.pack.count,
+      paymentMode: "Card",
+    };
+    const result2 = await api("post", `/Architects/download`, invoiceData);
+    setInvoiceUrl(result2.data.path);
+    handleComplete();
   };
 
   // for stepper
@@ -278,7 +298,7 @@ const Register = ({ setCurrentPage }) => {
   };
 
   const handleComplete = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     if (activeStep === 1) {
       if (form2.values.password !== form2.values.confirm_password) {
         toast.error("Password and confirm password does not match!");
@@ -329,11 +349,16 @@ const Register = ({ setCurrentPage }) => {
           {allStepsCompleted() ? (
             <React.Fragment>
               <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
+                All steps completed -{" "}
+                <a href={invoiceUrl} target="_blank">
+                  View invoice
+                </a>
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                 <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
+                <Button onClick={() => setCurrentPage("login")}>
+                  Proceed to login
+                </Button>
               </Box>
             </React.Fragment>
           ) : (
