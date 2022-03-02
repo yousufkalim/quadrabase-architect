@@ -152,7 +152,7 @@ const AddProjectModal = ({ handleAddProjectModal }) => {
         {/* register button */}
         <div style={{ width: "100%", textAlign: "right" }}>
           <Button variant="contained" className={classes.btn} type="submit">
-            Create
+            {t("Create")}
           </Button>
         </div>
       </form>
