@@ -218,39 +218,19 @@ const EditWorkModal = ({ handleOpenEditWorkModal, work }) => {
           </Tabs>
         </Box>
         <TabPanel value={selectedTabIndex} index={0}>
-          <TextEditor
-            onChange={(value) => setcctp_text1(value)}
-            value={cctp_text1}
-            height={200}
-          />
+          <TextEditor setValue={setcctp_text1} value={cctp_text1} />
         </TabPanel>
         <TabPanel value={selectedTabIndex} index={1}>
-          <TextEditor
-            onChange={(value) => setcctp_text2(value)}
-            value={cctp_text2}
-            height={200}
-          />
+          <TextEditor setValue={setcctp_text2} value={cctp_text2} />
         </TabPanel>
         <TabPanel value={selectedTabIndex} index={2}>
-          <TextEditor
-            onChange={(value) => setcctp_text3(value)}
-            value={cctp_text3}
-            height={200}
-          />
+          <TextEditor setValue={setcctp_text3} value={cctp_text3} />
         </TabPanel>
         <TabPanel value={selectedTabIndex} index={3}>
-          <TextEditor
-            onChange={(value) => setcctp_text4(value)}
-            value={cctp_text4}
-            height={200}
-          />
+          <TextEditor setValue={setcctp_text4} value={cctp_text4} />
         </TabPanel>
         <TabPanel value={selectedTabIndex} index={4}>
-          <TextEditor
-            onChange={(value) => setbpu_text1(value)}
-            value={bpu_text1}
-            height={200}
-          />
+          <TextEditor setValue={setbpu_text1} value={bpu_text1} />
         </TabPanel>
       </Box>
       <br />

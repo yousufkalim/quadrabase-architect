@@ -1,50 +1,159 @@
-import React from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-export default function index(props) {
+import React, { useState, useRef } from "react";
+import JoditEditor from "jodit-react";
+import { toast } from "react-toastify";
+
+export default function Index(props) {
+  const editor = useRef(null);
+
+  const config = {
+    readonly: false,
+    enableDragAndDropFileToEditor: true,
+    uploader: {
+      url: `${process.env.REACT_APP_API_URL}/fileUploader`,
+      format: "json",
+      pathVariableName: "path",
+      filesVariableName: function (t) {
+        return "file";
+      },
+      prepareData: function (data) {
+        return data;
+      },
+      isSuccess: function (resp) {
+        if (resp) {
+          return true;
+        } else {
+          toast.error("Image upload failed");
+        }
+      },
+      process: function (resp) {
+        return {
+          file: resp.files[0].uri || [],
+        };
+      },
+      defaultHandlerSuccess: function (data) {
+        if (data.file) {
+          this.selection.insertImage(data.file);
+        }
+      },
+    },
+    buttons: [
+      "bold",
+      "strikethrough",
+      "underline",
+      "italic",
+      "|",
+      "ul",
+      "ol",
+      "|",
+      "outdent",
+      "indent",
+      "|",
+      "font",
+      "fontsize",
+      "brush",
+      "|",
+      "image",
+      "table",
+      "|",
+      "align",
+      "undo",
+      "redo",
+      "|",
+      "hr",
+      "|",
+      "print",
+    ],
+    buttonsMD: [
+      "bold",
+      "strikethrough",
+      "underline",
+      "italic",
+      "|",
+      "ul",
+      "ol",
+      "|",
+      "outdent",
+      "indent",
+      "|",
+      "font",
+      "fontsize",
+      "brush",
+      "|",
+      "image",
+      "table",
+      "|",
+      "align",
+      "undo",
+      "redo",
+      "|",
+      "hr",
+      "|",
+      "print",
+    ],
+    buttonsSM: [
+      "bold",
+      "strikethrough",
+      "underline",
+      "italic",
+      "|",
+      "ul",
+      "ol",
+      "|",
+      "outdent",
+      "indent",
+      "|",
+      "font",
+      "fontsize",
+      "brush",
+      "|",
+      "image",
+      "table",
+      "|",
+      "align",
+      "undo",
+      "redo",
+      "|",
+      "hr",
+      "|",
+      "print",
+    ],
+    buttonsXS: [
+      "bold",
+      "strikethrough",
+      "underline",
+      "italic",
+      "|",
+      "ul",
+      "ol",
+      "|",
+      "outdent",
+      "indent",
+      "|",
+      "font",
+      "fontsize",
+      "brush",
+      "|",
+      "image",
+      "table",
+      "|",
+      "align",
+      "undo",
+      "redo",
+      "|",
+      "hr",
+      "|",
+      "print",
+    ],
+  };
+
   return (
-    <div>
-      <label htmlFor="grid-first-name">{props.label}</label>
-      <ReactQuill
-        value={props.value}
-        onChange={props.onChange}
-        modules={{
-          toolbar: [
-            [{ size: [] }],
-            ["bold", "italic", "underline", "strike", "blockquote"],
-            [
-              { list: "ordered" },
-              { list: "bullet" },
-              { indent: "-1" },
-              { indent: "+1" },
-            ],
-            // ["link", "image", "video"],
-            ["clean"],
-          ],
-          clipboard: {
-            // toggle to add extra line breaks when pasting HTML:
-            matchVisual: false,
-          },
-        }}
-        formats={[
-          "header",
-          "font",
-          "size",
-          "bold",
-          "italic",
-          "underline",
-          "strike",
-          "blockquote",
-          "list",
-          "bullet",
-          "indent",
-          "link",
-          // "image",
-          // "video",
-        ]}
-        placeholder={props.placeholder}
-        style={{ height: props.height ? props.height : 100, marginTop: 10 }}
-      />
-    </div>
+    <JoditEditor
+      ref={editor}
+      value={props.value}
+      config={config}
+      tabIndex={1}
+      onBlur={(newContent) => props.setValue(newContent)}
+      onChange={(newContent) => {}}
+    />
   );
 }
