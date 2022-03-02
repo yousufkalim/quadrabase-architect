@@ -186,6 +186,7 @@ i18n
           "Tranch deleted successfully": "Tranch deleted successfully",
           "Duplicate work Detail created": "Duplicate work Detail created",
           "Duplicate work created": "Duplicate work created",
+          "Add New": "Add New",
         },
       },
       fr: {
@@ -363,6 +364,7 @@ i18n
           "Tranch deleted successfully": "Tranche supprimée avec succès",
           "Duplicate work Detail created": "Dupliquer le détail d'Ouvrage",
           "Duplicate work created": "Duppliquer l'Ouvrage",
+          "Add New": "Ajouter nouveau",
         },
       },
     },
