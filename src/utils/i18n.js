@@ -202,6 +202,8 @@ i18n
           "Bottom":"Bottom",
           "Select Tranch":"Select Tranch",
           "Add New": "Add New",
+          "Type of stakeholder": "Type of stakeholder",
+          "Name of stakeholder": "Name of stakeholder",
         },
       },
       fr: {
@@ -396,6 +398,8 @@ i18n
           Create: "Créer ",
           "Select Tranch":"Sélectionnez une tranche",
           "Add New": "Ajouter nouveau",
+          "Type of stakeholder": "Type d'intervenant",
+          "Name of stakeholder": "Nom de l'intervenant",
         },
       },
     },
