@@ -187,6 +187,8 @@ i18n
           "Duplicate work Detail created": "Duplicate work Detail created",
           "Duplicate work created": "Duplicate work created",
           "Add New": "Add New",
+          "Type of stakeholder": "Type of stakeholder",
+          "Name of stakeholder": "Name of stakeholder",
         },
       },
       fr: {
@@ -365,6 +367,8 @@ i18n
           "Duplicate work Detail created": "Dupliquer le détail d'Ouvrage",
           "Duplicate work created": "Duppliquer l'Ouvrage",
           "Add New": "Ajouter nouveau",
+          "Type of stakeholder": "Type d'intervenant",
+          "Name of stakeholder": "Nom de l'intervenant",
         },
       },
     },

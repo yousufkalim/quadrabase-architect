@@ -18,6 +18,13 @@ import InputDropdown from "../../../components/InputDropdown";
 import RowRadioButtonsGroup from "../component/RadioGroup";
 import InputWithOptions from "../../../components/InputWithOptions";
 import { TextField } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const Textarea = styled.textarea`
   margin-right: 4rem;
@@ -126,6 +133,7 @@ const PropertiesModal = ({
     reference: "",
     description: "",
     chap0part2: "",
+    architectStakeholder: [],
   });
 
   const [values2, setValues2] = useState({
@@ -141,6 +149,8 @@ const PropertiesModal = ({
   const [typeOptions, setTypeOptions] = useState([]);
   const [typeValue, setTypeValue] = useState("");
   const [stakeholderOptions, setStakeholderOptions] = useState([]);
+  const [stakeholderOptions2, setStakeholderOptions2] = useState([]);
+  const [selectedStakeholder, setSelectedStakeholder] = useState("");
   const [value, setValue] = useState(0);
 
   //   useEffect to get vat
@@ -170,6 +180,7 @@ const PropertiesModal = ({
         prev.stakeholders = currentProject?.stakeholders;
         return { ...prev };
       });
+      setSelectedStakeholder(currentProject?.architectStakeholder);
     }
 
     getVat();
@@ -181,6 +192,9 @@ const PropertiesModal = ({
   useEffect(() => {
     getStakeholders();
   }, [typeValue]);
+  useEffect(() => {
+    getStakeholders2();
+  }, []);
 
   const getCurrentType = async () => {
     const result = await api(
@@ -202,6 +216,12 @@ const PropertiesModal = ({
       const result = await api("get", `/Stakeholders/getByType/${typeValue}`);
       setStakeholderOptions(result.data.stakeholder);
     }
+  };
+
+  //   func to get stakeholders
+  const getStakeholders2 = async () => {
+    const result = await api("get", `/Stakeholders/`);
+    setStakeholderOptions2(result.data.stakeholders);
   };
 
   //   func to get vat
@@ -244,12 +264,22 @@ const PropertiesModal = ({
     });
   };
 
+  const removeStakeholder = (id) => {
+    let temp = [];
+    temp = values3.stakeholders.filter((item) => item !== id);
+    setValues3((prev) => {
+      prev.stakeholders = temp;
+      return { ...prev };
+    });
+  };
+
   //   handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     let data = values;
     !values.reference && delete data.reference;
     !values.description && delete data.description;
+    values.architectStakeholder = selectedStakeholder && selectedStakeholder;
     if (
       !values.chap0part2 ||
       (currentProject.chap0part2 &&
@@ -315,13 +345,22 @@ const PropertiesModal = ({
           {/* All fields */}
           <InputWithLabel
             label={t("Name")}
-            required={true}
             name="name"
             type="text"
             value={values.name}
             handleChange={(e) => handleChange(e.target.name, e.target.value)}
           />
           <br />
+          <br />
+
+          <InputDropdown
+            label={t("Stakeholders")}
+            name="stakeholder"
+            value={selectedStakeholder}
+            options={stakeholderOptions2}
+            type="text"
+            onChange={(e) => setSelectedStakeholder(e.target.value)}
+          />
           <br />
           <Grid container spacing={2}>
             <Grid item zeroMinWidth xs>
@@ -470,6 +509,48 @@ const PropertiesModal = ({
             />
           </Grid>
         </Grid>
+        <br />
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t("Type of stakeholder")}</TableCell>
+                <TableCell align="left">{t("Name of stakeholder")}</TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {stakeholderOptions2?.map((row) =>
+                values3?.stakeholders?.map((row2) => {
+                  if (row2.toString() == row._id.toString()) {
+                    return (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="left">{row.type.text}</TableCell>
+                        <TableCell align="left">
+                          <Button
+                            variant="contained"
+                            className={classes.btn}
+                            onClick={() => removeStakeholder(row2)}
+                          >
+                            {t("Delete")}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                })
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <br />
         {/* register button */}
         <div style={{ width: "100%", textAlign: "right" }}>
