@@ -201,7 +201,7 @@ i18n
           "Down":"Down",
           "Bottom":"Bottom",
           "Select Tranch":"Select Tranch",
-          
+          "Add New": "Add New",
         },
       },
       fr: {
@@ -395,7 +395,7 @@ i18n
           "Bottom":"En bas",
           Create: "Créer ",
           "Select Tranch":"Sélectionnez une tranche",
-
+          "Add New": "Ajouter nouveau",
         },
       },
     },

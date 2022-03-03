@@ -703,9 +703,29 @@ const ProjectView = () => {
                     libraryLoading={libraryLoading}
                   />
                   <div
-                    style={{ fontSize: 20, marginTop: 15, marginBottom: 15 }}
+                    style={{
+                      fontSize: 20,
+                      marginTop: 15,
+                      marginBottom: 15,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
                   >
-                    <i>{t("Project Libraries")}</i>
+                    <div>
+                      <i>{t("Project Libraries")}</i>
+                    </div>
+                    <div>
+                      <i>
+                        <Button
+                          variant="contained"
+                          className={classes.btn}
+                          onClick={() => history.push("/libraries")}
+                        >
+                          {t("Add New")}
+                        </Button>
+                      </i>
+                    </div>
                   </div>
                   <NestedList
                     level1={projectLibrariesData}

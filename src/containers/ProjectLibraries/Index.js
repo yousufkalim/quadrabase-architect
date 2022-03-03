@@ -433,12 +433,12 @@ const Index = () => {
     <div>
       <Header />
       {/* families modal */}
-      <Modal
+      {/* <Modal
         title={t("Manage Families")}
         open={openFamiliesModal}
         onClose={handleOpenFamiliesModal}
         component={<AddFamilyModal />}
-      />
+      /> */}
       {/* Libararies modals */}
       <Modal
         title={t("Add Library")}

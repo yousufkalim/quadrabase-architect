@@ -222,14 +222,14 @@ export default function NestedList(props) {
             >
               {t("Add Library")}
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 props?.handleOpenFamiliesModal();
                 handleAnchorElLevel0Close();
               }}
             >
               {t("Manage Families")}
-            </MenuItem>
+            </MenuItem> */}
           </StyledMenu>
         </div>
       }
