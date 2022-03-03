@@ -109,7 +109,7 @@ const AddWorkDetailsModal = ({
       {currentProject.market_type === "TradesAndTranches" && (
         <>
           <br />
-          <h2>Select Tranch</h2>
+          <h2>{t("Select Tranch")}</h2>
           <br />
           <InputDropdown
             name="tranch"
