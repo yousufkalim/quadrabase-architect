@@ -846,25 +846,25 @@ const ProjectView = () => {
                       onClick={openEstimationModal}
                       style={{ width: 180, height: 28, fontSize: 15 }}
                     >
-                      Generate Estimate
+                      {t("Generate Estimate")}
                     </MenuItem>
                     <MenuItem
                       onClick={openDQEModal}
                       style={{ height: 28, fontSize: 15 }}
                     >
-                      Generate The DQE
+                      {t("Generate The DQE")}
                     </MenuItem>
                     <MenuItem
                       onClick={openBPUModal}
                       style={{ height: 28, fontSize: 15 }}
                     >
-                      Generate BPU
+                      {t("Generate BPU")}
                     </MenuItem>
                     <MenuItem
                       onClick={handleClose}
                       style={{ height: 28, fontSize: 15 }}
                     >
-                      Generate DPGF
+                      {t("Generate DPGF")}
                     </MenuItem>
 
                     <Divider />
@@ -872,14 +872,14 @@ const ProjectView = () => {
                       onClick={openCCTPModal}
                       style={{ height: 25, fontSize: 15 }}
                     >
-                      Generate The CCTP
+                      {t("Generate The CCTP")}
                     </MenuItem>
                     <Divider />
                     <MenuItem
                       onClick={handleClose}
                       style={{ height: 25, fontSize: 15 }}
                     >
-                      Technical Doc
+                      {t("Technical Doc")}
                     </MenuItem>
                   </Menu>
                 </div>
@@ -903,7 +903,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Trade n°{index + 1} - {item._id}
+                              Lot n°{index + 1} - {item._id}
                             </div>
                             <Table
                               projectWorkData={item.data}
@@ -929,7 +929,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Total Trade n°{index + 1} - {item._id}{" "}
+                              Total Lot n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
                               {tradeTotal[index].toFixed(2)}
                             </div>
@@ -949,7 +949,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Trade n°{index + 1} - {item._id}
+                              Lot n°{index + 1} - {item._id}
                             </div>
                             {item.data.map((item2, index2) => {
                               return (
@@ -1008,7 +1008,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Total Trade n°{index + 1} - {item._id}{" "}
+                              Total Lot n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
                               {tradeTotal[index].toFixed(2)}
                             </div>

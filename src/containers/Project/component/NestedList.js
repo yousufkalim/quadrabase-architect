@@ -16,6 +16,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
+import { useTranslation } from "react-i18next";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -62,6 +63,7 @@ const StyledMenu = styled((props) => (
 export default function NestedList(props) {
   // for opening level 1
   const [openListLevel1, setOpenListLevel1] = useState();
+  const { t } = useTranslation();
 
   const handleOpenListLevel1Click = (id) => {
     if (id) {
@@ -224,7 +226,7 @@ export default function NestedList(props) {
                                 }}
                                 disabled
                               >
-                                Empty
+                                {t("Empty")}
                               </MenuItem>
                             )}
                           </StyledMenu>
@@ -369,7 +371,7 @@ export default function NestedList(props) {
                                         }}
                                         disabled
                                       >
-                                        Empty
+                                        {t("Empty")}
                                       </MenuItem>
                                     )}
                                   </StyledMenu>
@@ -472,7 +474,7 @@ export default function NestedList(props) {
                                                   }}
                                                   disabled
                                                 >
-                                                  Empty
+                                                  {t("Empty")}
                                                 </MenuItem>
                                               )}
                                             </StyledMenu>
