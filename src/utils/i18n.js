@@ -206,6 +206,7 @@ i18n
           "Name of stakeholder": "Name of stakeholder",
           "Tranch is required": "Tranch is required",
           "Select at least 1 work detail": "Select at least 1 work detail",
+          "Architect Stakeholders": "Architect Stakeholders",
         },
       },
       fr: {
@@ -405,6 +406,7 @@ i18n
           "Tranch is required": "La tranche est requise",
           "Select at least 1 work detail":
             "Sélectionnez au moins 1 détail de travail",
+          "Architect Stakeholders": "Maitre d'Ouvrage",
         },
       },
     },

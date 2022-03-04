@@ -220,7 +220,11 @@ const PropertiesModal = ({
 
   //   func to get stakeholders
   const getStakeholders2 = async () => {
-    const result = await api("get", `/Stakeholders/`);
+    const result = await api(
+      "get",
+      `/Stakeholders/getByArchitect/${currentProject.architect}`
+    );
+    console.log(result.data.stakeholders, "result");
     setStakeholderOptions2(result.data.stakeholders);
   };
 
@@ -354,7 +358,7 @@ const PropertiesModal = ({
           <br />
 
           <InputDropdown
-            label={t("Stakeholders")}
+            label={t("Architect Stakeholders")}
             name="stakeholder"
             value={selectedStakeholder}
             options={stakeholderOptions2}
