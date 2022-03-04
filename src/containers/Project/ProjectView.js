@@ -931,7 +931,7 @@ const ProjectView = () => {
                             >
                               Total Lot n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
-                              {tradeTotal[index].toFixed(2)}
+                              {tradeTotal[index].toFixed(2)} €
                             </div>
                             <br />
                           </>
@@ -993,7 +993,7 @@ const ProjectView = () => {
                                   >
                                     Total Tranche {item2.tranch}
                                     &nbsp;&nbsp;&nbsp;
-                                    {item2.tranchAmount.toFixed(2)}
+                                    {item2.tranchAmount.toFixed(2)} €
                                   </div>
                                 </>
                               );
@@ -1010,7 +1010,7 @@ const ProjectView = () => {
                             >
                               Total Lot n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
-                              {tradeTotal[index].toFixed(2)}
+                              {tradeTotal[index].toFixed(2)} €
                             </div>
                             <br />
                           </>
@@ -1049,19 +1049,20 @@ const ProjectView = () => {
                         style={{
                           width: "30%",
                           padding: 20,
+                          fontWeight: 900,
                         }}
                       >
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
                             {t("Total HT")}:
                           </div>
-                          <div>{parseInt(totalHT).toFixed(2)}</div>
+                          <div>{parseInt(totalHT).toFixed(2)} €</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
                             {t("Total VAT")} (%):
                           </div>
-                          <div>{currentProject?.vat?.value.toFixed(2)}</div>
+                          <div>{currentProject?.vat?.value.toFixed(2)} €</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
@@ -1071,7 +1072,8 @@ const ProjectView = () => {
                             {(
                               totalHT *
                               (1 + currentProject?.vat?.value / 100)
-                            ).toFixed(2)}
+                            ).toFixed(2)}{" "}
+                            €
                           </div>
                         </div>
                       </div>
