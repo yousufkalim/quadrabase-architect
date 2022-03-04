@@ -76,6 +76,7 @@ const AddWorkModal = ({
     data.bpu_text = selectedWork.bpu_text;
     data.category = selectedWork.category;
     data.work_details = selectedWorkDetail;
+    data.providers = selectedWork.providers;
     if (currentProject.market_type === "TradesAndTranches") {
       if (tranch) {
         data.tranch = tranch;
