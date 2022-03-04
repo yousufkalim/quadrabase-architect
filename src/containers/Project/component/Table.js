@@ -568,7 +568,7 @@ export default function DenseTable({
                                 handleAnchorElLevel0Close();
                               }}
                             >
-                              To Modify
+                              {t("To Modify")}
                             </MenuItem>
                           )}
                           <MenuItem
@@ -577,7 +577,7 @@ export default function DenseTable({
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            To Delete
+                            {t("To Delete")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -585,7 +585,7 @@ export default function DenseTable({
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Duplicate
+                            {t("Duplicate")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -593,7 +593,7 @@ export default function DenseTable({
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Top
+                            {t("Top")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -601,7 +601,7 @@ export default function DenseTable({
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Up
+                            {t("Up")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -609,7 +609,7 @@ export default function DenseTable({
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Down
+                            {t("Down")}
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
@@ -617,7 +617,7 @@ export default function DenseTable({
                               handleAnchorElLevel1Close();
                             }}
                           >
-                            Bottom
+                            {t("Bottom")}
                           </MenuItem>
                         </StyledMenu>
                       )}
@@ -718,7 +718,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                To Modify
+                                {t("To Modify")}
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
@@ -728,7 +728,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                To Delete
+                                {t("To Delete")}
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
@@ -739,7 +739,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                Duplicate
+                                {t("Duplicate")}
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
@@ -747,7 +747,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                Top
+                                {t("Top")}
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
@@ -755,7 +755,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                Up
+                                {t("Up")}
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
@@ -763,7 +763,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                Down
+                                {t("Down")}
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
@@ -771,7 +771,7 @@ export default function DenseTable({
                                   handleAnchorElLevel2Close();
                                 }}
                               >
-                                Bottom
+                                {t("Bottom")}
                               </MenuItem>
                             </StyledMenu>
                           </TableCell>

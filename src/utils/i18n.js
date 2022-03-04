@@ -207,6 +207,7 @@ i18n
           "Tranch is required": "Tranch is required",
           "Select at least 1 work detail": "Select at least 1 work detail",
           "Architect Stakeholders": "Architect Stakeholders",
+          "Buy Credits":"Buy Credits",
         },
       },
       fr: {
@@ -407,6 +408,7 @@ i18n
           "Select at least 1 work detail":
             "Sélectionnez au moins 1 détail de travail",
           "Architect Stakeholders": "Maitre d'Ouvrage",
+          "Buy Credits":"Acheter des crédits",
         },
       },
     },
