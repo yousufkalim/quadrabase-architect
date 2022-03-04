@@ -150,6 +150,7 @@ const PropertiesModal = ({
   const [typeValue, setTypeValue] = useState("");
   const [stakeholderOptions, setStakeholderOptions] = useState([]);
   const [stakeholderOptions2, setStakeholderOptions2] = useState([]);
+  const [allStakeholderOptions, setAllStakeholderOptions] = useState([]);
   const [selectedStakeholder, setSelectedStakeholder] = useState("");
   const [value, setValue] = useState(0);
 
@@ -196,6 +197,10 @@ const PropertiesModal = ({
     getStakeholders2();
   }, []);
 
+  useEffect(() => {
+    getAllStakeholders();
+  }, []);
+
   const getCurrentType = async () => {
     const result = await api(
       "get",
@@ -224,8 +229,13 @@ const PropertiesModal = ({
       "get",
       `/Stakeholders/getByArchitect/${currentProject.architect}`
     );
-    console.log(result.data.stakeholders, "result");
     setStakeholderOptions2(result.data.stakeholders);
+  };
+
+  //   func to get stakeholders
+  const getAllStakeholders = async () => {
+    const result = await api("get", `/Stakeholders/`);
+    setAllStakeholderOptions(result.data.stakeholders);
   };
 
   //   func to get vat
@@ -524,8 +534,9 @@ const PropertiesModal = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {stakeholderOptions2?.map((row) =>
+              {allStakeholderOptions?.map((row) =>
                 values3?.stakeholders?.map((row2) => {
+                  console.log(row.type);
                   if (row2.toString() == row._id.toString()) {
                     return (
                       <TableRow
