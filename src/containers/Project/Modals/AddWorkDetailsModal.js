@@ -54,6 +54,7 @@ const AddWorkDetailsModal = ({
       cctp_text: selectedWork.cctp_text,
       bpu_text: selectedWork.bpu_text,
       category: selectedWork.category,
+      providers: selectedWork.providers,
       work_details: [],
     };
     data.work_details = selectedWorkDetail;
