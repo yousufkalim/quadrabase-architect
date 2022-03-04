@@ -525,7 +525,7 @@ export default function NestedList(props) {
                                       }}
                                     >
                                       <DeleteIcon style={{ marginRight: 10 }} />
-                                      Delete
+                                      {t("Delete")}
                                     </MenuItem>
                                     <MenuItem
                                       onClick={() => {
