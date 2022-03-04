@@ -204,6 +204,8 @@ i18n
           "Add New": "Add New",
           "Type of stakeholder": "Type of stakeholder",
           "Name of stakeholder": "Name of stakeholder",
+          "Buy Credits":"Buy Credits",
+
         },
       },
       fr: {
@@ -400,6 +402,7 @@ i18n
           "Add New": "Ajouter nouveau",
           "Type of stakeholder": "Type d'intervenant",
           "Name of stakeholder": "Nom de l'intervenant",
+          "Buy Credits":"Acheter des crédits",
         },
       },
     },
