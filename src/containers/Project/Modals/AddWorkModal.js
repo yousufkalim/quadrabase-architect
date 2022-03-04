@@ -91,7 +91,7 @@ const AddWorkModal = ({
         setOpenWorkModal(false);
         getworks();
       } else {
-        toast.error("Tranch is required");
+        toast.error(t("Tranch is required"));
       }
     } else {
       const result = await api(

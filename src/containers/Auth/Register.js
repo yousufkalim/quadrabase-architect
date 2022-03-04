@@ -667,7 +667,7 @@ const Register = ({ setCurrentPage }) => {
                   <>
                     <br />
                     <form onSubmit={handleComplete}>
-                      <div style={{ width: "100%" }}>
+                      <div className={classes.mainBox}>
                         {/* Top section */}
                         <div
                           style={{
@@ -705,16 +705,7 @@ const Register = ({ setCurrentPage }) => {
                               </span>
                             </div>
                           </div>
-                          <div
-                            style={{
-                              width: "10%",
-                              height: 100,
-                              border: "1px solid lightgray",
-                              borderRadius: 5,
-                              marginTop: 12,
-                              padding: 10,
-                            }}
-                          >
+                          <div className={classes.middleBox}>
                             <div style={{ marginBottom: 5 }}>
                               <InputDropdown
                                 options={options}
@@ -738,11 +729,7 @@ const Register = ({ setCurrentPage }) => {
                               first="notDisable"
                             />
                           </div>
-                          <div
-                            style={{
-                              width: "30%",
-                            }}
-                          >
+                          <div className={classes.rightBox}>
                             <span className={classes.borderText}>Total HT</span>
                             <div className={classes.borderBox}>
                               <div
@@ -801,16 +788,7 @@ const Register = ({ setCurrentPage }) => {
                               </div>
                             </div>
                           </div>
-                          <div
-                            style={{
-                              width: "10%",
-                              height: 50,
-                              border: "1px solid lightgray",
-                              borderRadius: 5,
-                              marginTop: 12,
-                              padding: "5px 10px",
-                            }}
-                          >
+                          <div className={classes.middleBox2}>
                             <InputDropdown
                               options={options}
                               height={38}
@@ -824,11 +802,7 @@ const Register = ({ setCurrentPage }) => {
                               component="register"
                             />
                           </div>
-                          <div
-                            style={{
-                              width: "30%",
-                            }}
-                          >
+                          <div className={classes.rightBox}>
                             <span className={classes.borderText}>Total HT</span>
                             <div className={classes.middleBorderBox}>
                               <div

@@ -10,6 +10,12 @@ export const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     color: "#3b373c",
+    "@media (max-width: 1480px)": {
+      width: "60%",
+    },
+    "@media (max-width: 1250px)": {
+      width: "65%",
+    },
   },
   btn: {
     width: "200px",
@@ -43,11 +49,17 @@ export const useStyles = makeStyles({
     borderRadius: 5,
     marginTop: -12,
     padding: "10px 10px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   textContainer: {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: -10,
+    marginBottom: -8,
+    "@media (max-width: 1250px)": {
+      marginBottom: -5,
+    },
   },
 
   middleBorderBox: {
@@ -81,5 +93,45 @@ export const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  middleBox: {
+    width: "10%",
+    height: 100,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: 12,
+    padding: 10,
+    "@media (max-width: 1780px)": {
+      width: "15%",
+    },
+  },
+  middleBox2: {
+    width: "10%",
+    height: 50,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: 12,
+    padding: "5px 10px",
+    "@media (max-width: 1780px)": {
+      width: "15%",
+    },
+  },
+  rightBox: {
+    width: "30%",
+    "@media (max-width: 1780px)": {
+      width: "25%",
+    },
+  },
+  mainBox: {
+    width: "100%",
+    "@media (max-width: 1550px)": {
+      fontSize: 15,
+    },
+    "@media (max-width: 1350px)": {
+      fontSize: 14,
+    },
+    "@media (max-width: 1200px)": {
+      fontSize: 13,
+    },
   },
 });

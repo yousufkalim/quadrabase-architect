@@ -58,7 +58,7 @@ const AddWorkDetailsModal = ({
     };
     data.work_details = selectedWorkDetail;
     if (data.work_details.length === 0) {
-      toast.error("Select at least 1 work detail");
+      toast.error(t("Select at least 1 work detail"));
     } else {
       if (currentProject.market_type === "TradesAndTranches") {
         if (tranch) {
@@ -75,7 +75,7 @@ const AddWorkDetailsModal = ({
           setOpenWorkDetailModal(false);
           getworks();
         } else {
-          toast.error("Tranch is required");
+          toast.error(t("Tranch is required"));
         }
       } else {
         const result = await api(
