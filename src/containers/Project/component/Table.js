@@ -130,47 +130,45 @@ export default function DenseTable({
   };
 
   //Work Top
-  const handleWorkTop = async (id) => {
-    let filteredIndex = work.findIndex((dt) => dt._id == id);
-    if (filteredIndex != 0) {
-      let minRanking = Math.min.apply(
-        Math,
-        work.map((item) => {
-          return item.ranking ? item.ranking : 0;
-        })
-      );
-      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
-        workId: id,
-        ranking: minRanking - 1,
-      }).then(() => {
-        let tempArr = [...work];
-        tempArr[filteredIndex].ranking = minRanking - 1;
-        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
-        setWork(tempArr);
-      });
-    }
-  };
+  // const handleWorkTop = async (id) => {
+  //   let filteredIndex = work.findIndex((dt) => dt._id == id);
+  //   if (filteredIndex != 0) {
+  //     let minRanking = Math.min.apply(
+  //       Math,
+  //       work.map((item) => {
+  //         return item.ranking ? item.ranking : 0;
+  //       })
+  //     );
+  //     api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+  //       workId: id,
+  //       ranking: minRanking - 1,
+  //     }).then(() => {
+  //       let tempArr = [...work];
+  //       tempArr[filteredIndex].ranking = minRanking - 1;
+  //       tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+  //       setWork(tempArr);
+  //     });
+  //   }
+  // };
 
   //Work Up
   const handleWorkUp = async (id) => {
     let filteredIndex = work.findIndex((dt) => dt._id == id);
     if (filteredIndex != 0) {
       let tempArr = [...work];
-      let currentRanking = tempArr[filteredIndex].ranking;
-      let prevRanking = tempArr[filteredIndex - 1].ranking;
-      console.log(currentRanking, prevRanking);
+      let prevIndex = filteredIndex - 1;
 
+      let prev = tempArr[prevIndex];
       api("put", `/project/updateWorkRanking/${currentProject._id}`, {
         workId: id,
-        ranking: prevRanking,
+        ranking: prevIndex,
       }).then(() => {
         api("put", `/project/updateWorkRanking/${currentProject._id}`, {
-          workId: tempArr[filteredIndex - 1]._id,
-          ranking: currentRanking,
+          workId: prev._id,
+          ranking: filteredIndex,
         }).then(() => {
-          tempArr[filteredIndex].ranking = prevRanking;
-          tempArr[filteredIndex - 1].ranking = currentRanking;
-          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          tempArr[filteredIndex] = work[filteredIndex - 1];
+          tempArr[filteredIndex - 1] = work[filteredIndex];
           setWork(tempArr);
         });
       });
@@ -180,22 +178,21 @@ export default function DenseTable({
   //Work Down
   const handleWorkDown = async (id) => {
     let filteredIndex = work.findIndex((dt) => dt._id == id);
+
     if (filteredIndex !== work.length - 1) {
       let tempArr = [...work];
-      let currentRanking = tempArr[filteredIndex].ranking;
-      let nextRanking = tempArr[filteredIndex + 1].ranking;
-
+      let nextIndex = filteredIndex + 1;
+      let prev = tempArr[nextIndex];
       api("put", `/project/updateWorkRanking/${currentProject._id}`, {
         workId: id,
-        ranking: nextRanking,
+        ranking: nextIndex,
       }).then(() => {
         api("put", `/project/updateWorkRanking/${currentProject._id}`, {
-          workId: tempArr[filteredIndex + 1]._id,
-          ranking: currentRanking,
+          workId: prev._id,
+          ranking: filteredIndex,
         }).then(() => {
-          tempArr[filteredIndex].ranking = nextRanking;
-          tempArr[filteredIndex + 1].ranking = currentRanking;
-          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          tempArr[filteredIndex] = work[nextIndex];
+          tempArr[nextIndex] = work[filteredIndex];
           setWork(tempArr);
         });
       });
@@ -203,68 +200,67 @@ export default function DenseTable({
   };
 
   //Work Bottom
-  const handleWorkBottom = async (id) => {
-    let filteredIndex = work.findIndex((dt) => dt._id == id);
-    if (filteredIndex !== work.length - 1) {
-      let maxRanking = Math.max.apply(
-        Math,
-        work.map((item) => {
-          return item.ranking;
-        })
-      );
-      api("put", `/project/updateWorkRanking/${currentProject._id}`, {
-        workId: id,
-        ranking: maxRanking + 1,
-      }).then(() => {
-        let tempArr = [...work];
-        tempArr[filteredIndex].ranking = maxRanking + 1;
-        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
-        setWork(tempArr);
-      });
-    }
-  };
+  // const handleWorkBottom = async (id) => {
+  //   let filteredIndex = work.findIndex((dt) => dt._id == id);
+  //   if (filteredIndex !== work.length - 1) {
+  //     let maxRanking = Math.max.apply(
+  //       Math,
+  //       work.map((item) => {
+  //         return item.ranking;
+  //       })
+  //     );
+  //     api("put", `/project/updateWorkRanking/${currentProject._id}`, {
+  //       workId: id,
+  //       ranking: maxRanking + 1,
+  //     }).then(() => {
+  //       let tempArr = [...work];
+  //       tempArr[filteredIndex].ranking = maxRanking + 1;
+  //       tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+  //       setWork(tempArr);
+  //     });
+  //   }
+  // };
 
   //WorkDetail Top
-  const handleWorkDetailTop = async (id) => {
-    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
-    if (filteredIndex != 0) {
-      let minRanking = Math.min.apply(
-        Math,
-        workDetails.map((item) => {
-          return item.ranking ? item.ranking : 0;
-        })
-      );
-      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
-        workDetailId: id,
-        ranking: minRanking - 1,
-      }).then(() => {
-        let tempArr = [...workDetails];
-        tempArr[filteredIndex].ranking = minRanking - 1;
-        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
-        setWorkDetails(tempArr);
-      });
-    }
-  };
+  // const handleWorkDetailTop = async (id) => {
+  //   let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+  //   if (filteredIndex != 0) {
+  //     let minRanking = Math.min.apply(
+  //       Math,
+  //       workDetails.map((item) => {
+  //         return item.ranking ? item.ranking : 0;
+  //       })
+  //     );
+  //     api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+  //       workDetailId: id,
+  //       ranking: minRanking - 1,
+  //     }).then(() => {
+  //       let tempArr = [...workDetails];
+  //       tempArr[filteredIndex].ranking = minRanking - 1;
+  //       tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+  //       setWorkDetails(tempArr);
+  //     });
+  //   }
+  // };
 
   //WorkDetail Up
   const handleWorkDetailUp = async (id) => {
     let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
     if (filteredIndex != 0) {
       let tempArr = [...workDetails];
-      let currentRanking = tempArr[filteredIndex].ranking;
-      let prevRanking = tempArr[filteredIndex - 1].ranking;
+      let prevIndex = filteredIndex - 1;
 
+      let prev = tempArr[prevIndex];
       api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
         workDetailId: id,
-        ranking: prevRanking,
+        ranking: prevIndex,
       }).then(() => {
         api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
-          workDetailId: tempArr[filteredIndex - 1]._id,
-          ranking: currentRanking,
+          workDetailId: prev._id,
+          ranking: filteredIndex,
         }).then(() => {
-          tempArr[filteredIndex].ranking = prevRanking;
-          tempArr[filteredIndex - 1].ranking = currentRanking;
-          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          tempArr[filteredIndex] = workDetails[filteredIndex - 1];
+          tempArr[filteredIndex - 1] = workDetails[filteredIndex];
           setWorkDetails(tempArr);
         });
       });
@@ -274,22 +270,21 @@ export default function DenseTable({
   //workDetails Down
   const handleWorkDetailsDown = async (id) => {
     let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+
     if (filteredIndex !== workDetails.length - 1) {
       let tempArr = [...workDetails];
-      let currentRanking = tempArr[filteredIndex].ranking;
-      let nextRanking = tempArr[filteredIndex + 1].ranking;
-
+      let nextIndex = filteredIndex + 1;
+      let prev = tempArr[nextIndex];
       api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
-        workId: id,
-        ranking: nextRanking,
+        workDetailId: id,
+        ranking: nextIndex,
       }).then(() => {
         api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
-          workId: tempArr[filteredIndex + 1]._id,
-          ranking: currentRanking,
+          workDetailId: prev._id,
+          ranking: filteredIndex,
         }).then(() => {
-          tempArr[filteredIndex].ranking = nextRanking;
-          tempArr[filteredIndex + 1].ranking = currentRanking;
-          tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+          tempArr[filteredIndex] = workDetails[nextIndex];
+          tempArr[nextIndex] = workDetails[filteredIndex];
           setWorkDetails(tempArr);
         });
       });
@@ -297,26 +292,26 @@ export default function DenseTable({
   };
 
   //WorkDetail Bottom
-  const handleWorkDetailBottom = async (id) => {
-    let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
-    if (filteredIndex !== workDetails.length - 1) {
-      let maxRanking = Math.max.apply(
-        Math,
-        workDetails.map((item) => {
-          return item.ranking;
-        })
-      );
-      api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
-        workDetailId: id,
-        ranking: maxRanking + 1,
-      }).then(() => {
-        let tempArr = [...workDetails];
-        tempArr[filteredIndex].ranking = maxRanking + 1;
-        tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
-        setWorkDetails(tempArr);
-      });
-    }
-  };
+  // const handleWorkDetailBottom = async (id) => {
+  //   let filteredIndex = workDetails.findIndex((dt) => dt._id == id);
+  //   if (filteredIndex !== workDetails.length - 1) {
+  //     let maxRanking = Math.max.apply(
+  //       Math,
+  //       workDetails.map((item) => {
+  //         return item.ranking;
+  //       })
+  //     );
+  //     api("put", `/project/updateWorkDetailRanking/${currentProject._id}`, {
+  //       workDetailId: id,
+  //       ranking: maxRanking + 1,
+  //     }).then(() => {
+  //       let tempArr = [...workDetails];
+  //       tempArr[filteredIndex].ranking = maxRanking + 1;
+  //       tempArr = tempArr.sort((a, b) => a.ranking - b.ranking);
+  //       setWorkDetails(tempArr);
+  //     });
+  //   }
+  // };
 
   // Duplicate Work
   const handleDuplicateWork = async (id) => {
@@ -441,14 +436,14 @@ export default function DenseTable({
                         >
                           {t("Duplicate")}
                         </MenuItem>
-                        <MenuItem
+                        {/* <MenuItem
                           onClick={() => {
                             handleWorkTop(menuItem0._id);
                             handleAnchorElLevel0Close();
                           }}
                         >
                           {t("Top")}
-                        </MenuItem>
+                        </MenuItem> */}
                         <MenuItem
                           onClick={() => {
                             handleWorkUp(menuItem0._id);
@@ -465,14 +460,14 @@ export default function DenseTable({
                         >
                           {t("Down")}
                         </MenuItem>
-                        <MenuItem
+                        {/* <MenuItem
                           onClick={() => {
                             handleWorkBottom(menuItem0._id);
                             handleAnchorElLevel0Close();
                           }}
                         >
                           {t("Bottom")}
-                        </MenuItem>
+                        </MenuItem> */}
                       </StyledMenu>
                     )}
                   </TableCell>
@@ -587,14 +582,14 @@ export default function DenseTable({
                           >
                             Duplicate
                           </MenuItem>
-                          <MenuItem
+                          {/* <MenuItem
                             onClick={() => {
                               handleWorkTop(menuItem1._id);
                               handleAnchorElLevel1Close();
                             }}
                           >
                             Top
-                          </MenuItem>
+                          </MenuItem> */}
                           <MenuItem
                             onClick={() => {
                               handleWorkUp(menuItem1._id);
@@ -611,14 +606,14 @@ export default function DenseTable({
                           >
                             Down
                           </MenuItem>
-                          <MenuItem
+                          {/* <MenuItem
                             onClick={() => {
                               handleWorkBottom(menuItem1._id);
                               handleAnchorElLevel1Close();
                             }}
                           >
                             Bottom
-                          </MenuItem>
+                          </MenuItem> */}
                         </StyledMenu>
                       )}
                     </TableCell>
@@ -741,14 +736,14 @@ export default function DenseTable({
                               >
                                 Duplicate
                               </MenuItem>
-                              <MenuItem
+                              {/* <MenuItem
                                 onClick={() => {
                                   handleWorkDetailTop(menuItem2._id);
                                   handleAnchorElLevel2Close();
                                 }}
                               >
                                 Top
-                              </MenuItem>
+                              </MenuItem> */}
                               <MenuItem
                                 onClick={() => {
                                   handleWorkDetailUp(menuItem2._id);
@@ -765,14 +760,14 @@ export default function DenseTable({
                               >
                                 Down
                               </MenuItem>
-                              <MenuItem
+                              {/* <MenuItem
                                 onClick={() => {
                                   handleWorkDetailBottom(menuItem2._id);
                                   handleAnchorElLevel2Close();
                                 }}
                               >
                                 Bottom
-                              </MenuItem>
+                              </MenuItem> */}
                             </StyledMenu>
                           </TableCell>
                           <TableCell
