@@ -17,6 +17,8 @@ import { Divider } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { styled, alpha } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useHistory } from "react-router-dom";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -62,6 +64,7 @@ const StyledMenu = styled((props) => (
 
 export default function NestedList(props) {
   const { t } = useTranslation();
+  const history = useHistory();
   // for level 0 dropdown menu
   const [anchorElLevel0, setAnchorElLevel0] = useState(null);
   const openLevel0 = Boolean(anchorElLevel0);
@@ -183,9 +186,18 @@ export default function NestedList(props) {
           <ListSubheader
             component="div"
             id="nested-list-subheader"
-            sx={{ fontSize: 18, fontWeight: 600, backgroundColor: "#F5F5F5" }}
+            sx={{
+              fontSize: 18,
+              fontWeight: 600,
+              backgroundColor: "#F5F5F5",
+              display: "flex",
+              alignItems: "center",
+            }}
           >
-            {props?.label}
+            <IconButton onClick={() => history.goBack()}>
+              <ArrowBackIcon />
+            </IconButton>
+            &nbsp;{props?.label}
           </ListSubheader>
           <IconButton
             id="demo-positioned-button"

@@ -41,7 +41,8 @@ import EditChap0Part2 from "./Modals/EditChap0Part2";
 import Loader from "./component/Loader";
 
 const ProjectView = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { language } = i18n;
   const params = useParams();
   const history = useHistory();
   const { id } = params;
@@ -721,6 +722,7 @@ const ProjectView = () => {
                           variant="contained"
                           className={classes.btn}
                           onClick={() => history.push("/libraries")}
+                          style={{ width: language === "fr" && 180 }}
                         >
                           {t("Add New")}
                         </Button>
