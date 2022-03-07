@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { UseStyles } from "../../css/main";
+import { useHistory } from "react-router-dom";
+
 // Routes
 import Login from "./Login";
-import Register from "./Register";
 import Logo from "../../assets/Quadralogo.png";
 
 // Main component
 const Main = () => {
   // intializing useStyle object
   const classes = UseStyles();
+  const history = useHistory();
   // state to switch between pages
   const [currentPage, setCurrentPage] = useState("login");
 
@@ -25,19 +27,15 @@ const Main = () => {
             type="submit"
             className={classes.btn}
             onClick={() => {
-              setCurrentPage(currentPage === "login" ? "register" : "login");
+              history.push("/register");
             }}
           >
-            {currentPage === "login" ? "Register" : "Login"}
+            Register
           </button>
         </div>
       </div>
       {/* form on the right */}
-      {currentPage === "login" ? (
-        <Login />
-      ) : (
-        <Register setCurrentPage={setCurrentPage} />
-      )}
+      <Login />
     </div>
   );
 };

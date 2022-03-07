@@ -5,6 +5,7 @@ import { Store } from "../StoreContext";
 
 // Routes
 import Auth from "../containers/Auth/Main.js";
+import Register from "../containers/Auth/Register";
 import Home from "../containers/Home";
 import Success from "../containers/Success";
 import ProjectLibraries from "../containers/ProjectLibraries/Index";
@@ -22,6 +23,7 @@ const index = () => {
       {store.loggedIn !== true ? (
         <>
           <Route path="/" exact component={Auth} />
+          <Route path="/register" exact component={Register} />
         </>
       ) : (
         <>

@@ -4,6 +4,8 @@ import { useStyles } from "../../css/register";
 import api from "../../api";
 import { toast } from "react-toastify";
 import validate from "validate.js";
+import Logo from "../../assets/Quadralogo.png";
+import { useHistory } from "react-router-dom";
 
 // component
 import Box from "@mui/material/Box";
@@ -111,6 +113,7 @@ const options = [
 // Register Component
 const Register = ({ setCurrentPage }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   // states
   const [activeStep, setActiveStep] = useState(0);
@@ -323,509 +326,702 @@ const Register = ({ setCurrentPage }) => {
 
   // returning jsx
   return (
-    <div className={classes.container}>
-      <Box sx={{ width: "80%" }}>
-        <Stepper
-          nonLinear
-          activeStep={activeStep}
-          sx={{
-            "& .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active": {
-              color: "#3b373c",
-            },
-            "& .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed": {
-              color: "#3b373c",
-            },
-          }}
-        >
-          {steps.map((label, index) => (
-            <Step key={label} completed={completed[index]}>
-              <StepButton color="inherit" onClick={handleStep(index)}>
-                {label}
-              </StepButton>
-            </Step>
-          ))}
-        </Stepper>
-        <div>
-          {allStepsCompleted() ? (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed -{" "}
-                <a href={invoiceUrl} target="_blank">
-                  View invoice
-                </a>
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={() => setCurrentPage("login")}>
-                  Proceed to login
-                </Button>
-              </Box>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                {activeStep === 0 ? (
-                  <>
-                    <br />
-                    <form onSubmit={handleComplete}>
-                      <Grid container spacing={2}>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Name of Establishment"
-                            required={true}
-                            name="establishment"
-                            type="text"
-                            value={form1.values.establishment}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form1.touched.establishment &&
-                              form1.errors.establishment
-                            }
-                            errorMessage={
-                              form1.touched.establishment &&
-                              form1.errors.establishment
-                            }
-                          />
-                        </Grid>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Service"
-                            required={true}
-                            name="service"
-                            type="text"
-                            value={form1.values.service}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form1.touched.service && form1.errors.service
-                            }
-                            errorMessage={
-                              form1.touched.service && form1.errors.service
-                            }
-                          />
-                        </Grid>
-                      </Grid>
+    <div className={classes.mainContainer}>
+      {/* left container */}
+      <div className={classes.left}>
+        {/* Welcome text and login button */}
+        <div className={classes.leftContent}>
+          <img src={Logo} alt="" />
+          <button
+            type="submit"
+            className={classes.btnLogin}
+            onClick={() => {
+              history.push("/");
+            }}
+          >
+            Login
+          </button>
+        </div>
+      </div>
+      <div className={classes.container}>
+        <Box sx={{ width: "80%" }}>
+          <Stepper
+            nonLinear
+            activeStep={activeStep}
+            sx={{
+              "& .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active": {
+                color: "#3b373c",
+              },
+              "& .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed": {
+                color: "#3b373c",
+              },
+            }}
+          >
+            {steps.map((label, index) => (
+              <Step key={label} completed={completed[index]}>
+                <StepButton color="inherit" onClick={handleStep(index)}>
+                  {label}
+                </StepButton>
+              </Step>
+            ))}
+          </Stepper>
+          <div>
+            {allStepsCompleted() ? (
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  All steps completed -{" "}
+                  <a href={invoiceUrl} target="_blank">
+                    View invoice
+                  </a>
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button onClick={() => setCurrentPage("login")}>
+                    Proceed to login
+                  </Button>
+                </Box>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  {activeStep === 0 ? (
+                    <>
                       <br />
-                      <Grid container spacing={2}>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Address 1"
-                            required={true}
-                            name="address_1"
-                            type="text"
-                            value={form1.values.address_1}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form1.touched.address_1 && form1.errors.address_1
-                            }
-                            errorMessage={
-                              form1.touched.address_1 && form1.errors.address_1
-                            }
-                          />
+                      <form onSubmit={handleComplete}>
+                        <Grid container spacing={2}>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Name of Establishment"
+                              required={true}
+                              name="establishment"
+                              type="text"
+                              value={form1.values.establishment}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form1.touched.establishment &&
+                                form1.errors.establishment
+                              }
+                              errorMessage={
+                                form1.touched.establishment &&
+                                form1.errors.establishment
+                              }
+                            />
+                          </Grid>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Service"
+                              required={true}
+                              name="service"
+                              type="text"
+                              value={form1.values.service}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form1.touched.service && form1.errors.service
+                              }
+                              errorMessage={
+                                form1.touched.service && form1.errors.service
+                              }
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Address 2"
-                            name="address_2"
-                            type="text"
-                            value={form1.values.address_2}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                          />
+                        <br />
+                        <Grid container spacing={2}>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Address 1"
+                              required={true}
+                              name="address_1"
+                              type="text"
+                              value={form1.values.address_1}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form1.touched.address_1 &&
+                                form1.errors.address_1
+                              }
+                              errorMessage={
+                                form1.touched.address_1 &&
+                                form1.errors.address_1
+                              }
+                            />
+                          </Grid>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Address 2"
+                              name="address_2"
+                              type="text"
+                              value={form1.values.address_2}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                            />
+                          </Grid>
                         </Grid>
-                      </Grid>
-                      <br />
-                      <Grid container spacing={2}>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="PO Box"
-                            required={true}
-                            name="po_box"
-                            type="text"
-                            value={form1.values.po_box}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={form1.touched.po_box && form1.errors.po_box}
-                            errorMessage={
-                              form1.touched.po_box && form1.errors.po_box
-                            }
-                          />
+                        <br />
+                        <Grid container spacing={2}>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="PO Box"
+                              required={true}
+                              name="po_box"
+                              type="text"
+                              value={form1.values.po_box}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form1.touched.po_box && form1.errors.po_box
+                              }
+                              errorMessage={
+                                form1.touched.po_box && form1.errors.po_box
+                              }
+                            />
+                          </Grid>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Postal Code"
+                              required={true}
+                              name="postal_code"
+                              type="number"
+                              value={form1.values.postal_code}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form1.touched.postal_code &&
+                                form1.errors.postal_code
+                              }
+                              errorMessage={
+                                form1.touched.postal_code &&
+                                form1.errors.postal_code
+                              }
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Postal Code"
-                            required={true}
-                            name="postal_code"
-                            type="number"
-                            value={form1.values.postal_code}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form1.touched.postal_code &&
-                              form1.errors.postal_code
-                            }
-                            errorMessage={
-                              form1.touched.postal_code &&
-                              form1.errors.postal_code
-                            }
-                          />
+                        <br />
+                        <Grid container spacing={2}>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="City"
+                              required={true}
+                              name="city"
+                              type="text"
+                              value={form1.values.city}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={form1.touched.city && form1.errors.city}
+                              errorMessage={
+                                form1.touched.city && form1.errors.city
+                              }
+                            />
+                          </Grid>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Phone Number"
+                              required={true}
+                              name="phone"
+                              type="number"
+                              value={form1.values.phone}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={form1.touched.phone && form1.errors.phone}
+                              errorMessage={
+                                form1.touched.phone && form1.errors.phone
+                              }
+                            />
+                          </Grid>
                         </Grid>
-                      </Grid>
-                      <br />
-                      <Grid container spacing={2}>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="City"
-                            required={true}
-                            name="city"
-                            type="text"
-                            value={form1.values.city}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={form1.touched.city && form1.errors.city}
-                            errorMessage={
-                              form1.touched.city && form1.errors.city
-                            }
-                          />
-                        </Grid>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Phone Number"
-                            required={true}
-                            name="phone"
-                            type="number"
-                            value={form1.values.phone}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={form1.touched.phone && form1.errors.phone}
-                            errorMessage={
-                              form1.touched.phone && form1.errors.phone
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          pt: 2,
-                          justifyContent: "center",
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          className={classes.btn}
-                          disabled={
-                            form1?.errors?.establishment ||
-                            form1?.errors?.service ||
-                            form1?.errors?.address_1 ||
-                            form1?.errors?.po_box ||
-                            form1?.errors?.postal_code ||
-                            form1?.errors?.phone
-                          }
-                        >
-                          Complete Step
-                        </button>
-                      </Box>
-                    </form>
-                  </>
-                ) : activeStep === 1 ? (
-                  <>
-                    <br />
-                    <form onSubmit={handleComplete}>
-                      <Grid container spacing={2}>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="First Name"
-                            required={true}
-                            name="first_name"
-                            type="text"
-                            value={form2.values.first_name}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form2.touched.first_name &&
-                              form2.errors.first_name
-                            }
-                            errorMessage={
-                              form2.touched.first_name &&
-                              form2.errors.first_name
-                            }
-                          />
-                        </Grid>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Last Name"
-                            required={true}
-                            name="last_name"
-                            type="text"
-                            value={form2.values.last_name}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form2.touched.last_name && form2.errors.last_name
-                            }
-                            errorMessage={
-                              form2.touched.last_name && form2.errors.last_name
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <br />
-                      <InputWithLabel
-                        label="Email"
-                        required={true}
-                        name="email"
-                        type="email"
-                        value={form2.values.email}
-                        handleChange={(e) =>
-                          handleChange(e.target.name, e.target.value)
-                        }
-                        error={form2.touched.email && form2.errors.email}
-                        errorMessage={form2.touched.email && form2.errors.email}
-                      />
-                      <br />
-                      <br />
-                      <Grid container spacing={2}>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Password"
-                            required={true}
-                            name="password"
-                            type="password"
-                            value={form2.values.password}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form2.touched.password && form2.errors.password
-                            }
-                            errorMessage={
-                              form2.touched.password && form2.errors.password
-                            }
-                          />
-                        </Grid>
-                        <Grid item zeroMinWidth xs>
-                          <InputWithLabel
-                            label="Confirm Password"
-                            required={true}
-                            name="confirm_password"
-                            type="password"
-                            value={form2.values.confirm_password}
-                            handleChange={(e) =>
-                              handleChange(e.target.name, e.target.value)
-                            }
-                            error={
-                              form2.touched.confirm_password &&
-                              form2.errors.confirm_password
-                            }
-                            errorMessage={
-                              form2.touched.confirm_password &&
-                              form2.errors.confirm_password
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <br />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          pt: 2,
-                          justifyContent: "center",
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          className={classes.btn}
-                          disabled={
-                            form2?.errors?.first_name ||
-                            form2?.errors?.last_name ||
-                            form2?.errors?.email ||
-                            form2?.errors?.password ||
-                            form2?.errors?.confirm_password
-                          }
-                        >
-                          Complete Step
-                        </button>
-                      </Box>
-                    </form>
-                  </>
-                ) : activeStep === 2 ? (
-                  <>
-                    <br />
-                    <form onSubmit={handleComplete}>
-                      <div className={classes.mainBox}>
-                        {/* Top section */}
-                        <div
-                          style={{
+                        <Box
+                          sx={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: 5,
+                            flexDirection: "row",
+                            pt: 2,
+                            justifyContent: "center",
                           }}
                         >
+                          <button
+                            type="submit"
+                            className={classes.btn}
+                            disabled={
+                              form1?.errors?.establishment ||
+                              form1?.errors?.service ||
+                              form1?.errors?.address_1 ||
+                              form1?.errors?.po_box ||
+                              form1?.errors?.postal_code ||
+                              form1?.errors?.phone
+                            }
+                          >
+                            Complete Step
+                          </button>
+                        </Box>
+                      </form>
+                    </>
+                  ) : activeStep === 1 ? (
+                    <>
+                      <br />
+                      <form onSubmit={handleComplete}>
+                        <Grid container spacing={2}>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="First Name"
+                              required={true}
+                              name="first_name"
+                              type="text"
+                              value={form2.values.first_name}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form2.touched.first_name &&
+                                form2.errors.first_name
+                              }
+                              errorMessage={
+                                form2.touched.first_name &&
+                                form2.errors.first_name
+                              }
+                            />
+                          </Grid>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Last Name"
+                              required={true}
+                              name="last_name"
+                              type="text"
+                              value={form2.values.last_name}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form2.touched.last_name &&
+                                form2.errors.last_name
+                              }
+                              errorMessage={
+                                form2.touched.last_name &&
+                                form2.errors.last_name
+                              }
+                            />
+                          </Grid>
+                        </Grid>
+                        <br />
+                        <InputWithLabel
+                          label="Email"
+                          required={true}
+                          name="email"
+                          type="email"
+                          value={form2.values.email}
+                          handleChange={(e) =>
+                            handleChange(e.target.name, e.target.value)
+                          }
+                          error={form2.touched.email && form2.errors.email}
+                          errorMessage={
+                            form2.touched.email && form2.errors.email
+                          }
+                        />
+                        <br />
+                        <br />
+                        <Grid container spacing={2}>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Password"
+                              required={true}
+                              name="password"
+                              type="password"
+                              value={form2.values.password}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form2.touched.password && form2.errors.password
+                              }
+                              errorMessage={
+                                form2.touched.password && form2.errors.password
+                              }
+                            />
+                          </Grid>
+                          <Grid item zeroMinWidth xs>
+                            <InputWithLabel
+                              label="Confirm Password"
+                              required={true}
+                              name="confirm_password"
+                              type="password"
+                              value={form2.values.confirm_password}
+                              handleChange={(e) =>
+                                handleChange(e.target.name, e.target.value)
+                              }
+                              error={
+                                form2.touched.confirm_password &&
+                                form2.errors.confirm_password
+                              }
+                              errorMessage={
+                                form2.touched.confirm_password &&
+                                form2.errors.confirm_password
+                              }
+                            />
+                          </Grid>
+                        </Grid>
+                        <br />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            pt: 2,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <button
+                            type="submit"
+                            className={classes.btn}
+                            disabled={
+                              form2?.errors?.first_name ||
+                              form2?.errors?.last_name ||
+                              form2?.errors?.email ||
+                              form2?.errors?.password ||
+                              form2?.errors?.confirm_password
+                            }
+                          >
+                            Complete Step
+                          </button>
+                        </Box>
+                      </form>
+                    </>
+                  ) : activeStep === 2 ? (
+                    <>
+                      <br />
+                      <form onSubmit={handleComplete}>
+                        <div className={classes.mainBox}>
+                          {/* Top section */}
                           <div
                             style={{
-                              width: "55%",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginBottom: 5,
                             }}
                           >
-                            <span className={classes.borderText}>
-                              Subscription
-                            </span>
-                            <div className={classes.borderBox}>
-                              <div className={classes.textContainer}>
-                                <div>Initial subscription for 1 year</div>
-                                <div>
-                                  {subAmounts.initial.price.toFixed(2)} € HT
-                                </div>
-                              </div>
-                              <span style={{ fontSize: 12 }}>
-                                (1 year, 5 projects)
+                            <div
+                              style={{
+                                width: "55%",
+                              }}
+                            >
+                              <span className={classes.borderText}>
+                                Subscription
                               </span>
-                              <div className={classes.textContainer}>
-                                <div>Extend subscription for 1 year</div>
-                                <div>
-                                  {subAmounts.extended.price.toFixed(2)} € HT
+                              <div className={classes.borderBox}>
+                                <div className={classes.textContainer}>
+                                  <div>Initial subscription for 1 year</div>
+                                  <div>
+                                    {subAmounts.initial.price.toFixed(2)} € HT
+                                  </div>
                                 </div>
+                                <span style={{ fontSize: 12 }}>
+                                  (1 year, 5 projects)
+                                </span>
+                                <div className={classes.textContainer}>
+                                  <div>Extend subscription for 1 year</div>
+                                  <div>
+                                    {subAmounts.extended.price.toFixed(2)} € HT
+                                  </div>
+                                </div>
+                                <span style={{ fontSize: 12 }}>
+                                  (extend date of subscription)
+                                </span>
                               </div>
-                              <span style={{ fontSize: 12 }}>
-                                (extend date of subscription)
-                              </span>
                             </div>
-                          </div>
-                          <div className={classes.middleBox}>
-                            <div style={{ marginBottom: 5 }}>
+                            <div className={classes.middleBox}>
+                              <div style={{ marginBottom: 5 }}>
+                                <InputDropdown
+                                  options={options}
+                                  height={38}
+                                  disabled={true}
+                                  value={subAmounts.initial.count}
+                                  component="register"
+                                />
+                              </div>
                               <InputDropdown
                                 options={options}
                                 height={38}
-                                disabled={true}
-                                value={subAmounts.initial.count}
+                                value={subAmounts.extended.count}
+                                onChange={(e) => {
+                                  setSubAmount((prev) => {
+                                    prev.extended.count = e.target.value;
+                                    return { ...prev };
+                                  });
+                                }}
                                 component="register"
+                                first="notDisable"
                               />
                             </div>
-                            <InputDropdown
-                              options={options}
-                              height={38}
-                              value={subAmounts.extended.count}
-                              onChange={(e) => {
-                                setSubAmount((prev) => {
-                                  prev.extended.count = e.target.value;
-                                  return { ...prev };
-                                });
-                              }}
-                              component="register"
-                              first="notDisable"
-                            />
-                          </div>
-                          <div className={classes.rightBox}>
-                            <span className={classes.borderText}>Total HT</span>
-                            <div className={classes.borderBox}>
-                              <div
-                                style={{
-                                  position: "relative",
-                                  zIndex: 1,
-                                  width: "100%",
-                                  textAlign: "right",
-                                  backgroundColor: "white",
-                                  padding: 7,
-                                  marginBottom: 5,
-                                }}
-                              >
-                                {subAmounts.initial.price.toFixed(2)} €
-                              </div>
-                              <div
-                                style={{
-                                  width: "100%",
-                                  textAlign: "right",
-                                  backgroundColor: "white",
-                                  padding: 7,
-                                }}
-                              >
-                                {(
-                                  subAmounts.extended.count *
-                                  subAmounts.extended.price
-                                ).toFixed(2)}{" "}
-                                €
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* middle Section */}
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: 5,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "55%",
-                            }}
-                          >
-                            <span className={classes.borderText}>
-                              Projects Pack
-                            </span>
-                            <div className={classes.middleBorderBox}>
-                              <div className={classes.middleTextContainer}>
-                                <div>Pack of 5 projects</div>
-                                <div>
-                                  {subAmounts.pack.price.toFixed(2)} € HT
+                            <div className={classes.rightBox}>
+                              <span className={classes.borderText}>
+                                Total HT
+                              </span>
+                              <div className={classes.borderBox}>
+                                <div
+                                  style={{
+                                    position: "relative",
+                                    zIndex: 1,
+                                    width: "100%",
+                                    textAlign: "right",
+                                    backgroundColor: "white",
+                                    padding: 7,
+                                    marginBottom: 5,
+                                  }}
+                                >
+                                  {subAmounts.initial.price.toFixed(2)} €
+                                </div>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                    textAlign: "right",
+                                    backgroundColor: "white",
+                                    padding: 7,
+                                  }}
+                                >
+                                  {(
+                                    subAmounts.extended.count *
+                                    subAmounts.extended.price
+                                  ).toFixed(2)}{" "}
+                                  €
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div className={classes.middleBox2}>
-                            <InputDropdown
-                              options={options}
-                              height={38}
-                              value={subAmounts.pack.count}
-                              onChange={(e) => {
-                                setSubAmount((prev) => {
-                                  prev.pack.count = e.target.value;
-                                  return { ...prev };
-                                });
+
+                          {/* middle Section */}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginBottom: 5,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "55%",
                               }}
-                              component="register"
-                            />
-                          </div>
-                          <div className={classes.rightBox}>
-                            <span className={classes.borderText}>Total HT</span>
-                            <div className={classes.middleBorderBox}>
-                              <div
-                                style={{
-                                  position: "relative",
-                                  zIndex: 1,
-                                  width: "100%",
-                                  textAlign: "right",
-                                  backgroundColor: "white",
-                                  padding: 3,
-                                  marginBottom: 5,
+                            >
+                              <span className={classes.borderText}>
+                                Projects Pack
+                              </span>
+                              <div className={classes.middleBorderBox}>
+                                <div className={classes.middleTextContainer}>
+                                  <div>Pack of 5 projects</div>
+                                  <div>
+                                    {subAmounts.pack.price.toFixed(2)} € HT
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className={classes.middleBox2}>
+                              <InputDropdown
+                                options={options}
+                                height={38}
+                                value={subAmounts.pack.count}
+                                onChange={(e) => {
+                                  setSubAmount((prev) => {
+                                    prev.pack.count = e.target.value;
+                                    return { ...prev };
+                                  });
                                 }}
-                              >
-                                {(
-                                  subAmounts.pack.count * subAmounts.pack.price
-                                ).toFixed(2)}{" "}
-                                €
+                                component="register"
+                              />
+                            </div>
+                            <div className={classes.rightBox}>
+                              <span className={classes.borderText}>
+                                Total HT
+                              </span>
+                              <div className={classes.middleBorderBox}>
+                                <div
+                                  style={{
+                                    position: "relative",
+                                    zIndex: 1,
+                                    width: "100%",
+                                    textAlign: "right",
+                                    backgroundColor: "white",
+                                    padding: 3,
+                                    marginBottom: 5,
+                                  }}
+                                >
+                                  {(
+                                    subAmounts.pack.count *
+                                    subAmounts.pack.price
+                                  ).toFixed(2)}{" "}
+                                  €
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* bottom  section */}
+                          {/* bottom  section */}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginBottom: 5,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <span className={classes.borderText}>Total</span>
+                              <div className={classes.borderBox}>
+                                <div
+                                  style={{
+                                    height: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>
+                                    <div>
+                                      Total duration:{" "}
+                                      {parseInt(subAmounts.initial.count) +
+                                        parseInt(
+                                          subAmounts.extended.count
+                                        )}{" "}
+                                      year
+                                    </div>
+                                    <div>
+                                      Number of projects:{" "}
+                                      {parseInt(subAmounts.pack.count) * 5}
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                      }}
+                                    >
+                                      <div style={{ width: 120 }}>
+                                        Total HT:
+                                      </div>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;
+                                      <div
+                                        style={{
+                                          position: "relative",
+                                          zIndex: 1,
+                                          width: "80%",
+                                          textAlign: "right",
+                                          backgroundColor: "white",
+                                          padding: 1,
+                                          marginBottom: 3,
+                                        }}
+                                      >
+                                        {(
+                                          subAmounts.initial.price *
+                                            subAmounts.initial.count +
+                                          subAmounts.extended.price *
+                                            subAmounts.extended.count +
+                                          subAmounts.pack.price *
+                                            subAmounts.pack.count
+                                        ).toFixed(2)}{" "}
+                                        €
+                                      </div>
+                                    </div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                      }}
+                                    >
+                                      <div style={{ width: 120 }}>VAT 20%:</div>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;
+                                      <div
+                                        style={{
+                                          position: "relative",
+                                          zIndex: 1,
+                                          width: "80%",
+                                          textAlign: "right",
+                                          backgroundColor: "white",
+                                          padding: 1,
+                                          marginBottom: 3,
+                                        }}
+                                      >
+                                        {(
+                                          ((subAmounts.initial.price *
+                                            subAmounts.initial.count +
+                                            subAmounts.extended.price *
+                                              subAmounts.extended.count +
+                                            subAmounts.pack.price *
+                                              subAmounts.pack.count) *
+                                            20) /
+                                          100
+                                        ).toFixed(2)}{" "}
+                                        €
+                                      </div>
+                                    </div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                      }}
+                                    >
+                                      <div style={{ width: 120 }}>
+                                        Total cost:
+                                      </div>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;
+                                      <div
+                                        style={{
+                                          position: "relative",
+                                          zIndex: 1,
+                                          width: "80%",
+                                          textAlign: "right",
+                                          backgroundColor: "white",
+                                          padding: 1,
+                                          marginBottom: 3,
+                                        }}
+                                      >
+                                        {(
+                                          ((subAmounts.initial.price *
+                                            subAmounts.initial.count +
+                                            subAmounts.extended.price *
+                                              subAmounts.extended.count +
+                                            subAmounts.pack.price *
+                                              subAmounts.pack.count) *
+                                            20) /
+                                            100 +
+                                          subAmounts.initial.price *
+                                            subAmounts.initial.count +
+                                          subAmounts.extended.price *
+                                            subAmounts.extended.count +
+                                          subAmounts.pack.price *
+                                            subAmounts.pack.count
+                                        ).toFixed(2)}{" "}
+                                        €
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              pt: 2,
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button type="submit" className={classes.btn}>
+                              Complete Step
+                            </button>
+                          </Box>
+                        </div>
+                      </form>
+                    </>
+                  ) : (
+                    <>
+                      <br />
+                      <form onSubmit={handleFinish}>
                         <div
                           style={{
                             display: "flex",
@@ -838,28 +1034,104 @@ const Register = ({ setCurrentPage }) => {
                               width: "100%",
                             }}
                           >
-                            <span className={classes.borderText}>Total</span>
-                            <div className={classes.borderBox}>
-                              <div
-                                style={{
-                                  height: "100%",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <div>
-                                  <div>
-                                    Total duration:{" "}
-                                    {parseInt(subAmounts.initial.count) +
-                                      parseInt(subAmounts.extended.count)}{" "}
-                                    year
-                                  </div>
-                                  <div>
-                                    Number of projects:{" "}
-                                    {parseInt(subAmounts.pack.count) * 5}
+                            <span className={classes.borderText}>Review</span>
+                            <div className={classes.page4BorderBox}>
+                              <div style={{ marginBottom: 20 }}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>Initial subscription for 1 year</div>
+                                  <div
+                                    style={{
+                                      backgroundColor: "white",
+                                      padding: "1px 10px",
+                                      marginBottom: 5,
+                                      width: 200,
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
+                                    <div>{subAmounts.initial.price} €</div>
+                                    <div>{subAmounts.initial.count}</div>
+                                    <div>
+                                      {subAmounts.initial.price *
+                                        subAmounts.initial.count}{" "}
+                                      €
+                                    </div>
                                   </div>
                                 </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>Extend subscription for 1 year</div>
+                                  <div
+                                    style={{
+                                      backgroundColor: "white",
+                                      padding: "1px 10px",
+                                      marginBottom: 5,
+                                      width: 200,
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
+                                    <div>{subAmounts.extended.price} €</div>
+                                    <div>{subAmounts.extended.count}</div>
+                                    <div>
+                                      {subAmounts.extended.price *
+                                        subAmounts.extended.count}{" "}
+                                      €
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <div>Pack of 5 projects</div>
+                                  <div
+                                    style={{
+                                      backgroundColor: "white",
+                                      padding: "1px 10px",
+                                      marginBottom: 7,
+                                      width: 200,
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
+                                    <div>{subAmounts.pack.price} €</div>
+                                    <div>{subAmounts.pack.count}</div>
+                                    <div>
+                                      {subAmounts.pack.price *
+                                        subAmounts.pack.count}{" "}
+                                      €
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                    height: 2,
+                                    backgroundColor: "lightgray",
+                                  }}
+                                ></div>
+                              </div>
+
+                              <div
+                                style={{
+                                  height: "35%",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "flex-end",
+                                }}
+                              >
                                 <div>
                                   <div
                                     style={{
@@ -966,6 +1238,44 @@ const Register = ({ setCurrentPage }) => {
                           </div>
                         </div>
 
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 5,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "100%",
+                            }}
+                          >
+                            <span className={classes.borderText}>
+                              Payment Method
+                            </span>
+                            <div className={classes.page4BottomBorderBox}>
+                              <FormControl>
+                                <RadioGroup
+                                  row
+                                  aria-labelledby="demo-row-radio-buttons-group-label"
+                                  name="row-radio-buttons-group"
+                                >
+                                  <FormControlLabel
+                                    value="card"
+                                    control={<Radio />}
+                                    label="Card"
+                                  />
+                                  <FormControlLabel
+                                    value="sepa"
+                                    control={<Radio />}
+                                    label="SEPA"
+                                  />
+                                </RadioGroup>
+                              </FormControl>
+                            </div>
+                          </div>
+                        </div>
+
                         <Box
                           sx={{
                             display: "flex",
@@ -974,295 +1284,25 @@ const Register = ({ setCurrentPage }) => {
                             justifyContent: "center",
                           }}
                         >
-                          <button type="submit" className={classes.btn}>
-                            Complete Step
+                          <button
+                            type="submit"
+                            disabled={
+                              !completed[0] || !completed[1] || !completed[2]
+                            }
+                            className={classes.btn}
+                          >
+                            Finish
                           </button>
                         </Box>
-                      </div>
-                    </form>
-                  </>
-                ) : (
-                  <>
-                    <br />
-                    <form onSubmit={handleFinish}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: 5,
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "100%",
-                          }}
-                        >
-                          <span className={classes.borderText}>Review</span>
-                          <div className={classes.page4BorderBox}>
-                            <div style={{ marginBottom: 20 }}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <div>Initial subscription for 1 year</div>
-                                <div
-                                  style={{
-                                    backgroundColor: "white",
-                                    padding: "1px 10px",
-                                    marginBottom: 5,
-                                    width: 200,
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <div>{subAmounts.initial.price} €</div>
-                                  <div>{subAmounts.initial.count}</div>
-                                  <div>
-                                    {subAmounts.initial.price *
-                                      subAmounts.initial.count}{" "}
-                                    €
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <div>Extend subscription for 1 year</div>
-                                <div
-                                  style={{
-                                    backgroundColor: "white",
-                                    padding: "1px 10px",
-                                    marginBottom: 5,
-                                    width: 200,
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <div>{subAmounts.extended.price} €</div>
-                                  <div>{subAmounts.extended.count}</div>
-                                  <div>
-                                    {subAmounts.extended.price *
-                                      subAmounts.extended.count}{" "}
-                                    €
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <div>Pack of 5 projects</div>
-                                <div
-                                  style={{
-                                    backgroundColor: "white",
-                                    padding: "1px 10px",
-                                    marginBottom: 7,
-                                    width: 200,
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <div>{subAmounts.pack.price} €</div>
-                                  <div>{subAmounts.pack.count}</div>
-                                  <div>
-                                    {subAmounts.pack.price *
-                                      subAmounts.pack.count}{" "}
-                                    €
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                style={{
-                                  width: "100%",
-                                  height: 2,
-                                  backgroundColor: "lightgray",
-                                }}
-                              ></div>
-                            </div>
-
-                            <div
-                              style={{
-                                height: "35%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "flex-end",
-                              }}
-                            >
-                              <div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                  }}
-                                >
-                                  <div style={{ width: 120 }}>Total HT:</div>
-                                  &nbsp;&nbsp;&nbsp;&nbsp;
-                                  <div
-                                    style={{
-                                      position: "relative",
-                                      zIndex: 1,
-                                      width: "80%",
-                                      textAlign: "right",
-                                      backgroundColor: "white",
-                                      padding: 1,
-                                      marginBottom: 3,
-                                    }}
-                                  >
-                                    {(
-                                      subAmounts.initial.price *
-                                        subAmounts.initial.count +
-                                      subAmounts.extended.price *
-                                        subAmounts.extended.count +
-                                      subAmounts.pack.price *
-                                        subAmounts.pack.count
-                                    ).toFixed(2)}{" "}
-                                    €
-                                  </div>
-                                </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                  }}
-                                >
-                                  <div style={{ width: 120 }}>VAT 20%:</div>
-                                  &nbsp;&nbsp;&nbsp;&nbsp;
-                                  <div
-                                    style={{
-                                      position: "relative",
-                                      zIndex: 1,
-                                      width: "80%",
-                                      textAlign: "right",
-                                      backgroundColor: "white",
-                                      padding: 1,
-                                      marginBottom: 3,
-                                    }}
-                                  >
-                                    {(
-                                      ((subAmounts.initial.price *
-                                        subAmounts.initial.count +
-                                        subAmounts.extended.price *
-                                          subAmounts.extended.count +
-                                        subAmounts.pack.price *
-                                          subAmounts.pack.count) *
-                                        20) /
-                                      100
-                                    ).toFixed(2)}{" "}
-                                    €
-                                  </div>
-                                </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                  }}
-                                >
-                                  <div style={{ width: 120 }}>Total cost:</div>
-                                  &nbsp;&nbsp;&nbsp;&nbsp;
-                                  <div
-                                    style={{
-                                      position: "relative",
-                                      zIndex: 1,
-                                      width: "80%",
-                                      textAlign: "right",
-                                      backgroundColor: "white",
-                                      padding: 1,
-                                      marginBottom: 3,
-                                    }}
-                                  >
-                                    {(
-                                      ((subAmounts.initial.price *
-                                        subAmounts.initial.count +
-                                        subAmounts.extended.price *
-                                          subAmounts.extended.count +
-                                        subAmounts.pack.price *
-                                          subAmounts.pack.count) *
-                                        20) /
-                                        100 +
-                                      subAmounts.initial.price *
-                                        subAmounts.initial.count +
-                                      subAmounts.extended.price *
-                                        subAmounts.extended.count +
-                                      subAmounts.pack.price *
-                                        subAmounts.pack.count
-                                    ).toFixed(2)}{" "}
-                                    €
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: 5,
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "100%",
-                          }}
-                        >
-                          <span className={classes.borderText}>
-                            Payment Method
-                          </span>
-                          <div className={classes.page4BottomBorderBox}>
-                            <FormControl>
-                              <RadioGroup
-                                row
-                                aria-labelledby="demo-row-radio-buttons-group-label"
-                                name="row-radio-buttons-group"
-                              >
-                                <FormControlLabel
-                                  value="card"
-                                  control={<Radio />}
-                                  label="Card"
-                                />
-                                <FormControlLabel
-                                  value="sepa"
-                                  control={<Radio />}
-                                  label="SEPA"
-                                />
-                              </RadioGroup>
-                            </FormControl>
-                          </div>
-                        </div>
-                      </div>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          pt: 2,
-                          justifyContent: "center",
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          disabled={
-                            !completed[0] || !completed[1] || !completed[2]
-                          }
-                          className={classes.btn}
-                        >
-                          Finish
-                        </button>
-                      </Box>
-                    </form>
-                  </>
-                )}
-              </Typography>
-            </React.Fragment>
-          )}
-        </div>
-      </Box>
+                      </form>
+                    </>
+                  )}
+                </Typography>
+              </React.Fragment>
+            )}
+          </div>
+        </Box>
+      </div>
     </div>
   );
 };
