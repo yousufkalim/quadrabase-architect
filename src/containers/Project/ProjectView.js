@@ -905,7 +905,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Lot n°{index + 1} - {item._id}
+                              {t("Trade")} n°{index + 1} - {item._id}
                             </div>
                             <Table
                               projectWorkData={item.data}
@@ -931,7 +931,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Total Lot n°{index + 1} - {item._id}{" "}
+                              Total {t("Trade")} n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
                               {tradeTotal[index].toFixed(2)} €
                             </div>
@@ -951,7 +951,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Lot n°{index + 1} - {item._id}
+                              {t("Trade")} n°{index + 1} - {item._id}
                             </div>
                             {item.data.map((item2, index2) => {
                               return (
@@ -1010,7 +1010,7 @@ const ProjectView = () => {
                                 fontWeight: 600,
                               }}
                             >
-                              Total Lot n°{index + 1} - {item._id}{" "}
+                              Total {t("Trade")} n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
                               {tradeTotal[index].toFixed(2)} €
                             </div>

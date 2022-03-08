@@ -46,6 +46,7 @@ i18n
           "Add Project": "Add Project",
           Simple: "Simple",
           Trades: "Trades",
+          "Trade":"trade",
           "Trades And Tranches": "Trades And Tranches",
           "Purchase Order": "Purchase Order",
           English: "English",
@@ -207,6 +208,7 @@ i18n
           "Tranch is required": "Tranch is required",
           "Select at least 1 work detail": "Select at least 1 work detail",
           "Architect Stakeholders": "Architect Stakeholders",
+          "Buy Credits":"Buy Credits",
         },
       },
       fr: {
@@ -246,6 +248,7 @@ i18n
           "Add Project": "Ajouter un projet",
           Simple: "Simple",
           Trades: "Lots",
+          "Trade":"Lot",
           "Trades And Tranches": "Lots et tranches",
           "Purchase Order": "Bon de commande",
           English: "Anglais",
@@ -407,6 +410,7 @@ i18n
           "Select at least 1 work detail":
             "Sélectionnez au moins 1 détail de travail",
           "Architect Stakeholders": "Maitre d'Ouvrage",
+          "Buy Credits":"Acheter des crédits",
         },
       },
     },
