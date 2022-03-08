@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import JoditEditor from "jodit-react";
 import { toast } from "react-toastify";
+import "../css/textEditor.css";
 
 export default function Index(props) {
   const editor = useRef(null);
@@ -147,13 +148,15 @@ export default function Index(props) {
   };
 
   return (
-    <JoditEditor
-      ref={editor}
-      value={props.value}
-      config={config}
-      tabIndex={1}
-      onBlur={(newContent) => props.setValue(newContent)}
-      onChange={(newContent) => {}}
-    />
+    <div className="textEditor">
+      <JoditEditor
+        ref={editor}
+        value={props.value}
+        config={config}
+        tabIndex={1}
+        onBlur={(newContent) => props.setValue(newContent)}
+        onChange={(newContent) => {}}
+      />
+    </div>
   );
 }
