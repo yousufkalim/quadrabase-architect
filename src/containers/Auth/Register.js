@@ -304,6 +304,28 @@ const Register = ({ setCurrentPage }) => {
       };
       const result = await api("post", `/Providers/create`, data);
       toast.success(result.data.message);
+
+      // to generate invoice
+      let invoiceData = {
+        address1: form1.values.address_1,
+        alertPrice: 5000,
+        alertCount: fabricantSub === "Alertes" ? 1 : 0,
+        alertTotal: fabricantSub === "Alertes" ? 5000 : 0,
+        referenPrice: 2000,
+        referenCount: fabricantSub === "Référencement" ? 1 : 0,
+        referenTotal: fabricantSub === "Référencement" ? 2000 : 0,
+        totalHT: fabricantSub === "Référencement" ? 2000 : 0,
+        tvaPercentage: 20,
+        tvaAmount:
+          fabricantSub === "Alertes" ? (5000 * 20) / 100 : (2000 * 20) / 100,
+        TotalCost:
+          fabricantSub === "Alertes"
+            ? (5000 * 20) / 100 + 5000
+            : (2000 * 20) / 100 + 2000,
+        paymentMode: "Card",
+      };
+      const result2 = await api("post", `/Providers/download`, invoiceData);
+      setInvoiceUrl(result2.data.path);
       handleComplete();
     }
   };
@@ -456,7 +478,7 @@ const Register = ({ setCurrentPage }) => {
                   </Typography>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                     <Box sx={{ flex: "1 1 auto" }} />
-                    <Button onClick={() => setCurrentPage("login")}>
+                    <Button onClick={() => history.push("/")}>
                       Proceed to login
                     </Button>
                   </Box>
