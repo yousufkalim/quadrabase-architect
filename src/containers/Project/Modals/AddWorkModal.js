@@ -31,7 +31,9 @@ const AddWorkModal = ({
   });
   const [options, setOptions] = useState([]);
   const [tranchOptions, setTranchOptions] = useState([]);
+  const [tradeOptions, setTradeOptions] = useState([]);
   const [tranch, setTranch] = useState("");
+  const [trade, setTrade] = useState("");
 
   useEffect(() => {
     selectedWork &&
@@ -47,11 +49,19 @@ const AddWorkModal = ({
   useEffect(() => {
     getUnits();
     currentProject.market_type === "TradesAndTranches" && getTranches();
+    (currentProject.market_type === "TradesAndTranches" ||
+      currentProject.market_type === "Trades") &&
+      getTrades();
   }, []);
 
   const getTranches = async () => {
     const result = await api("get", `/Tranches/`);
     setTranchOptions(result.data.tranches);
+  };
+
+  const getTrades = async () => {
+    const result = await api("get", `/Trades/`);
+    setTradeOptions(result.data.trades);
   };
 
   // func to getAll Units
@@ -74,12 +84,11 @@ const AddWorkModal = ({
     let data = values;
     data.cctp_text = selectedWork.cctp_text;
     data.bpu_text = selectedWork.bpu_text;
-    data.category = selectedWork.category;
     data.work_details = selectedWorkDetail;
     data.providers = selectedWork.providers;
-    if (currentProject.market_type === "TradesAndTranches") {
-      if (tranch) {
-        data.tranch = tranch;
+    if (currentProject.market_type === "Trades") {
+      if (trade) {
+        data.trade = trade;
         const result = await api(
           "post",
           `/project/addWork/${currentProject._id}`,
@@ -92,7 +101,29 @@ const AddWorkModal = ({
         setOpenWorkModal(false);
         getworks();
       } else {
-        toast.error(t("Tranch is required"));
+        toast.error(t("Trade is required"));
+      }
+    } else if (currentProject.market_type === "TradesAndTranches") {
+      if (trade) {
+        data.trade = trade;
+        if (tranch) {
+          data.tranch = tranch;
+          const result = await api(
+            "post",
+            `/project/addWork/${currentProject._id}`,
+            data,
+            t
+          );
+          toast.success(t(result.data.message));
+          setSelectedWorkDetail([]);
+          setSelectedWork();
+          setOpenWorkModal(false);
+          getworks();
+        } else {
+          toast.error(t("Tranch is required"));
+        }
+      } else {
+        toast.error(t("Trade is required"));
       }
     } else {
       const result = await api(
@@ -163,6 +194,20 @@ const AddWorkModal = ({
               value={tranch}
               onChange={(e) => setTranch(e.target.value)}
               options={tranchOptions}
+            />
+            <br />
+          </>
+        )}
+        {(currentProject.market_type === "TradesAndTranches" ||
+          currentProject.market_type === "Trades") && (
+          <>
+            <br />
+            <InputDropdown
+              name="trade"
+              label="Trade"
+              value={trade}
+              onChange={(e) => setTrade(e.target.value)}
+              options={tradeOptions}
             />
             <br />
           </>

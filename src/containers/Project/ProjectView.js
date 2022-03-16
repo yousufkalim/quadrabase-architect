@@ -155,7 +155,7 @@ const ProjectView = () => {
         tempArray[index1] = tempSum;
       });
       setTradeTotal(tempArray);
-      setTotalHT(tempAmount.toFixed(2));
+      setTotalHT(tempAmount?.toFixed(2));
 
       if (currentProject.market_type === "TradesAndTranches") {
         data.map((item) => {
@@ -227,7 +227,7 @@ const ProjectView = () => {
         tempArray[index1] = tempSum;
       });
       setTradeTotal(tempArray);
-      setTotalHT(tempAmount.toFixed(2));
+      setTotalHT(tempAmount?.toFixed(2));
       setProjectWorkData(data);
     } else {
       const result = await api("get", `/project/works/${id}`);
@@ -789,28 +789,30 @@ const ProjectView = () => {
                     </>
                   )}
                   {currentProject.market_type === "TradesAndTranches" && (
-                    <LayersIcon
-                      sx={{
-                        fontSize: 18,
-                        cursor: "pointer",
-                        "&:hover": {
-                          color: "#f1966c",
-                        },
-                      }}
-                      onClick={handleTranchesModal}
-                    />
+                    <>
+                      <LayersIcon
+                        sx={{
+                          fontSize: 18,
+                          cursor: "pointer",
+                          "&:hover": {
+                            color: "#f1966c",
+                          },
+                        }}
+                        onClick={handleTranchesModal}
+                      />
+                      <div
+                        style={{
+                          marginRight: 10,
+                          marginLeft: 10,
+                          fontSize: 20,
+                          color: "lightgray",
+                        }}
+                      >
+                        |
+                      </div>
+                    </>
                   )}
 
-                  <div
-                    style={{
-                      marginRight: 10,
-                      marginLeft: 10,
-                      fontSize: 20,
-                      color: "lightgray",
-                    }}
-                  >
-                    |
-                  </div>
                   <BorderColorIcon
                     sx={{
                       fontSize: 18,
@@ -967,7 +969,7 @@ const ProjectView = () => {
                             >
                               Total {t("Trade")} n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
-                              {tradeTotal[index].toFixed(2)} €
+                              {tradeTotal[index]?.toFixed(2)} €
                             </div>
                             <br />
                           </>
@@ -1029,7 +1031,7 @@ const ProjectView = () => {
                                   >
                                     Total Tranche {item2.tranch}
                                     &nbsp;&nbsp;&nbsp;
-                                    {item2.tranchAmount.toFixed(2)} €
+                                    {item2.tranchAmount?.toFixed(2)} €
                                   </div>
                                 </>
                               );
@@ -1046,7 +1048,7 @@ const ProjectView = () => {
                             >
                               Total {t("Trade")} n°{index + 1} - {item._id}{" "}
                               &nbsp;&nbsp;&nbsp;
-                              {tradeTotal[index].toFixed(2)} €
+                              {tradeTotal[index]?.toFixed(2)} €
                             </div>
                             <br />
                           </>
@@ -1092,13 +1094,13 @@ const ProjectView = () => {
                           <div className={classes.fotter_text}>
                             {t("Total HT")}:
                           </div>
-                          <div>{parseInt(totalHT).toFixed(2)} €</div>
+                          <div>{parseInt(totalHT)?.toFixed(2)} €</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
                             {t("Total VAT")} (%):
                           </div>
-                          <div>{currentProject?.vat?.value.toFixed(2)} €</div>
+                          <div>{currentProject?.vat?.value?.toFixed(2)} €</div>
                         </div>
                         <div className={classes.flex_container}>
                           <div className={classes.fotter_text}>
@@ -1108,7 +1110,7 @@ const ProjectView = () => {
                             {(
                               totalHT *
                               (1 + currentProject?.vat?.value / 100)
-                            ).toFixed(2)}{" "}
+                            )?.toFixed(2)}{" "}
                             €
                           </div>
                         </div>
