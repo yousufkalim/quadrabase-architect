@@ -472,7 +472,7 @@ const Register = ({ setCurrentPage }) => {
                             <Grid container spacing={2}>
                               <Grid item zeroMinWidth xs>
                                 <InputWithLabel
-                                  label="Name of Establishment"
+                                  label="Nom Etablissement"
                                   required={true}
                                   name="establishment"
                                   type="text"
@@ -513,7 +513,7 @@ const Register = ({ setCurrentPage }) => {
                           ) : (
                             <>
                               <InputWithLabel
-                                label="Name of Establishment"
+                                label="Nom Etablissement"
                                 required={true}
                                 name="establishment"
                                 type="text"
@@ -572,7 +572,7 @@ const Register = ({ setCurrentPage }) => {
                           <Grid container spacing={2}>
                             <Grid item zeroMinWidth xs>
                               <InputWithLabel
-                                label="PO Box"
+                                label="Boite Postale"
                                 name="po_box"
                                 type="text"
                                 value={form1.values.po_box}
@@ -590,7 +590,7 @@ const Register = ({ setCurrentPage }) => {
                             <Grid item zeroMinWidth xs>
                               {type === "Prescripteur" ? (
                                 <InputWithLabel
-                                  label="Postal Code"
+                                  label="Code Postal"
                                   required={true}
                                   name="postal_code"
                                   type="number"
@@ -609,7 +609,7 @@ const Register = ({ setCurrentPage }) => {
                                 />
                               ) : (
                                 <InputWithLabel
-                                  label="Zip code"
+                                  label="Code Postal"
                                   required={true}
                                   name="postal_code"
                                   type="number"
@@ -633,7 +633,7 @@ const Register = ({ setCurrentPage }) => {
                           <Grid container spacing={2}>
                             <Grid item zeroMinWidth xs>
                               <InputWithLabel
-                                label="City"
+                                label="Ville"
                                 required={true}
                                 name="city"
                                 type="text"
@@ -649,7 +649,7 @@ const Register = ({ setCurrentPage }) => {
                             </Grid>
                             <Grid item zeroMinWidth xs>
                               <InputWithLabel
-                                label="Phone Number"
+                                label="Téléphone"
                                 required={true}
                                 name="phone"
                                 type="number"
@@ -692,7 +692,7 @@ const Register = ({ setCurrentPage }) => {
                                   "none",
                               }}
                             >
-                              Complete Step
+                              Valider
                             </button>
                           </Box>
                         </form>
@@ -706,7 +706,7 @@ const Register = ({ setCurrentPage }) => {
                               <Grid container spacing={2}>
                                 <Grid item zeroMinWidth xs>
                                   <InputWithLabel
-                                    label="First Name"
+                                    label="Prénom"
                                     required={true}
                                     name="first_name"
                                     type="text"
@@ -729,7 +729,7 @@ const Register = ({ setCurrentPage }) => {
                                 </Grid>
                                 <Grid item zeroMinWidth xs>
                                   <InputWithLabel
-                                    label="Last Name"
+                                    label="Nom"
                                     required={true}
                                     name="last_name"
                                     type="text"
@@ -773,7 +773,7 @@ const Register = ({ setCurrentPage }) => {
                               <Grid container spacing={2}>
                                 <Grid item zeroMinWidth xs>
                                   <InputWithLabel
-                                    label="Password"
+                                    label="Mot de passe"
                                     required={true}
                                     name="password"
                                     type="password"
@@ -796,7 +796,7 @@ const Register = ({ setCurrentPage }) => {
                                 </Grid>
                                 <Grid item zeroMinWidth xs>
                                   <InputWithLabel
-                                    label="Confirm Password"
+                                    label="Confirmer le mot de passe"
                                     required={true}
                                     name="confirm_password"
                                     type="password"
@@ -847,7 +847,7 @@ const Register = ({ setCurrentPage }) => {
                                       "none",
                                   }}
                                 >
-                                  Complete Step
+                                  Valider
                                 </button>
                               </Box>
                             </>
@@ -856,7 +856,7 @@ const Register = ({ setCurrentPage }) => {
                               <Grid container spacing={2}>
                                 <Grid item zeroMinWidth xs>
                                   <InputWithLabel
-                                    label="Name"
+                                    label="Nom"
                                     required={true}
                                     name="first_name"
                                     type="text"
@@ -921,7 +921,7 @@ const Register = ({ setCurrentPage }) => {
                                       "none",
                                   }}
                                 >
-                                  Complete Step
+                                  Valider
                                 </button>
                               </Box>
                             </>
@@ -949,32 +949,28 @@ const Register = ({ setCurrentPage }) => {
                                     }}
                                   >
                                     <span className={classes.borderText}>
-                                      Subscription
+                                      Abonnement
                                     </span>
                                     <div className={classes.borderBox}>
                                       <div className={classes.textContainer}>
-                                        <div>
-                                          Initial subscription for 1 year
-                                        </div>
+                                        <div>Abonnement Initial 1 an</div>
                                         <div>
                                           {subAmounts.initial.price.toFixed(2)}{" "}
                                           € HT
                                         </div>
                                       </div>
                                       <span style={{ fontSize: 12 }}>
-                                        (1 year, 5 projects)
+                                        (avec 1 pack 5 Projets)
                                       </span>
                                       <div className={classes.textContainer}>
-                                        <div>
-                                          Extend subscription for 1 year
-                                        </div>
+                                        <div>ReAbonnement 1 an</div>
                                         <div>
                                           {subAmounts.extended.price.toFixed(2)}{" "}
                                           € HT
                                         </div>
                                       </div>
                                       <span style={{ fontSize: 12 }}>
-                                        (extend date of subscription)
+                                        (uniquement si déjà abonné)
                                       </span>
                                     </div>
                                   </div>
@@ -1052,13 +1048,13 @@ const Register = ({ setCurrentPage }) => {
                                     }}
                                   >
                                     <span className={classes.borderText}>
-                                      Projects Pack
+                                      Pack Projets
                                     </span>
                                     <div className={classes.middleBorderBox}>
                                       <div
                                         className={classes.middleTextContainer}
                                       >
-                                        <div>Pack of 5 projects</div>
+                                        <div>Pack de 5 Projets</div>
                                         <div>
                                           {subAmounts.pack.price.toFixed(2)} €
                                           HT
@@ -1120,7 +1116,7 @@ const Register = ({ setCurrentPage }) => {
                                     }}
                                   >
                                     <span className={classes.borderText}>
-                                      Total
+                                      Montant à régler
                                     </span>
                                     <div className={classes.borderBox}>
                                       <div
@@ -1133,17 +1129,17 @@ const Register = ({ setCurrentPage }) => {
                                       >
                                         <div>
                                           <div>
-                                            Total duration:{" "}
+                                            Durée total :{" "}
                                             {parseInt(
                                               subAmounts.initial.count
                                             ) +
                                               parseInt(
                                                 subAmounts.extended.count
                                               )}{" "}
-                                            year
+                                            an
                                           </div>
                                           <div>
-                                            Number of projects:{" "}
+                                            Nombre de projets :{" "}
                                             {parseInt(subAmounts.pack.count) *
                                               5}
                                           </div>
@@ -1154,8 +1150,8 @@ const Register = ({ setCurrentPage }) => {
                                               display: "flex",
                                             }}
                                           >
-                                            <div style={{ width: 120 }}>
-                                              Total HT:
+                                            <div style={{ width: 150 }}>
+                                              Total HT :
                                             </div>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div
@@ -1185,8 +1181,8 @@ const Register = ({ setCurrentPage }) => {
                                               display: "flex",
                                             }}
                                           >
-                                            <div style={{ width: 120 }}>
-                                              VAT 20%:
+                                            <div style={{ width: 150 }}>
+                                              T.V.A 20% :
                                             </div>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div
@@ -1218,8 +1214,8 @@ const Register = ({ setCurrentPage }) => {
                                               display: "flex",
                                             }}
                                           >
-                                            <div style={{ width: 120 }}>
-                                              Total cost:
+                                            <div style={{ width: 150 }}>
+                                              Total T.T.C:
                                             </div>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div
@@ -1274,7 +1270,7 @@ const Register = ({ setCurrentPage }) => {
                                     }}
                                   >
                                     <span className={classes.borderText}>
-                                      Subscription
+                                      Abonnement
                                     </span>
                                     <div className={classes.borderBox}>
                                       <div className={classes.textContainer2}>
@@ -1341,7 +1337,7 @@ const Register = ({ setCurrentPage }) => {
                                     }}
                                   >
                                     <span className={classes.borderText}>
-                                      Total
+                                      Montant à régler
                                     </span>
                                     <div className={classes.borderBox}>
                                       <div
@@ -1364,8 +1360,8 @@ const Register = ({ setCurrentPage }) => {
                                               display: "flex",
                                             }}
                                           >
-                                            <div style={{ width: 120 }}>
-                                              Total HT:
+                                            <div style={{ width: 150 }}>
+                                              Total HT :
                                             </div>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div
@@ -1392,8 +1388,8 @@ const Register = ({ setCurrentPage }) => {
                                               display: "flex",
                                             }}
                                           >
-                                            <div style={{ width: 120 }}>
-                                              VAT 20%:
+                                            <div style={{ width: 150 }}>
+                                              V.A.T 20% :
                                             </div>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div
@@ -1419,8 +1415,8 @@ const Register = ({ setCurrentPage }) => {
                                               display: "flex",
                                             }}
                                           >
-                                            <div style={{ width: 120 }}>
-                                              Total cost:
+                                            <div style={{ width: 150 }}>
+                                              Total T.T.C :
                                             </div>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div
@@ -1457,7 +1453,7 @@ const Register = ({ setCurrentPage }) => {
                               }}
                             >
                               <button type="submit" className={classes.btn}>
-                                Complete Step
+                                Valider
                               </button>
                             </Box>
                           </div>
@@ -1481,7 +1477,7 @@ const Register = ({ setCurrentPage }) => {
                                 }}
                               >
                                 <span className={classes.borderText}>
-                                  Review
+                                  Récapitulatif
                                 </span>
                                 <div className={classes.page4BorderBox}>
                                   <div style={{ marginBottom: 20 }}>
@@ -1491,7 +1487,7 @@ const Register = ({ setCurrentPage }) => {
                                         justifyContent: "space-between",
                                       }}
                                     >
-                                      <div>Initial subscription for 1 year</div>
+                                      <div>Abonnement Initial 1 an</div>
                                       <div
                                         style={{
                                           backgroundColor: "white",
@@ -1517,7 +1513,7 @@ const Register = ({ setCurrentPage }) => {
                                         justifyContent: "space-between",
                                       }}
                                     >
-                                      <div>Extend subscription for 1 year</div>
+                                      <div>ReAbonnement 1 an</div>
                                       <div
                                         style={{
                                           backgroundColor: "white",
@@ -1543,7 +1539,7 @@ const Register = ({ setCurrentPage }) => {
                                         justifyContent: "space-between",
                                       }}
                                     >
-                                      <div>Pack of 5 projects</div>
+                                      <div>Pack de 5 Projets</div>
                                       <div
                                         style={{
                                           backgroundColor: "white",
@@ -1586,7 +1582,7 @@ const Register = ({ setCurrentPage }) => {
                                           display: "flex",
                                         }}
                                       >
-                                        <div style={{ width: 120 }}>
+                                        <div style={{ width: 150 }}>
                                           Total HT:
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -1617,8 +1613,8 @@ const Register = ({ setCurrentPage }) => {
                                           display: "flex",
                                         }}
                                       >
-                                        <div style={{ width: 120 }}>
-                                          VAT 20%:
+                                        <div style={{ width: 150 }}>
+                                          T.V.A 20% :
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <div
@@ -1650,8 +1646,8 @@ const Register = ({ setCurrentPage }) => {
                                           display: "flex",
                                         }}
                                       >
-                                        <div style={{ width: 120 }}>
-                                          Total cost:
+                                        <div style={{ width: 150 }}>
+                                          Total T.T.C :
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <div
@@ -1695,7 +1691,7 @@ const Register = ({ setCurrentPage }) => {
                                 }}
                               >
                                 <span className={classes.borderText}>
-                                  Review
+                                  Récapitulatif
                                 </span>
                                 <div className={classes.page4BorderBox}>
                                   <div style={{ marginBottom: 30 }}>
@@ -1705,7 +1701,7 @@ const Register = ({ setCurrentPage }) => {
                                         justifyContent: "space-between",
                                       }}
                                     >
-                                      <div>Alertes subscription</div>
+                                      <div>Alertes abonnement</div>
                                       <div
                                         style={{
                                           backgroundColor: "white",
@@ -1741,7 +1737,7 @@ const Register = ({ setCurrentPage }) => {
                                         marginTop: 10,
                                       }}
                                     >
-                                      <div>Référencement subscription</div>
+                                      <div>Référencement abonnement</div>
                                       <div
                                         style={{
                                           backgroundColor: "white",
@@ -1793,7 +1789,7 @@ const Register = ({ setCurrentPage }) => {
                                           display: "flex",
                                         }}
                                       >
-                                        <div style={{ width: 120 }}>
+                                        <div style={{ width: 150 }}>
                                           Total HT:
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -1821,8 +1817,8 @@ const Register = ({ setCurrentPage }) => {
                                           display: "flex",
                                         }}
                                       >
-                                        <div style={{ width: 120 }}>
-                                          VAT 20%:
+                                        <div style={{ width: 150 }}>
+                                          T.V.A 20% :
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <div
@@ -1848,8 +1844,8 @@ const Register = ({ setCurrentPage }) => {
                                           display: "flex",
                                         }}
                                       >
-                                        <div style={{ width: 120 }}>
-                                          Total cost:
+                                        <div style={{ width: 150 }}>
+                                          Total T.T.C :
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <div
@@ -1890,7 +1886,7 @@ const Register = ({ setCurrentPage }) => {
                               }}
                             >
                               <span className={classes.borderText}>
-                                Payment Method
+                                Mode de paiement
                               </span>
                               <div className={classes.page4BottomBorderBox}>
                                 <FormControl>
@@ -1937,7 +1933,7 @@ const Register = ({ setCurrentPage }) => {
                                   "none",
                               }}
                             >
-                              Finish
+                              Valider
                             </button>
                           </Box>
                         </form>
