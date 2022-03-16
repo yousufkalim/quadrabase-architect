@@ -14,11 +14,11 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router";
 import LayersIcon from "@mui/icons-material/Layers";
 import { useTranslation } from "react-i18next";
+import ListIcon from "@mui/icons-material/List";
 
 // components
 import Header from "../../components/Header";
 import { Button, Box, Divider } from "@mui/material";
-import InputWithLabel from "../../components/InputWithLabel";
 import InputDropdown from "../../components/InputDropdown";
 import NestedList from "./component/NestedList";
 import Table from "./component/Table";
@@ -30,6 +30,7 @@ import ReportDQEModal from "./Modals/ReportDQEModal";
 import ReportBPUModal from "./Modals/ReportBPUModal";
 import ReportCCTPModal from "./Modals/ReportCCTPModal";
 import TracnhesModal from "./Modals/TranchesModal";
+import TradesModal from "./Modals/TradesModal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropertiesModal from "./Modals/PropertiesModal";
@@ -85,6 +86,7 @@ const ProjectView = () => {
   const [works, setworks] = useState([]);
   const [tradeTotal, setTradeTotal] = useState([]);
   const [openTranchesModal, setOpenTranchesModal] = useState(false);
+  const [openTradesModal, setOpenTradesModal] = useState(false);
   const [options, setOptions] = useState();
   const [selectedFamily, setSelectedFamily] = useState();
   const [generalCategories, setGeneralCategories] = useState();
@@ -395,6 +397,7 @@ const ProjectView = () => {
   };
 
   const handleTranchesModal = () => setOpenTranchesModal(!openTranchesModal);
+  const handleTradesModal = () => setOpenTradesModal(!openTradesModal);
 
   // for dropdown menu
 
@@ -616,6 +619,12 @@ const ProjectView = () => {
             onClose={handleTranchesModal}
             component={<TracnhesModal />}
           />
+          <Modal
+            title={t("Manage Trades")}
+            open={openTradesModal}
+            onClose={handleTradesModal}
+            component={<TradesModal />}
+          />
           <div className={classes.container}>
             <div className={classes.flex_container}>
               <div>
@@ -754,6 +763,31 @@ const ProjectView = () => {
                     marginLeft: -20,
                   }}
                 >
+                  {(currentProject.market_type === "TradesAndTranches" ||
+                    currentProject.market_type === "Trades") && (
+                    <>
+                      <ListIcon
+                        sx={{
+                          fontSize: 18,
+                          cursor: "pointer",
+                          "&:hover": {
+                            color: "#f1966c",
+                          },
+                        }}
+                        onClick={handleTradesModal}
+                      />
+                      <div
+                        style={{
+                          marginRight: 10,
+                          marginLeft: 10,
+                          fontSize: 20,
+                          color: "lightgray",
+                        }}
+                      >
+                        |
+                      </div>
+                    </>
+                  )}
                   {currentProject.market_type === "TradesAndTranches" && (
                     <LayersIcon
                       sx={{
