@@ -97,6 +97,30 @@ export const useStyles = makeStyles({
       marginBottom: -5,
     },
   },
+  textContainer2: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+
+  borderBox2: {
+    width: "100%",
+    height: 75,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: -12,
+    padding: "10px 10px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  textContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: -8,
+    "@media (max-width: 1250px)": {
+      marginBottom: -5,
+    },
+  },
 
   middleBorderBox: {
     width: "100%",
@@ -152,11 +176,25 @@ export const useStyles = makeStyles({
       width: "15%",
     },
   },
+  middleBox3: {
+    width: "25%",
+    height: 50,
+    border: "1px solid lightgray",
+    borderRadius: 5,
+    marginTop: 12,
+    padding: "5px 10px",
+    "@media (max-width: 1780px)": {
+      width: "30%",
+    },
+  },
   rightBox: {
     width: "30%",
     "@media (max-width: 1780px)": {
       width: "25%",
     },
+  },
+  rightBox2: {
+    width: "20%",
   },
   mainBox: {
     width: "100%",
